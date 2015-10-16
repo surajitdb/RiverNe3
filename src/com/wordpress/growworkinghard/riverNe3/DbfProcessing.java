@@ -58,15 +58,14 @@ import net.jcip.annotations.ThreadSafe;
  *
  * @todo: Commenting the methods
  *        <ul>
- *        <li><code>pointsBodyProcessing</code></li>
- *        <li><code>linesBodyProcessing</code></li>
+ *            <li><code>pointsBodyProcessing</code></li>
+ *            <li><code>linesBodyProcessing</code></li>
  *        </ul>
  *
  * @todo: Design a better implementation of the switch-case in
  *        <code>linesBodyProcessing</code>
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
- * @author
  * @version 1.0
  * @date October 13, 2015
  * @copyright GNU Public License v3
@@ -93,16 +92,18 @@ public class DbfProcessing {
      *            An array of strings of the column names to search. It has to
      *            be structured in the following way
      *            <ol>
-     *            <li><strong>Line</strong>:
-     *            <ul>
-     *            <li>Column name of the Pfafstetter numbering;</li>
-     *            <li>Column name of the X coordinate of the starting point;
-     *            </li>
-     *            <li>Column name of the Y coordinate of the starting point;
-     *            </li>
-     *            <li>Column name of the X coordinate of the ending point;</li>
-     *            <li>Column name of the Y coordinate fo the ending point.</li>
-     *            </ul>
+     *                <li><strong>Line</strong>:
+     *                <ul>
+     *                    <li>Column name of the Pfafstetter numbering;</li>
+     *                    <li>Column name of the X coordinate of the starting
+     *                        point;</li>
+     *                    <li>Column name of the Y coordinate of the starting
+     *                        point;</li>
+     *                    <li>Column name of the X coordinate of the ending
+     *                        point;</li>
+     *                    <li>Column name of the Y coordinate fo the ending
+     *                        point.</li>
+     *                </ul>
      *            </ol>
      * @return A <code>Collections.synchronizedList</code> of the filled list
      */
@@ -120,11 +121,11 @@ public class DbfProcessing {
      * @description This method allocates the two variables required to open the
      *              <code>.dbf</code> file.
      *              <ol>
-     *              <li><code>FileInputStream</code>: to open the
-     *              <code>.dbf</code> file</li>
-     *              <li><code>DbaseFileReader</code>: to get an object which can
-     *              be easily parsed with a <code>for</code> loop or through an
-     *              <code>iterator</code></li>
+     *                  <li><code>FileInputStream</code>: to open the
+     *                      <code>.dbf</code> file</li>
+     *                  <li><code>DbaseFileReader</code>: to get an object
+     *                      which can be easily parsed with a <code>for</code>
+     *                      loop or through an <code>iterator</code></li>
      *              </ol>
      *
      * @todo This method contains the call to <code>pointsBodyProcessing</code>
