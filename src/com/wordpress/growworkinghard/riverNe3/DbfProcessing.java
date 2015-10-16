@@ -42,15 +42,31 @@ import net.jcip.annotations.ThreadSafe;
  *              <p>
  *              This class is <em>ThreadSafe</em> because it has been designed
  *              following the <strong>Stack-confinement</strong> principle
- *              @cite goetz2006:java
- *              </p>
+ * @cite goetz2006:java
+ *       </p>
  *
  * @code{.java}
  * DbfProcessing dbfProc = new DbfProcessing();
  * List<Geometry> test = dbfProc.get(filePath, geomType, colNames);
  * @endcode
  *
+ * @todo: The private method <code>fileProcessing</code> contains the call to
+ *        the private methods <code>pointsBodyProcessing</code> and
+ *        <code>linesBodyProcessing</code>. That call <strong>must</strong> be
+ *        replaced with a better design, e.g. <strong>Factory Pattern</strong>,
+ *        in order to apply the <strong>DEPENDENCY INVERSION PRINCIPLE</strong>
+ *
+ * @todo: Commenting the methods
+ *        <ul>
+ *        <li><code>pointsBodyProcessing</code></li>
+ *        <li><code>linesBodyProcessing</code></li>
+ *        </ul>
+ *
+ * @todo: Design a better implementation of the switch-case in
+ *        <code>linesBodyProcessing</code>
+ *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author
  * @version 1.0
  * @date October 13, 2015
  * @copyright GNU Public License v3
@@ -111,7 +127,7 @@ public class DbfProcessing {
      *              <code>iterator</code></li>
      *              </ol>
      *
-     * @TODO This method contains the call to <code>pointsBodyProcessing</code>
+     * @todo This method contains the call to <code>pointsBodyProcessing</code>
      *       and <code>linesBodyProcessing</code>. Those lines must be replaced
      *       with a better design, e.g. <strong>Factory Pattern</strong>, in
      *       order to apply the <strong>DEPENDENCY INVERSION PRINCIPLE</strong>
