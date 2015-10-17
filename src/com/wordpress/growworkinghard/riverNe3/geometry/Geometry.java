@@ -37,6 +37,7 @@ public abstract class Geometry {
     private boolean root; //!< to identify if the element is the root of the subtree
     // private int layer;
     private int key; //!< the key to use in the ConcurrentHashMap
+    private int layer;
     private int parentKey; //!< the key in the ConcurrentHashMap of the parent node
 
     /**
@@ -77,6 +78,25 @@ public abstract class Geometry {
      */
     public int getKey() {
         return key;
+    }
+
+    /**
+     * @brief Setter method for the variable <tt>layer</tt>
+     *
+     * @param layer
+     *            the layer in the tree
+     */
+    public void setLayer(final int layer) {
+        this.layer = layer;
+    }
+
+    /**
+     * @brief Getter method for the variable <tt>layer</tt>
+     *
+     * @return the layer in the tree
+     */
+    public int getLayer() {
+        return layer;
     }
 
     /**
