@@ -65,6 +65,9 @@ import net.jcip.annotations.ThreadSafe;
  * @todo: Design a better implementation of the switch-case in
  *        <code>linesBodyProcessing</code>
  *
+ * @todo: Add <strong>pre-conditions</strong> and
+ *        <strong>post-conditions</strong>
+ *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 1.0
  * @date October 13, 2015
@@ -235,7 +238,11 @@ public class DbfProcessing {
                     switch (i)
                     {
                         case 0:
-                            if ((fields[index].toString()).compareTo("1") == 0) tmpLine.setRoot(true);
+                            if ((fields[index].toString()).compareTo("1") == 0) {
+                                tmpLine.setRoot(true);
+                                tmpLine.setKey(1);
+                                tmpLine.setLayer(1);
+                            }
                             break;
                         case 1:
                             tmp = Double.parseDouble(fields[index].toString());
