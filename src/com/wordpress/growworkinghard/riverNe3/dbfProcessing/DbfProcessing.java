@@ -29,7 +29,6 @@ import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
-import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 import net.jcip.annotations.ThreadSafe;
 
@@ -50,11 +49,12 @@ import net.jcip.annotations.ThreadSafe;
  * List<Geometry> test = dbfProc.get(filePath, geomType, colNames);
  * @endcode
  *
- * @todo: Design a better implementation of the switch-case in
- *        <code>linesBodyProcessing</code>
- *
- * @todo: Add <strong>pre-conditions</strong> and
+ * @todo Add <strong>pre-conditions</strong> and
  *        <strong>post-conditions</strong>
+ *
+ * @todo add documentation
+ *
+ * @todo verify if the class is still <em>ThreadSafe</em>
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1

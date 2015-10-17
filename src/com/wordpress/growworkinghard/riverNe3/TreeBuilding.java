@@ -60,6 +60,13 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
  *
  * @todo make this class <em>ThreadSafe</em>
  * 
+ * @todo add <strong>pre-conditions</strong> and
+ *       <strong>post-conditions</strong>
+ *
+ * @todo design a better implementation for the method <code>computeNewNode</code>
+ *
+ * @todo complete the documentation
+ *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015

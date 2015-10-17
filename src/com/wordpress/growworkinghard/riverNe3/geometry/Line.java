@@ -27,6 +27,11 @@ import org.geotools.graph.util.geom.Coordinate2D;
  *              purpose of creating a <tt>Line</tt> object with a starting point
  *              <tt>startPoint</tt> and an ending point <tt>endPoint</tt>
  *
+ * @todo make this class <em>ThreadSafe</em>
+ *
+ * @todo add <strong>pre-conditions</strong> and
+ *       <strong>post-conditions</strong>
+ *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015

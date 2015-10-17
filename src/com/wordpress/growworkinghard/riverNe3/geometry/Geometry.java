@@ -27,6 +27,8 @@ import org.geotools.graph.util.geom.Coordinate2D;
  * is implemented following the idea of the Strategy Pattern, then you can
  * easily add new features.
  *
+ * @todo make this class <em>ThreadSafe</em>
+ *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015

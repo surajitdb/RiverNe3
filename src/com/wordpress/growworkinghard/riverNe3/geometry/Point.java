@@ -26,6 +26,11 @@ import org.geotools.graph.util.geom.Coordinate2D;
  * @description This class extends the abstrac class <tt>Geometry</tt> with the purpose of
  * creating a <tt>Point</tt> object mainly including its coordinates
  *
+ * @todo make this class <em>ThreadSafe</em>
+ *
+ * @todo add <strong>pre-conditions</strong> and
+ *       <strong>post-conditions</strong>
+ *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015

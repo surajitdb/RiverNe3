@@ -34,24 +34,4 @@ public class DbfPointsProcessing extends DbfProcessing {
 
     }
 
-    /**
-     * @brief This main is just a simple to test.
-     *
-     * @param args
-     */
-    // public static void main(String[] args) {
-
-    //     String filePath = "/home/francesco/vcs/git/personal/RiverNe3/data/net.dbf";
-    //     String type = "lines";
-    //     String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
-
-    //     DbfProcessing dfbp = new DbfProcessing();
-    //     List<Geometry> test = dfbp.get(filePath, type, colNames);
-
-    //     for (int i = 0; i < test.size(); i++) {
-    //         System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());
-    //     }
-
-    // }
-
 }

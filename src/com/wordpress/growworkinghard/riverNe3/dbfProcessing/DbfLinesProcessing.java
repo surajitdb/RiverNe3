@@ -28,6 +28,16 @@ import org.geotools.data.shapefile.dbf.DbaseFileReader;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
+/**
+ *
+ * @todo Design a better implementation of the switch-case
+ *
+ * @todo make this class <em>ThreadSafe</em>
+ *
+ * @todo add documentation
+ *
+ * @author
+ */
 public class DbfLinesProcessing extends DbfProcessing {
 
     protected List<Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
