@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3;
+package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -284,19 +284,19 @@ public class DbfProcessing {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
 
-        String filePath = "/home/francesco/vcs/git/personal/RiverNe3/data/net.dbf";
-        String type = "lines";
-        String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
+    //     String filePath = "/home/francesco/vcs/git/personal/RiverNe3/data/net.dbf";
+    //     String type = "lines";
+    //     String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
-        DbfProcessing dfbp = new DbfProcessing();
-        List<Geometry> test = dfbp.get(filePath, type, colNames);
+    //     DbfProcessing dfbp = new DbfProcessing();
+    //     List<Geometry> test = dfbp.get(filePath, type, colNames);
 
-        for (int i = 0; i < test.size(); i++) {
-            System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());
-        }
+    //     for (int i = 0; i < test.size(); i++) {
+    //         System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());
+    //     }
 
-    }
+    // }
 
 }
