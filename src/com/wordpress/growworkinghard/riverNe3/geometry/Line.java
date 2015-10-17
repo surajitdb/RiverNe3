@@ -28,9 +28,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
  *              <tt>startPoint</tt> and an ending point <tt>endPoint</tt>
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
- * @version 1.0
+ * @version 0.1
  * @date October 13, 2015
- * @copyright GNU Public License v3
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 public class Line extends Geometry {
 

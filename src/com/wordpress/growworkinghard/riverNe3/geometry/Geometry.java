@@ -28,9 +28,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
  * easily add new features.
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
- * @version 1.0
+ * @version 0.1
  * @date October 13, 2015
- * @copyright GNU Public License v3
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 public abstract class Geometry {
 

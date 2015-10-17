@@ -26,9 +26,9 @@ package com.wordpress.growworkinghard.riverNe3.composite;
  *              for the binary tree
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
- * @version 1.0
+ * @version 0.1
  * @date October 13, 2015
- * @copyright GNU Public License v3
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 public abstract class Component {
 
