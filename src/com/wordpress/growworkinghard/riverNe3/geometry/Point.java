@@ -43,9 +43,9 @@ public class Point extends Geometry {
     /**
      * @brief Setter method for the variable <tt>point</tt>
      *
-     * @param x
+     * @param[in] x
      *            The x coordinate
-     * @param y
+     * @param[in] y
      *            The y coordinate
      */
     @Override
@@ -56,7 +56,7 @@ public class Point extends Geometry {
     /**
      * @brief Setter method for the variable <tt>point</tt>
      *
-     * @param point
+     * @param[in] point
      *            The coordinates of the point
      */
     @Override

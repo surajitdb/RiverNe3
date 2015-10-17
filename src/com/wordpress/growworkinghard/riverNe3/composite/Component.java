@@ -54,7 +54,7 @@ public abstract class Component {
     /**
      * @brief Setter method to set the key of the parent node
      *
-     * @param parentKey The <tt>HashMap</tt> key of the parent node
+     * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
      */
     public void setParentKey(final int parentKey) {
         this.parentKey = parentKey;
@@ -72,7 +72,7 @@ public abstract class Component {
     /**
      * @brief Setter method to set the layer of the node
      *
-     * @param layer The layer of the node in the tree
+     * @param[in] layer The layer of the node in the tree
      */
     public void setLayer(final int layer) {
         this.layer = layer;

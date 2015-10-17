@@ -45,9 +45,9 @@ public class Line extends Geometry {
     /**
      * @brief Setter method for the variable <tt>startPoint</tt>
      *
-     * @param x
+     * @param[in] x
      *            The x coordinate
-     * @param y
+     * @param[in] y
      *            The y coordinate
      */
     @Override
@@ -58,7 +58,7 @@ public class Line extends Geometry {
     /**
      * @brief Setter method for the variable <tt>startPoint</tt>
      *
-     * @param startPoint
+     * @param[in] startPoint
      *            The coordinates of the starting point
      */
     @Override
@@ -79,9 +79,9 @@ public class Line extends Geometry {
     /**
      * @brief Setter method for the variable <tt>endPoint</tt>
      *
-     * @param x
+     * @param[in] x
      *            The x coordinate
-     * @param y
+     * @param[in] y
      *            The y coordinate
      */
     @Override
@@ -92,7 +92,7 @@ public class Line extends Geometry {
     /**
      * @brief Setter method for the variable <tt>endPoint</tt>
      *
-     * @param endPoint
+     * @param[in] endPoint
      *            The coordinates of the ending point
      */
     @Override

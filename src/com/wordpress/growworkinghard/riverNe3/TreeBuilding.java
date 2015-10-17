@@ -75,7 +75,7 @@ public class TreeBuilding {
     /**
      * @brief Getter method which returns the tree structure
      *
-     * @param list
+     * @param[in] list
      *            The <code>List</code> of <tt>Geometry</tt> objects
      * @return The tree structure in a <code>ConcurrentHashMap</code>
      */
@@ -96,7 +96,7 @@ public class TreeBuilding {
      *              <code>ConcurrentHashMap</code> where different thread can
      *              work simultaneously.
      *
-     * @param size
+     * @param[in] size
      *            The number of <tt>Geometry</tt> objects in the list
      */
     private void getInstance(final int size) {
@@ -136,7 +136,7 @@ public class TreeBuilding {
      *              The root node of the <tt>sub-tree</tt> is removed from the
      *              <code>List</code> structure at the end of each parsing loop.
      *
-     * @param list
+     * @param[in] list
      *            The <code>List</code> structure with all the <tt>Geometry</tt>
      *            objects
      */
@@ -228,9 +228,9 @@ public class TreeBuilding {
     /**
      * @brief Verify if the temporary child is connected to the root
      *
-     * @param tmpChild
+     * @param[in] tmpChild
      *            The temporary <tt>Geometry</tt> object analyzed
-     * @param root
+     * @param[in] root
      *            The root of the sub-tree
      * @return If the child is connected
      * @retval TRUE The child is connected to the root
@@ -256,7 +256,7 @@ public class TreeBuilding {
      *
      * @description A ghost node has starting point equal to the ending point
      *
-     * @param root
+     * @param[in] root
      *            The root node of the sub-tree
      * @return If the root is ghost or not
      * @retval TRUE The root is ghost
@@ -277,11 +277,11 @@ public class TreeBuilding {
     /**
      * @brief Set the root for the following subtree
      *
-     * @param child
-     *            The child which has become the new root
-     * @param parent
+     * @param[out] child
+     *            The child which has to become the new root
+     * @param[in] parent
      *            The actual current
-     * @param leftChild
+     * @param[in] leftChild
      *            In order to give a proper key and layer to the child, knowing
      *            if the child is a left or a right one is required
      */
@@ -314,7 +314,7 @@ public class TreeBuilding {
      *              point.
      *              </p>
      *
-     * @param right
+     * @param[out] right
      *            The right child
      */
     private void ricomputeRightChild(final Geometry right) {

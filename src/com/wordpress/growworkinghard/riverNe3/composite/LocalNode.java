@@ -50,13 +50,13 @@ public class LocalNode extends Component {
     /**
      * @brief Alternative constructor which requires all the states
      *
-     * @param parentKey
+     * @param[in] parentKey
      *            The <tt>HashMap</tt> key of the parent
-     * @param leftChildKey
+     * @param[in] leftChildKey
      *            The <tt>HashMap</tt> key of the left child
-     * @param rightChildKey
+     * @param[in] rightChildKey
      *            The <tt>HashMap</tt> key of the right child
-     * @param layer
+     * @param[in] layer
      *            The layer in the tree in which this node is located
      */
     public LocalNode(final int parentKey, final int leftChildKey, final int rightChildKey, final int layer) {
@@ -81,7 +81,8 @@ public class LocalNode extends Component {
     /**
      * @brief Setter method to set the key of the left child
      *
-     * @param leftChildKey The <tt>HashMap</tt> key of the left child
+     * @param[in] leftChildKey
+     *            The <tt>HashMap</tt> key of the left child
      */
     @Override
     public void setLeftChildKey(final int leftChildKey) {
@@ -101,7 +102,8 @@ public class LocalNode extends Component {
     /**
      * @brief Setter method to set the key of the right child
      *
-     * @param rightChildKey The <tt>HashMap</tt> key of the right child
+     * @param[in] rightChildKey
+     *            The <tt>HashMap</tt> key of the right child
      */
     @Override
     public void setRightChildKey(final int rightChildKey) {
@@ -121,7 +123,8 @@ public class LocalNode extends Component {
     /**
      * @brief Setter method to set the key of the parent node
      *
-     * @param parentKey The <tt>HashMap</tt> key of the parent node
+     * @param[in] parentKey
+     *            The <tt>HashMap</tt> key of the parent node
      */
     @Override
     public void setParentKey(final int parentKey) {
@@ -141,7 +144,8 @@ public class LocalNode extends Component {
     /**
      * @brief Setter method to set the layer of the node
      *
-     * @param layer The layer of the node in the tree
+     * @param[in] layer
+     *            The layer of the node in the tree
      */
     @Override
     public void setLayer(final int layer) {

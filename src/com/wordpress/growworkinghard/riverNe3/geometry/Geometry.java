@@ -52,7 +52,7 @@ public abstract class Geometry {
     /**
      * @brief Setter method for the variable <tt>root</tt> 
      *
-     * @param root
+     * @param[in] root
      *            boolean <code>true</code> if the feature is root a subtree
      */
     public void setRoot(final boolean root) {
@@ -62,7 +62,7 @@ public abstract class Geometry {
     /**
      * @brief Setter method for the variable <tt>key</tt>
      *
-     * @param key
+     * @param[in] key
      *            the key that is going to be used as index in the
      *            <code>ConcurrentHashMap</code>
      */
@@ -83,7 +83,7 @@ public abstract class Geometry {
     /**
      * @brief Setter method for the variable <tt>layer</tt>
      *
-     * @param layer
+     * @param[in] layer
      *            the layer in the tree
      */
     public void setLayer(final int layer) {
@@ -102,7 +102,7 @@ public abstract class Geometry {
     /**
      * @brief Setter method for the variable <tt>parentKey</tt>
      *
-     * @param parentKey
+     * @param[in] parentKey
      *            the key which identify the parent node in the
      *            <code>ConcurrentHashMap</code>
      */
@@ -127,9 +127,9 @@ public abstract class Geometry {
      *              in a point class, which will have the state variable
      *              <tt>point</tt>
      *
-     * @param x
+     * @param[in] x
      *            The x coordinate
-     * @param y
+     * @param[in] y
      *            The y coordinate
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
@@ -146,7 +146,7 @@ public abstract class Geometry {
      *              in a point class, which will have the state variable
      *              <tt>point</tt>
      *
-     * @param point
+     * @param[in] point
      *            The coordinate of the point
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
@@ -180,9 +180,9 @@ public abstract class Geometry {
      *              in a line, spline o polyline class, which will have the
      *              state variable <tt>startPoint</tt>
      *
-     * @param x
+     * @param[in] x
      *            The x coordinate
-     * @param y
+     * @param[in] y
      *            The y coordinate
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
@@ -199,7 +199,7 @@ public abstract class Geometry {
      *              in a line, spline o polyline class, which will have the
      *              state variable <tt>startPoint</tt>
      *
-     * @param startPoint
+     * @param[in] startPoint
      *            The coordinate of the starting point of the feature
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
@@ -233,9 +233,9 @@ public abstract class Geometry {
      *              in a line, spline, o polyline class, which will have the
      *              state variable <tt>endPoint</tt>
      *
-     * @param x
+     * @param[in] x
      *            The x coordinate
-     * @param y
+     * @param[in] y
      *            The y coordinate
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
@@ -252,7 +252,7 @@ public abstract class Geometry {
      *              in a line, spline, o polyline class, which will have the
      *              state variable <tt>endPoint</tt>
      *
-     * @param endPoint
+     * @param[in] endPoint
      *            The coordinate of the ending point of the feature
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the

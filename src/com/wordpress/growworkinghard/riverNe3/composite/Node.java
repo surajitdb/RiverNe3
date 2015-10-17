@@ -48,13 +48,13 @@ public class Node extends Component {
     /**
      * @brief Alternative constructor which requires all the states
      *
-     * @param parentKey
+     * @param[in] parentKey
      *            The <tt>HashMap</tt> key of the parent
-     * @param leftChildKey
+     * @param[in] leftChildKey
      *            The <tt>HashMap</tt> key of the left child
-     * @param rightChildKey
+     * @param[in] rightChildKey
      *            The <tt>HashMap</tt> key of the right child
-     * @param layer
+     * @param[in] layer
      *            The layer in the tree in which this node is located
      */
     public Node(final int parentKey, final int leftChildKey, final int rightChildKey, final int layer) {
@@ -79,7 +79,8 @@ public class Node extends Component {
     /**
      * @brief Setter method to set the key of the left child
      *
-     * @param leftChildKey The <tt>HashMap</tt> key of the left child
+     * @param[in] leftChildKey
+     *            The <tt>HashMap</tt> key of the left child
      */
     @Override
     public void setLeftChildKey(final int leftChildKey) {
@@ -99,7 +100,8 @@ public class Node extends Component {
     /**
      * @brief Setter method to set the key of the right child
      *
-     * @param rightChildKey The <tt>HashMap</tt> key of the right child
+     * @param[in] rightChildKey
+     *            The <tt>HashMap</tt> key of the right child
      */
     @Override
     public void setRightChildKey(final int rightChildKey) {

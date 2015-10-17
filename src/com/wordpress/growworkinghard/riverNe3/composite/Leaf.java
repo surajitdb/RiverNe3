@@ -49,8 +49,10 @@ public class Leaf extends Component {
     /**
      * @brief Alternative constructor which require all the states
      *
-     * @param parentKey The <tt>HashMap</tt> key of the parent
-     * @param layer The layer in the tree in which this node is located
+     * @param[in] parentKey
+     *            The <tt>HashMap</tt> key of the parent
+     * @param[in] layer
+     *            The layer in the tree in which this node is located
      */
     public Leaf(final int parentKey, final int layer) {
 

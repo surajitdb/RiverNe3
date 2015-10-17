@@ -87,11 +87,11 @@ public class DbfProcessing {
      * @description This is the only one public method. It returns a
      *              synchronizedList of objects of type Geometry.
      *
-     * @param filePath
+     * @param[in] filePath
      *            The complete input path of the <code>.dbf</code> file
-     * @param type
+     * @param[in] type
      *            The type of geometry of the shapefile
-     * @param colNames
+     * @param[in] colNames
      *            An array of strings of the column names to search. It has to
      *            be structured in the following way
      *            <ol>
@@ -136,14 +136,14 @@ public class DbfProcessing {
      *       with a better design, e.g. <strong>Factory Pattern</strong>, in
      *       order to apply the <strong>DEPENDENCY INVERSION PRINCIPLE</strong>
      *
-     * @param list
+     * @param[out] list
      *            The empy <code>List</code> of <code>Geometry</code> which has
      *            to be filled
-     * @param filePath
+     * @param[in] filePath
      *            The complete input path of the <code>.dbf</code> file
-     * @param type
+     * @param[in] type
      *            The type of geometry of the shapefile
-     * @param colNames
+     * @param[in] colNames
      *            The array of strings which contains the column names to search
      * @exception IOException
      *                If no file is found
@@ -176,9 +176,9 @@ public class DbfProcessing {
      *              of the columns from which retrieve the data useful to create
      *              the <tt>Geometry</tt> <code>objects</code>
      *
-     * @param dbfReader
+     * @param[in] dbfReader
      *            The <code>dbf</code> reader
-     * @param colNames
+     * @param[in] colNames
      *            The array of strings with the name of the columns to match
      * @return A <code>Vector</code> of <code>Integer</code> with the indices of
      *         the columns from which retrieve the data
