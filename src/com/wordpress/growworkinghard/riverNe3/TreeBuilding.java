@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.wordpress.growworkinghard.riverNe3.composite.*;
+import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
@@ -330,11 +331,10 @@ public class TreeBuilding {
     public static void main(String[] args) {
 
         String filePath = "/home/francesco/vcs/git/personal/RiverNe3/data/net.dbf";
-        String type = "lines";
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
-        DbfProcessing dfbp = new DbfProcessing();
-        List<Geometry> test = dfbp.get(filePath, type, colNames);
+        DbfProcessing dfbp = new DbfLinesProcessing();
+        List<Geometry> test = dfbp.get(filePath, colNames);
 
         TreeBuilding tb = new TreeBuilding();
         ConcurrentHashMap<Integer, Component> binaryTree = tb.getTree(test);

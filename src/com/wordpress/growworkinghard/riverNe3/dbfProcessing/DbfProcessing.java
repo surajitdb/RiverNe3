@@ -50,18 +50,6 @@ import net.jcip.annotations.ThreadSafe;
  * List<Geometry> test = dbfProc.get(filePath, geomType, colNames);
  * @endcode
  *
- * @todo: The private method <code>fileProcessing</code> contains the call to
- *        the private methods <code>pointsBodyProcessing</code> and
- *        <code>linesBodyProcessing</code>. That call <strong>must</strong> be
- *        replaced with a better design, e.g. <strong>Factory Pattern</strong>,
- *        in order to apply the <strong>DEPENDENCY INVERSION PRINCIPLE</strong>
- *
- * @todo: Commenting the methods
- *        <ul>
- *            <li><code>pointsBodyProcessing</code></li>
- *            <li><code>linesBodyProcessing</code></li>
- *        </ul>
- *
  * @todo: Design a better implementation of the switch-case in
  *        <code>linesBodyProcessing</code>
  *
@@ -74,12 +62,7 @@ import net.jcip.annotations.ThreadSafe;
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 @ThreadSafe
-public class DbfProcessing {
-
-    /**
-     * @brief Default constructor
-     */
-    public DbfProcessing() {}
+public abstract class DbfProcessing {
 
     /**
      * @brief Getter method which return the list of geometric features
@@ -89,8 +72,6 @@ public class DbfProcessing {
      *
      * @param[in] filePath
      *            The complete input path of the <code>.dbf</code> file
-     * @param[in] type
-     *            The type of geometry of the shapefile
      * @param[in] colNames
      *            An array of strings of the column names to search. It has to
      *            be structured in the following way
@@ -110,11 +91,9 @@ public class DbfProcessing {
      *            </ol>
      * @return A <code>Collections.synchronizedList</code> of the filled list
      */
-    public List<Geometry> get(final String filePath, final String type, final String[] colNames) {
+    public List<Geometry> get(final String filePath, final String[] colNames) {
 
-        List<Geometry> list = new Vector<Geometry>();
-        fileProcessing(list, filePath, type, colNames);
-        return Collections.synchronizedList(list);
+        return Collections.synchronizedList(fileProcessing(filePath, colNames));
 
     }
 
@@ -141,31 +120,28 @@ public class DbfProcessing {
      *            to be filled
      * @param[in] filePath
      *            The complete input path of the <code>.dbf</code> file
-     * @param[in] type
-     *            The type of geometry of the shapefile
      * @param[in] colNames
      *            The array of strings which contains the column names to search
      * @exception IOException
      *                If no file is found
      */
-    private void fileProcessing(final List<Geometry> list, final String filePath, final String type, final String[] colNames) {
+    private List<Geometry> fileProcessing(final String filePath, final String[] colNames) {
 
+        List<Geometry> list = null;
         try {
 
             FileInputStream inputFile = new FileInputStream(filePath);
             DbaseFileReader dbfReader = new DbaseFileReader(inputFile.getChannel(), false, Charset.defaultCharset());
 
             Vector<Integer> colIndices = headerProcessing(dbfReader, colNames);
-
-            if (type.compareTo("points") == 0)
-                pointsBodyProcessing(list, dbfReader, colIndices);
-            else if (type.compareTo("lines") == 0)
-                linesBodyProcessing(list, dbfReader, colIndices);
+            list = bodyProcessing(dbfReader, colIndices);
 
             dbfReader.close();
             inputFile.close();
 
         } catch (IOException exception) { new IOException(exception); }
+
+        return list;
 
     }
 
@@ -201,102 +177,6 @@ public class DbfProcessing {
 
     }
 
-    // TODO: put the following two methods in separated classes, which
-    // inheredit from this class that will become an abstract class.
-    // Probably the following two methods will have an abstract signature in
-    // this class because it's the same for both the methods.
-    //
-    // The main idea is applying the DEPENDENCY INVERSION PRINCIPLE and at the
-    // same time designing an appropriate Factory Pattern
-
-    private void pointsBodyProcessing(final List<Geometry> list, final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
-
-        new UnsupportedOperationException("Method not implemented yet");
-
-    }
-
-    private void linesBodyProcessing(final List<Geometry> list, final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
-
-        while(dbfReader.hasNext()) {
-
-                        
-            try {
-
-                Object[] fields;
-                Geometry tmpLine = new Line();
-
-                double x_start = 0.0, y_start = 0.0, x_end = 0.0, y_end = 0.0;
-
-                fields = dbfReader.readEntry();
-
-                for (int i = 0; i < colIndices.size(); i++) {
-
-                    int index = colIndices.get(i);
-                    Double tmp;
-                    double tmpVal;
-
-                    switch (i)
-                    {
-                        case 0:
-                            if ((fields[index].toString()).compareTo("1") == 0) {
-                                tmpLine.setRoot(true);
-                                tmpLine.setKey(1);
-                                tmpLine.setLayer(1);
-                            }
-                            break;
-                        case 1:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            x_start = tmpVal;
-                            break;
-                        case 2:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            y_start = tmpVal;
-                            break;
-                        case 3:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            x_end = tmpVal;
-                            break;
-                        case 4:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            y_end = tmpVal;
-                            break;
-                    }
-
-                }
-
-                tmpLine.setStartPoint(x_start, y_start);
-                tmpLine.setEndPoint(x_end, y_end);
-
-                list.add(tmpLine);
-
-            } catch (IOException exception) { new IOException(exception); }
-
-        }
-
-    }
-
-    /**
-     * @brief This main is just a simple to test.
-     *
-     * @param args
-     */
-    // public static void main(String[] args) {
-
-    //     String filePath = "/home/francesco/vcs/git/personal/RiverNe3/data/net.dbf";
-    //     String type = "lines";
-    //     String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
-
-    //     DbfProcessing dfbp = new DbfProcessing();
-    //     List<Geometry> test = dfbp.get(filePath, type, colNames);
-
-    //     for (int i = 0; i < test.size(); i++) {
-    //         System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());
-    //     }
-
-    // }
+    protected abstract List<Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
 
 }
