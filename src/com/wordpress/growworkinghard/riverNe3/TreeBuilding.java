@@ -159,9 +159,13 @@ public class TreeBuilding {
            //just been identified
            if (tmpGeom.isRoot()) { 
 
-                list.remove(i); //!< the root node is removed from the list
-                Component newNode = computeNewNode(list, tmpGeom);
-                binaryTree.put(tmpGeom.getKey(), newNode);
+                boolean rootRemoved = list.remove(tmpGeom); //!< root node removed from the list
+
+                if (rootRemoved) {
+                    Component newNode = computeNewNode(list, tmpGeom);
+                    binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
+                }
+
                 break;
 
             }
