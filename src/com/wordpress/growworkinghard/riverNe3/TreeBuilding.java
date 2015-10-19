@@ -223,18 +223,30 @@ public class TreeBuilding {
             ricomputeRightChild(rightChild); //!< right child becomes ghost node
             list.set(leftIndex, leftChild); //!< left child is updated in the list
             list.add(rightChild); //!< ghost node is added to the list
-            if (isGhost(root)) return new GhostNode(root.getKey() / 2, leftChild.getKey(), rightChild.getKey(), root.getLayer());
-            else return new Node(root.getKey() / 2, leftChild.getKey(), rightChild.getKey(), root.getLayer());
+            return returnNode(root, leftChild, rightChild);
 
         } else if (leftChild != null && rightChild != null) {
 
             list.set(leftIndex, leftChild);
             list.set(rightIndex, rightChild);
-            if (isGhost(root)) return new GhostNode(root.getKey() / 2, leftChild.getKey(), rightChild.getKey(), root.getLayer());
-            else return new Node(root.getKey() / 2, leftChild.getKey(), rightChild.getKey(), root.getLayer());
+            return returnNode(root, leftChild, rightChild);
 
         } else 
             return new Leaf(root.getKey() / 2, root.getLayer());
+
+    }
+
+    private Component returnNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
+
+        int parentKey = root.getKey() / 2;
+        int layer = root.getLayer();
+        int leftChildKey = leftChild.getKey();
+        int rightChildKey = rightChild.getKey();
+
+        if (isGhost(root))
+            return new GhostNode(parentKey , leftChildKey, rightChildKey, layer);
+        else
+            return new Node(parentKey, leftChildKey, rightChildKey, layer);
 
     }
 
