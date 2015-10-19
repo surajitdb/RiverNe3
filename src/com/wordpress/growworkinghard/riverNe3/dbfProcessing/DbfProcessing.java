@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
@@ -64,6 +65,8 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public abstract class DbfProcessing {
 
+    private volatile static ConcurrentHashMap<Integer, Geometry> inputData;
+
     /**
      * @brief Getter method which return the list of geometric features
      *
@@ -91,9 +94,23 @@ public abstract class DbfProcessing {
      *            </ol>
      * @return A <code>Collections.synchronizedList</code> of the filled list
      */
-    public List<Geometry> get(final String filePath, final String[] colNames) {
+    public ConcurrentHashMap<Integer, Geometry> get(final String filePath, final String[] colNames) {
 
-        return Collections.synchronizedList(fileProcessing(filePath, colNames));
+        getInstance();
+        fileProcessing(filePath, colNames);
+        return new ConcurrentHashMap<Integer, Geometry>(inputData);
+
+    }
+
+    private void getInstance() {
+
+        if (inputData == null) {
+            synchronized(this) {
+                if (inputData == null) {
+                    inputData = new ConcurrentHashMap<Integer, Geometry>();
+                }
+            }
+        }
 
     }
 
@@ -122,23 +139,20 @@ public abstract class DbfProcessing {
      * @exception IOException
      *                If no file is found
      */
-    private List<Geometry> fileProcessing(final String filePath, final String[] colNames) {
+    private void fileProcessing(final String filePath, final String[] colNames) {
 
-        List<Geometry> list = null;
         try {
 
             FileInputStream inputFile = new FileInputStream(filePath);
             DbaseFileReader dbfReader = new DbaseFileReader(inputFile.getChannel(), false, Charset.defaultCharset());
 
             Vector<Integer> colIndices = headerProcessing(dbfReader, colNames);
-            list = bodyProcessing(dbfReader, colIndices); //!< factory method
+            inputData = bodyProcessing(dbfReader, colIndices); //!< factory method
 
             dbfReader.close();
             inputFile.close();
 
         } catch (IOException exception) { new IOException(exception); }
-
-        return list;
 
     }
 
@@ -174,6 +188,6 @@ public abstract class DbfProcessing {
 
     }
 
-    protected abstract List<Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
+    protected abstract ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
 
 }

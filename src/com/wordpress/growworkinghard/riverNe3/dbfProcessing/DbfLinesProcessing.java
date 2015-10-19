@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 
@@ -40,9 +41,11 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Line;
  */
 public class DbfLinesProcessing extends DbfProcessing {
 
-    protected List<Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
+    protected ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
-        List<Geometry> tmpList = new Vector<Geometry>();
+        ConcurrentHashMap<Integer, Geometry> tmpHashMap = new ConcurrentHashMap<Integer, Geometry>();
+
+        int hashMapKey = 1;
 
         while(dbfReader.hasNext()) {
 
@@ -98,13 +101,14 @@ public class DbfLinesProcessing extends DbfProcessing {
                 tmpLine.setStartPoint(x_start, y_start);
                 tmpLine.setEndPoint(x_end, y_end);
 
-                tmpList.add(tmpLine);
+                tmpHashMap.put(hashMapKey, tmpLine);
+                hashMapKey++;
 
             } catch (IOException exception) { new IOException(exception); }
 
         }
 
-        return Collections.synchronizedList(tmpList);
+        return tmpHashMap;
     }
 
     /**
@@ -118,7 +122,7 @@ public class DbfLinesProcessing extends DbfProcessing {
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
         DbfProcessing dfbp = new DbfLinesProcessing();
-        List<Geometry> test = dfbp.get(filePath, colNames);
+        ConcurrentHashMap<Integer, Geometry> test = dfbp.get(filePath, colNames);
 
         for (int i = 0; i < test.size(); i++) {
             System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());

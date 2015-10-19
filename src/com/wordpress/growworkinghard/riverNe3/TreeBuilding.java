@@ -18,7 +18,7 @@
  */
 package com.wordpress.growworkinghard.riverNe3;
 
-import java.util.List;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.wordpress.growworkinghard.riverNe3.composite.*;
@@ -75,11 +75,18 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 public class TreeBuilding {
 
     private volatile static ConcurrentHashMap<Integer, Component> binaryTree;
+    private volatile static ConcurrentHashMap<Integer, Geometry> data;
 
     /**
      * @brief Default Constructor
      */
     public TreeBuilding() {}
+
+    public ConcurrentHashMap<Integer, Component> get() {
+
+        return new ConcurrentHashMap<Integer, Component>(binaryTree);
+
+    }
 
     /**
      * @brief Getter method which returns the tree structure
@@ -88,12 +95,10 @@ public class TreeBuilding {
      *            The <code>List</code> of <tt>Geometry</tt> objects
      * @return The tree structure in a <code>ConcurrentHashMap</code>
      */
-    public ConcurrentHashMap<Integer, Component> getTree(List<Geometry> list) {
+    public void getTree(ConcurrentHashMap<Integer, Geometry> inputData) {
 
-        getInstance(list.size());
-        while(!list.isEmpty()) findRoot(list); // find each root of the sub-tree
-
-        return new ConcurrentHashMap<Integer, Component>(binaryTree);
+        getInstance(inputData);
+        while(!data.isEmpty()) findRoot(); // find each root of the sub-tree
 
     }
 
@@ -108,12 +113,13 @@ public class TreeBuilding {
      * @param[in] size
      *            The number of <tt>Geometry</tt> objects in the list
      */
-    private void getInstance(final int size) {
+    private void getInstance(final ConcurrentHashMap<Integer, Geometry> inputData) {
 
-        if (binaryTree == null) {
+        if (binaryTree == null || data == null) {
             synchronized (this) {
-                if (binaryTree == null) {
-                    binaryTree = new ConcurrentHashMap<Integer, Component>(size);
+                if (binaryTree == null || data == null) {
+                    binaryTree = new ConcurrentHashMap<Integer, Component>(inputData.size());
+                    data = new ConcurrentHashMap<Integer, Geometry>(inputData);
                 }            
             }
         }
@@ -149,20 +155,22 @@ public class TreeBuilding {
      *            The <code>List</code> structure with all the <tt>Geometry</tt>
      *            objects
      */
-    private void findRoot(List<Geometry> list) {
+    private void findRoot() {
 
-        for (int i = 0; i < list.size(); i++) {
+        for (Iterator<Integer> i = data.keySet().iterator(); i.hasNext();){
 
-            Geometry tmpGeom = list.get(i);
+            Integer next = i.next();
+            Geometry tmpGeom = data.get(next);
 
            //!< if the <code>tmpGeom</code> is root a new <tt>sub-tree</tt> has
            //just been identified
-           if (tmpGeom.isRoot()) { 
+           if (tmpGeom != null && tmpGeom.isRoot()) {
 
-                boolean rootRemoved = list.remove(tmpGeom); //!< root node removed from the list
+                boolean rootRemoved = data.remove(next, tmpGeom); //!< root node removed from the list
 
                 if (rootRemoved) {
-                    Component newNode = computeNewNode(list, tmpGeom);
+                    int emptyKey = next;
+                    Component newNode = computeNewNode(tmpGeom, emptyKey);
                     binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
                 }
 
@@ -185,7 +193,7 @@ public class TreeBuilding {
      * @param layer
      * @return
      */
-    private Component computeNewNode(List<Geometry> list, Geometry root) {
+    private Component computeNewNode(Geometry root, int emptyKey) {
 
         boolean ghostNode = false;
         int leftIndex = -1;
@@ -193,22 +201,23 @@ public class TreeBuilding {
         Geometry leftChild = null;
         Geometry rightChild = null;
 
-        for (int i = 0; i < list.size(); i++) {
+        for (Iterator<Integer> i = data.keySet().iterator(); i.hasNext();) {
 
-            Geometry tmpChild = list.get(i);
+            Integer next = i.next();
+            Geometry tmpChild = data.get(next);
 
-            if (tmpChildConnectedToRoot(tmpChild, root)) {
+            if (tmpChild != null && tmpChildConnectedToRoot(tmpChild, root)) {
 
                 if (leftChild == null) { // if no left child yet, assign it first
                     leftChild = tmpChild;
                     boolean isLeft = true;
                     setNewRoot(leftChild, root, isLeft);
-                    leftIndex = i;
+                    leftIndex = next;
                 } else if (rightChild == null) { // if no right child, then assign it
                     rightChild = tmpChild;
                     boolean isLeft = false;
                     setNewRoot(rightChild, root, isLeft);
-                    rightIndex = i;
+                    rightIndex = next;
                 } else {
                     ghostNode = true; //if more than two children are identified ghost + exit
                     break;
@@ -221,14 +230,14 @@ public class TreeBuilding {
         if (ghostNode) {
 
             ricomputeRightChild(rightChild); //!< right child becomes ghost node
-            list.set(leftIndex, leftChild); //!< left child is updated in the list
-            list.add(rightChild); //!< ghost node is added to the list
+            data.replace(leftIndex, leftChild); //!< left child is updated in the list
+            data.put(emptyKey, rightChild); //!< ghost node is added to the list
             return returnNode(root, leftChild, rightChild);
 
         } else if (leftChild != null && rightChild != null) {
 
-            list.set(leftIndex, leftChild);
-            list.set(rightIndex, rightChild);
+            data.replace(leftIndex, leftChild);
+            data.replace(rightIndex, rightChild);
             return returnNode(root, leftChild, rightChild);
 
         } else 
@@ -357,10 +366,11 @@ public class TreeBuilding {
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
         DbfProcessing dfbp = new DbfLinesProcessing();
-        List<Geometry> test = dfbp.get(filePath, colNames);
+        ConcurrentHashMap<Integer, Geometry> test = dfbp.get(filePath, colNames);
 
         TreeBuilding tb = new TreeBuilding();
-        ConcurrentHashMap<Integer, Component> binaryTree = tb.getTree(test);
+        tb.getTree(test);
+        ConcurrentHashMap<Integer, Component> binaryTree = tb.get();
 
         System.out.println(binaryTree);
 
