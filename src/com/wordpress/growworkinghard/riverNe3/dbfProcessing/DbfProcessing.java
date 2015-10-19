@@ -109,15 +109,12 @@ public abstract class DbfProcessing {
      *                      which can be easily parsed with a <code>for</code>
      *                      loop or through an <code>iterator</code></li>
      *              </ol>
+     *              The choice of reading a <code>.dbf</code> file of points
+     *              rather then lines is decided by the user in the <tt>main
+     *              class</tt> and thanks to the <strong>Factory Method Pattern
+     *              </strong> there is a unique call to <code>bodyProcessing
+     *              </code>.
      *
-     * @todo This method contains the call to <code>pointsBodyProcessing</code>
-     *       and <code>linesBodyProcessing</code>. Those lines must be replaced
-     *       with a better design, e.g. <strong>Factory Pattern</strong>, in
-     *       order to apply the <strong>DEPENDENCY INVERSION PRINCIPLE</strong>
-     *
-     * @param[out] list
-     *            The empy <code>List</code> of <code>Geometry</code> which has
-     *            to be filled
      * @param[in] filePath
      *            The complete input path of the <code>.dbf</code> file
      * @param[in] colNames
@@ -134,7 +131,7 @@ public abstract class DbfProcessing {
             DbaseFileReader dbfReader = new DbaseFileReader(inputFile.getChannel(), false, Charset.defaultCharset());
 
             Vector<Integer> colIndices = headerProcessing(dbfReader, colNames);
-            list = bodyProcessing(dbfReader, colIndices);
+            list = bodyProcessing(dbfReader, colIndices); //!< factory method
 
             dbfReader.close();
             inputFile.close();
