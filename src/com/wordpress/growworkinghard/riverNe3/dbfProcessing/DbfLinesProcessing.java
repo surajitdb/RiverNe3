@@ -19,8 +19,6 @@
 package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,9 +39,11 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Line;
  */
 public class DbfLinesProcessing extends DbfProcessing {
 
+    private final ConcurrentHashMap<Integer, Geometry> tmpHashMap = new ConcurrentHashMap<Integer, Geometry>();
+
+    @Override
     protected ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
-        ConcurrentHashMap<Integer, Geometry> tmpHashMap = new ConcurrentHashMap<Integer, Geometry>();
 
         int hashMapKey = 1;
 
@@ -101,7 +101,7 @@ public class DbfLinesProcessing extends DbfProcessing {
                 tmpLine.setStartPoint(x_start, y_start);
                 tmpLine.setEndPoint(x_end, y_end);
 
-                tmpHashMap.put(hashMapKey, tmpLine);
+                tmpHashMap.putIfAbsent(hashMapKey, tmpLine);
                 hashMapKey++;
 
             } catch (IOException exception) { new IOException(exception); }
@@ -109,6 +109,18 @@ public class DbfLinesProcessing extends DbfProcessing {
         }
 
         return tmpHashMap;
+
+    }
+
+    @Override
+    protected void validateInputData(final String filePath, final String[] colNames) {
+
+        if (filePath == null)
+            throw new NullPointerException("The file path cannot be null");
+
+        if (colNames.length != 5)
+            throw new IllegalArgumentException("You must provide 5 columns: Pfafstetter, X_start, Y_start, X_end, Y_end");
+
     }
 
     /**

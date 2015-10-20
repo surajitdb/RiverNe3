@@ -21,8 +21,6 @@ package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -96,6 +94,7 @@ public abstract class DbfProcessing {
      */
     public ConcurrentHashMap<Integer, Geometry> get(final String filePath, final String[] colNames) {
 
+        validateInputData(filePath, colNames);
         getInstance();
         fileProcessing(filePath, colNames);
         return new ConcurrentHashMap<Integer, Geometry>(inputData);
@@ -188,6 +187,8 @@ public abstract class DbfProcessing {
 
     }
 
-    protected abstract ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
+    abstract protected ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
+
+    abstract protected void validateInputData(final String filePath, final String[] colNames);
 
 }
