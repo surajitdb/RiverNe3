@@ -25,9 +25,6 @@ package com.wordpress.growworkinghard.riverNe3.composite;
  *              subbasins inside the binary tree designed with the
  *              <strong>Composite Pattern</strong>
  *
- * @todo add <strong>pre-conditions</strong> and
- *       <strong>post-conditions</strong>
- *
  * @todo make this class <em>ThreadSafe</em>
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
@@ -64,6 +61,8 @@ public class Node extends Component {
         this.rightChildKey = new Integer(rightChildKey);
         this.layer = new Integer(layer);
 
+        validateState();
+
     }
 
     @Override
@@ -84,6 +83,7 @@ public class Node extends Component {
      */
     @Override
     public void setLeftChildKey(final int leftChildKey) {
+        validateKey(leftChildKey);
         this.leftChildKey = new Integer(leftChildKey);
     }
 
@@ -94,6 +94,7 @@ public class Node extends Component {
      */
     @Override
     public Integer getLeftChildKey() {
+        validateKey(leftChildKey);
         return new Integer(leftChildKey); 
     }
 
@@ -105,6 +106,7 @@ public class Node extends Component {
      */
     @Override
     public void setRightChildKey(final int rightChildKey) {
+        validateKey(rightChildKey);
         this.rightChildKey = new Integer(rightChildKey);
     }
 
@@ -115,6 +117,7 @@ public class Node extends Component {
      */
     @Override
     public Integer getRightChildKey() {
+        validateKey(rightChildKey);
         return new Integer(rightChildKey); 
     }
 
@@ -130,4 +133,15 @@ public class Node extends Component {
         return tmp;
 
     }
+
+    @Override
+    protected void validateState() {
+
+        validateKey(parentKey);
+        validateKey(layer);
+        validateKey(leftChildKey);
+        validateKey(rightChildKey);
+
+    }
+
 }

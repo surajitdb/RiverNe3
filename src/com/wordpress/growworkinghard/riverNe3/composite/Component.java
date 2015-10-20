@@ -43,6 +43,8 @@ public abstract class Component {
 
     abstract public Integer getRightChildKey();
 
+    abstract protected void validateState();
+
     public void setLeftChildKey(final int leftChildKey) {
         new UnsupportedOperationException();    
     }
@@ -57,6 +59,7 @@ public abstract class Component {
      * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
      */
     public void setParentKey(final int parentKey) {
+        validateKey(parentKey);
         this.parentKey = parentKey;
     }
 
@@ -66,6 +69,7 @@ public abstract class Component {
      * @return The <tt>HashMap</tt> key of the parent node
      */
     public Integer getParentKey() {
+        validateKey(parentKey);
         return new Integer(parentKey); 
     }
 
@@ -75,6 +79,7 @@ public abstract class Component {
      * @param[in] layer The layer of the node in the tree
      */
     public void setLayer(final int layer) {
+        validateKey(layer);
         this.layer = layer;
     }
 
@@ -84,7 +89,15 @@ public abstract class Component {
      * @return The layer of the node in the tree
      */
     public Integer getLayer() {
+        validateKey(parentKey);
         return new Integer(layer); 
+    }
+
+    protected void validateKey(final int key) {
+
+        if (key < 0)
+            throw new NullPointerException("Parent key cannot be null or less then zero");
+
     }
 
 }
