@@ -58,11 +58,6 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
  * ConcurrentHashMap<Integer, Component> tree = treeBuilding.get(listGeometries);
  * @endcode
  *
- * @todo make this class <em>ThreadSafe</em>
- * 
- * @todo add <strong>pre-conditions</strong> and
- *       <strong>post-conditions</strong>
- *
  * @todo design a better implementation for the method <code>computeNewNode</code>
  *
  * @todo complete the documentation
@@ -84,6 +79,7 @@ public class TreeBuilding {
 
     public ConcurrentHashMap<Integer, Component> get() {
 
+        validateOutputData(); //!< post-condition
         return new ConcurrentHashMap<Integer, Component>(binaryTree);
 
     }
@@ -97,6 +93,7 @@ public class TreeBuilding {
      */
     public void getTree(ConcurrentHashMap<Integer, Geometry> inputData) {
 
+        validateInputData(inputData); //!< pre-condition
         getInstance(inputData);
         while(!data.isEmpty()) findRoot(); // find each root of the sub-tree
 
@@ -236,8 +233,8 @@ public class TreeBuilding {
 
         } else if (leftChild != null && rightChild != null) {
 
-            data.replace(leftIndex, leftChild);
-            data.replace(rightIndex, rightChild);
+            data.replace(leftIndex, leftChild); //!< lefth child is updated in the HashMap
+            data.replace(rightIndex, rightChild); //!< right child is updated in the HashMap
             return returnNode(root, leftChild, rightChild);
 
         } else 
@@ -353,6 +350,20 @@ public class TreeBuilding {
      */
     private void ricomputeRightChild(final Geometry right) {
         right.setStartPoint(right.getEndPoint());
+    }
+
+    private void validateInputData(final ConcurrentHashMap<Integer, Geometry> inputData) {
+
+        if (inputData == null)
+            throw new NullPointerException("The input HashMap cannot be null");
+
+    }
+
+    private void validateOutputData() {
+
+        if (binaryTree == null)
+            throw new NullPointerException("The output HashMap is null. Something was wrong during the computation");
+
     }
 
     /**
