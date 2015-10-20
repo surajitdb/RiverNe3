@@ -91,7 +91,7 @@ public class TreeBuilding {
      *            The <code>List</code> of <tt>Geometry</tt> objects
      * @return The tree structure in a <code>ConcurrentHashMap</code>
      */
-    public void getTree(ConcurrentHashMap<Integer, Geometry> inputData) {
+    public void buildTree(ConcurrentHashMap<Integer, Geometry> inputData) {
 
         validateInputData(inputData); //!< pre-condition
         getInstance(inputData);
@@ -380,7 +380,7 @@ public class TreeBuilding {
         ConcurrentHashMap<Integer, Geometry> test = dfbp.get(filePath, colNames);
 
         TreeBuilding tb = new TreeBuilding();
-        tb.getTree(test);
+        tb.buildTree(test);
         ConcurrentHashMap<Integer, Component> binaryTree = tb.get();
 
         System.out.println(binaryTree);

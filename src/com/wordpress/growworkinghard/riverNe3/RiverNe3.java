@@ -63,7 +63,7 @@ public class RiverNe3 {
 
         @Override
         public void run() {
-            tb.getTree(test);
+            tb.buildTree(test);
         }
 
     }
