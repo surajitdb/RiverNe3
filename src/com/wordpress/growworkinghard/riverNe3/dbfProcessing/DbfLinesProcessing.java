@@ -134,7 +134,8 @@ public class DbfLinesProcessing extends DbfProcessing {
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
         DbfProcessing dfbp = new DbfLinesProcessing();
-        ConcurrentHashMap<Integer, Geometry> test = dfbp.get(filePath, colNames);
+        dfbp.process(filePath, colNames);
+        ConcurrentHashMap<Integer, Geometry> test = dfbp.get();
 
         for (int i = 0; i < test.size(); i++) {
             System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());

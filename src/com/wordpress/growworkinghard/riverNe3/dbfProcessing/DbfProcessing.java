@@ -65,6 +65,11 @@ public abstract class DbfProcessing {
 
     private volatile static ConcurrentHashMap<Integer, Geometry> inputData;
 
+    public ConcurrentHashMap<Integer, Geometry> get() {
+        validateOutputData(); //!< post-conditions
+        return new ConcurrentHashMap<Integer, Geometry>(inputData);
+    }
+
     /**
      * @brief Getter method which return the list of geometric features
      *
@@ -92,12 +97,11 @@ public abstract class DbfProcessing {
      *            </ol>
      * @return A <code>Collections.synchronizedList</code> of the filled list
      */
-    public ConcurrentHashMap<Integer, Geometry> get(final String filePath, final String[] colNames) {
+    public void process(final String filePath, final String[] colNames) {
 
         validateInputData(filePath, colNames);
         getInstance();
         fileProcessing(filePath, colNames);
-        return new ConcurrentHashMap<Integer, Geometry>(inputData);
 
     }
 
@@ -184,6 +188,13 @@ public abstract class DbfProcessing {
                 }
 
         return tmpVec;
+
+    }
+
+    private void validateOutputData() {
+
+        if (inputData.isEmpty())
+            throw new NullPointerException("The output HashMap is empty. Something was wrong during the computation");
 
     }
 

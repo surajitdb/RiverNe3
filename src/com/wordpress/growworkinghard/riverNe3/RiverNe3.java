@@ -41,7 +41,8 @@ public class RiverNe3 {
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
         dfbp = new DbfLinesProcessing();
-        test = dfbp.get(filePath, colNames);
+        dfbp.process(filePath, colNames);
+        test = dfbp.get();
 
         tb = new TreeBuilding();
 

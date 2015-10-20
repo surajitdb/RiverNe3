@@ -377,7 +377,8 @@ public class TreeBuilding {
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
         DbfProcessing dfbp = new DbfLinesProcessing();
-        ConcurrentHashMap<Integer, Geometry> test = dfbp.get(filePath, colNames);
+        dfbp.process(filePath, colNames);
+        ConcurrentHashMap<Integer, Geometry> test = dfbp.get();
 
         TreeBuilding tb = new TreeBuilding();
         tb.buildTree(test);
