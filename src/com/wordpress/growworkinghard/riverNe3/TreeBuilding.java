@@ -361,8 +361,8 @@ public class TreeBuilding {
 
     private void validateOutputData() {
 
-        if (binaryTree == null)
-            throw new NullPointerException("The output HashMap is null. Something was wrong during the computation");
+        if (binaryTree.isEmpty())
+            throw new NullPointerException("The output HashMap is empty. Something was wrong during the computation");
 
     }
 
