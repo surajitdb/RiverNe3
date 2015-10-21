@@ -6,4 +6,5 @@
 	<classpathentry kind="lib" path="lib/gt-shapefile-14.0.jar"/>
 	<classpathentry kind="lib" path="lib/gt-graph-14.0.jar"/>
 	<classpathentry kind="lib" path="lib/jcip-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
 </classpath>

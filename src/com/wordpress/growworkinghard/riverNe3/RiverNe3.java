@@ -18,16 +18,20 @@
  */
 package com.wordpress.growworkinghard.riverNe3;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
+import com.google.common.collect.BinaryTreeTraverser;
+import com.google.common.collect.FluentIterable;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
+import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
 
 public class RiverNe3 {
  
@@ -47,6 +51,7 @@ public class RiverNe3 {
 
         tb = new TreeBuilding();
 
+        // tb.buildTree(test);
         ExecutorService executor = Executors.newFixedThreadPool(4);
         CountDownLatch l = new CountDownLatch(4);
 
@@ -59,7 +64,17 @@ public class RiverNe3 {
 
         executor.shutdown();
         binaryTree = tb.get();
+
         System.out.println(binaryTree);
+        BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
+        FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(13));
+        List<Component> list = iterator.toList();
+        Iterator<Component> it = list.iterator();
+
+        while(it.hasNext()) {
+            Component tmp = it.next();
+            System.out.println(tmp.getLayer());
+        }
 
     }
 
