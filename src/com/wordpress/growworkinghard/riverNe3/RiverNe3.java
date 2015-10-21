@@ -19,6 +19,7 @@
 package com.wordpress.growworkinghard.riverNe3;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -47,15 +48,16 @@ public class RiverNe3 {
         tb = new TreeBuilding();
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
+        CountDownLatch l = new CountDownLatch(4);
 
         for (int i = 0; i < 4; i++)
-            executor.execute(new MyRunnable());
+            executor.submit(new MyRunnable(l));
 
-        executor.shutdown();
         try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            l.await();
         } catch (InterruptedException e) {}
 
+        executor.shutdown();
         binaryTree = tb.get();
         System.out.println(binaryTree);
 
@@ -63,11 +65,18 @@ public class RiverNe3 {
 
     public static class MyRunnable implements Runnable {
 
+        CountDownLatch l;
+
+        MyRunnable(CountDownLatch l) {
+            this.l = l;
+        }
+
         @Override
         public void run() {
             System.out.println(Thread.currentThread().getName() + " start thread read tree");
             tb.buildTree(test);
             System.out.println(Thread.currentThread().getName() + " end thread read tree");
+            l.countDown();
         }
 
     }
