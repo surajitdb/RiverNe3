@@ -48,7 +48,8 @@ public class RiverNe3 {
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
 
-        executor.execute(new MyRunnable());
+        for (int i = 0; i < 4; i++)
+            executor.execute(new MyRunnable());
 
         executor.shutdown();
         try {
@@ -64,7 +65,9 @@ public class RiverNe3 {
 
         @Override
         public void run() {
+            System.out.println(Thread.currentThread().getName() + " start thread read tree");
             tb.buildTree(test);
+            System.out.println(Thread.currentThread().getName() + " end thread read tree");
         }
 
     }
