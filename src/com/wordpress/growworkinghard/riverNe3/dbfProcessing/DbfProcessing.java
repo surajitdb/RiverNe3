@@ -21,8 +21,8 @@ package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
@@ -63,11 +63,11 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public abstract class DbfProcessing {
 
-    private volatile static ConcurrentHashMap<Integer, Geometry> inputData;
+    private volatile static HashMap<Integer, Geometry> inputData;
 
-    public ConcurrentHashMap<Integer, Geometry> get() {
+    public HashMap<Integer, Geometry> get() {
         validateOutputData(); //!< post-conditions
-        return new ConcurrentHashMap<Integer, Geometry>(inputData);
+        return new HashMap<Integer, Geometry>(inputData);
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class DbfProcessing {
         if (inputData == null) {
             synchronized(this) {
                 if (inputData == null) {
-                    inputData = new ConcurrentHashMap<Integer, Geometry>();
+                    inputData = new HashMap<Integer, Geometry>();
                 }
             }
         }
@@ -198,7 +198,7 @@ public abstract class DbfProcessing {
 
     }
 
-    abstract protected ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
+    abstract protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
 
     abstract protected void validateInputData(final String filePath, final String[] colNames);
 

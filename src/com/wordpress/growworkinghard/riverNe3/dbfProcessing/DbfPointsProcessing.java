@@ -18,8 +18,8 @@
  */
 package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 
+import java.util.HashMap;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 
@@ -28,10 +28,10 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 public class DbfPointsProcessing extends DbfProcessing {
 
     @Override
-    protected ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
+    protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
         new UnsupportedOperationException("Method not implemented yet");
-        return new ConcurrentHashMap<Integer, Geometry>();
+        return new HashMap<Integer, Geometry>();
 
     }
 

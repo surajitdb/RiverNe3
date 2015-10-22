@@ -18,6 +18,7 @@
  */
 package com.wordpress.growworkinghard.riverNe3;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,10 +79,10 @@ public class TreeBuilding {
      */
     public TreeBuilding() {}
 
-    public ConcurrentHashMap<Key, Component> get() {
+    public HashMap<Key, Component> get() {
 
         validateOutputData(); //!< post-condition
-        return new ConcurrentHashMap<Key, Component>(binaryTree);
+        return new HashMap<Key, Component>(binaryTree);
 
     }
 
@@ -92,10 +93,9 @@ public class TreeBuilding {
      *            The <code>List</code> of <tt>Geometry</tt> objects
      * @return The tree structure in a <code>ConcurrentHashMap</code>
      */
-    public void buildTree(ConcurrentHashMap<Integer, Geometry> inputData) {
+    public void buildTree(final HashMap<Integer, Geometry> inputData, final int threadsNumber) {
 
-        validateInputData(inputData); //!< pre-condition
-        getInstance(inputData);
+        getInstance(inputData, threadsNumber);
         while(!data.isEmpty()) findRoot(); // find each root of the sub-tree
 
     }
@@ -111,13 +111,18 @@ public class TreeBuilding {
      * @param[in] size
      *            The number of <tt>Geometry</tt> objects in the list
      */
-    private void getInstance(final ConcurrentHashMap<Integer, Geometry> inputData) {
+    private void getInstance(final HashMap<Integer, Geometry> inputData, final int threadsNumber) {
 
         if (binaryTree == null || data == null) {
             synchronized (this) {
                 if (binaryTree == null || data == null) {
-                    binaryTree = new ConcurrentHashMap<Key, Component>(inputData.size());
-                    data = new ConcurrentHashMap<Integer, Geometry>(inputData);
+                    validateInputData(inputData); //!< pre-condition
+                    int size = inputData.size();
+                    float loadFactor = 0.9f; // dense packaging which will optimize memory use
+                    int concurrencyLevel = threadsNumber;
+                    binaryTree = new ConcurrentHashMap<Key, Component>(size, loadFactor, concurrencyLevel);
+                    data = new ConcurrentHashMap<Integer, Geometry>(size, loadFactor, concurrencyLevel);
+                    data.putAll(inputData);
                 }            
             }
         }
@@ -166,7 +171,10 @@ public class TreeBuilding {
 
                 boolean rootRemoved = data.remove(next, tmpGeom); //!< root node removed from the list
 
-                if (rootRemoved) {
+                if (rootRemoved) { // enter only if a thread has removed the
+                                   // root under processing otherwise the root
+                                   // has been removed by a previous thread, so
+                                   // this thread has to search another root
                     int emptyKey = next;
                     Component newNode = computeNewNode(tmpGeom, emptyKey);
                     binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
@@ -353,7 +361,7 @@ public class TreeBuilding {
         right.setStartPoint(right.getEndPoint());
     }
 
-    private void validateInputData(final ConcurrentHashMap<Integer, Geometry> inputData) {
+    private void validateInputData(final HashMap<Integer, Geometry> inputData) {
 
         if (inputData == null)
             throw new NullPointerException("The input HashMap cannot be null");
@@ -379,11 +387,11 @@ public class TreeBuilding {
 
         DbfProcessing dfbp = new DbfLinesProcessing();
         dfbp.process(filePath, colNames);
-        ConcurrentHashMap<Integer, Geometry> test = dfbp.get();
+        HashMap<Integer, Geometry> test = dfbp.get();
 
         TreeBuilding tb = new TreeBuilding();
-        tb.buildTree(test);
-        ConcurrentHashMap<Key, Component> binaryTree = tb.get();
+        tb.buildTree(test, 1);
+        HashMap<Key, Component> binaryTree = tb.get();
 
         System.out.println(binaryTree);
 

@@ -19,8 +19,8 @@
 package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 
@@ -40,10 +40,10 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Line;
  */
 public class DbfLinesProcessing extends DbfProcessing {
 
-    private final ConcurrentHashMap<Integer, Geometry> tmpHashMap = new ConcurrentHashMap<Integer, Geometry>();
+    private final HashMap<Integer, Geometry> tmpHashMap = new HashMap<Integer, Geometry>();
 
     @Override
-    protected ConcurrentHashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
+    protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
 
         int hashMapKey = 1;
@@ -136,7 +136,7 @@ public class DbfLinesProcessing extends DbfProcessing {
 
         DbfProcessing dfbp = new DbfLinesProcessing();
         dfbp.process(filePath, colNames);
-        ConcurrentHashMap<Integer, Geometry> test = dfbp.get();
+        HashMap<Integer, Geometry> test = dfbp.get();
 
         for (int i = 0; i < test.size(); i++) {
             System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());
