@@ -18,6 +18,8 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+
 /**
  * @brief class Leaf
  *
@@ -51,9 +53,9 @@ public class Leaf extends Component {
      * @param[in] layer
      *            The layer in the tree in which this node is located
      */
-    public Leaf(final int parentKey, final int layer) {
+    public Leaf(final Key parentKey, final int layer) {
 
-        this.parentKey = new Integer(parentKey);
+        this.parentKey = new Key(parentKey);
         this.layer = new Integer(layer);
 
         validateState();
@@ -79,7 +81,7 @@ public class Leaf extends Component {
      * @return <code>null</code> value because this object is a leaf
      */
     @Override
-    public Integer getLeftChildKey() {
+    public Key getLeftChildKey() {
         return null; 
     }
 
@@ -92,7 +94,7 @@ public class Leaf extends Component {
      * @return <code>null</code> value because this object is a leaf
      */
     @Override
-    public Integer getRightChildKey() {
+    public Key getRightChildKey() {
         return null; 
     }
 
@@ -104,7 +106,7 @@ public class Leaf extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Leaf - Parent Key = " + parentKey + " Layer = " + layer;
+        String tmp = "Leaf - Parent Key = " + parentKey.getString() + " Layer = " + layer;
         return tmp;
 
     }
@@ -113,7 +115,7 @@ public class Leaf extends Component {
     protected void validateState() {
 
         validateKey(parentKey);
-        validateKey(layer);
+        validateLayer(layer);
 
     }
 

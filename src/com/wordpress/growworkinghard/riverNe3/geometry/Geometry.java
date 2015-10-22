@@ -20,6 +20,8 @@ package com.wordpress.growworkinghard.riverNe3.geometry;
 
 import org.geotools.graph.util.geom.Coordinate2D;
 
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+
 /**
  * @brief Abstract class Geometry
  *
@@ -38,9 +40,9 @@ public abstract class Geometry {
 
     private boolean root; //!< to identify if the element is the root of the subtree
     // private int layer;
-    private int key; //!< the key to use in the ConcurrentHashMap
+    private Key key; //!< the key to use in the ConcurrentHashMap
     private int layer;
-    private int parentKey; //!< the key in the ConcurrentHashMap of the parent node
+    private Key parentKey; //!< the key in the ConcurrentHashMap of the parent node
 
     /**
      * @brief Identify if the feature is root of a subtree
@@ -68,7 +70,7 @@ public abstract class Geometry {
      *            the key that is going to be used as index in the
      *            <code>ConcurrentHashMap</code>
      */
-    public void setKey(final int key) {
+    public void setKey(final Key key) {
         this.key = key;
     }
 
@@ -78,7 +80,7 @@ public abstract class Geometry {
      * @return the key that is going to be used as index in the
      *         <code>ConcurrentHashMap</code>
      */
-    public int getKey() {
+    public Key getKey() {
         return key;
     }
 
@@ -108,7 +110,7 @@ public abstract class Geometry {
      *            the key which identify the parent node in the
      *            <code>ConcurrentHashMap</code>
      */
-    public void setParentKey(final int parentKey) {
+    public void setParentKey(final Key parentKey) {
         this.parentKey = parentKey;
     }
 
@@ -118,7 +120,7 @@ public abstract class Geometry {
      * @return the key of the parent node, used in the
      *         <code>ConcurrentHashMap</code>
      */
-    public int getParentKey() {
+    public Key getParentKey() {
         return parentKey;
     }
 

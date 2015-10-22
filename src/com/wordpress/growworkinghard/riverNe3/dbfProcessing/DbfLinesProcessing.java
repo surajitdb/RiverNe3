@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
@@ -70,7 +71,7 @@ public class DbfLinesProcessing extends DbfProcessing {
                         case 0:
                             if ((fields[index].toString()).compareTo("1") == 0) {
                                 tmpLine.setRoot(true);
-                                tmpLine.setKey(1);
+                                tmpLine.setKey(new Key("1"));
                                 tmpLine.setLayer(1);
                             }
                             break;

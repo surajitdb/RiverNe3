@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.wordpress.growworkinghard.riverNe3.composite.*;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
@@ -69,7 +70,7 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
  */
 public class TreeBuilding {
 
-    private volatile static ConcurrentHashMap<Integer, Component> binaryTree;
+    private volatile static ConcurrentHashMap<Key, Component> binaryTree;
     private volatile static ConcurrentHashMap<Integer, Geometry> data;
 
     /**
@@ -77,10 +78,10 @@ public class TreeBuilding {
      */
     public TreeBuilding() {}
 
-    public ConcurrentHashMap<Integer, Component> get() {
+    public ConcurrentHashMap<Key, Component> get() {
 
         validateOutputData(); //!< post-condition
-        return new ConcurrentHashMap<Integer, Component>(binaryTree);
+        return new ConcurrentHashMap<Key, Component>(binaryTree);
 
     }
 
@@ -115,7 +116,7 @@ public class TreeBuilding {
         if (binaryTree == null || data == null) {
             synchronized (this) {
                 if (binaryTree == null || data == null) {
-                    binaryTree = new ConcurrentHashMap<Integer, Component>(inputData.size());
+                    binaryTree = new ConcurrentHashMap<Key, Component>(inputData.size());
                     data = new ConcurrentHashMap<Integer, Geometry>(inputData);
                 }            
             }
@@ -238,16 +239,16 @@ public class TreeBuilding {
             return returnNode(root, leftChild, rightChild);
 
         } else 
-            return new Leaf(root.getKey() / 2, root.getLayer());
+            return new Leaf(new Key(Math.floor(root.getKey().getDouble() / 2)), root.getLayer());
 
     }
 
     private Component returnNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
 
-        int parentKey = root.getKey() / 2;
+        Key parentKey = new Key(Math.floor(root.getKey().getDouble() / 2));
         int layer = root.getLayer();
-        int leftChildKey = leftChild.getKey();
-        int rightChildKey = rightChild.getKey();
+        Key leftChildKey = leftChild.getKey();
+        Key rightChildKey = rightChild.getKey();
 
         if (isGhost(root))
             return new GhostNode(parentKey , leftChildKey, rightChildKey, layer);
@@ -323,10 +324,10 @@ public class TreeBuilding {
         child.setLayer(parent.getLayer()+1);
 
         if (leftChild) { //!< processing a left child
-            int key = parent.getKey() * 2;
+            Key key = new Key(parent.getKey().getDouble() * 2);
             child.setKey(key);
         } else { //!< processing a right child
-            int key = parent.getKey() * 2 + 1;
+            Key key = new Key(parent.getKey().getDouble() * 2 + 1);
             child.setKey(key);
         }
 
@@ -382,7 +383,7 @@ public class TreeBuilding {
 
         TreeBuilding tb = new TreeBuilding();
         tb.buildTree(test);
-        ConcurrentHashMap<Integer, Component> binaryTree = tb.get();
+        ConcurrentHashMap<Key, Component> binaryTree = tb.get();
 
         System.out.println(binaryTree);
 

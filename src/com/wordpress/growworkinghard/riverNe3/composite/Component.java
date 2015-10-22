@@ -18,6 +18,8 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+
 /**
  * @brief class Component
  *
@@ -32,24 +34,24 @@ package com.wordpress.growworkinghard.riverNe3.composite;
  */
 public abstract class Component {
 
-    protected Integer parentKey; //!< the key of the HashMap of the parent
+    protected Key parentKey; //!< the key of the HashMap of the parent
     protected Integer layer; //!< the layer in the tree in which this node is located
 
     abstract public void put();
 
     abstract public void delete();
 
-    abstract public Integer getLeftChildKey();
+    abstract public Key getLeftChildKey();
 
-    abstract public Integer getRightChildKey();
+    abstract public Key getRightChildKey();
 
     abstract protected void validateState();
 
-    public void setLeftChildKey(final int leftChildKey) {
+    public void setLeftChildKey(final Key leftChildKey) {
         new UnsupportedOperationException();    
     }
 
-    public void setRightChildKey(final int rightChildKey) {
+    public void setRightChildKey(final Key rightChildKey) {
         new UnsupportedOperationException();    
     }
 
@@ -58,7 +60,7 @@ public abstract class Component {
      *
      * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
      */
-    public void setParentKey(final int parentKey) {
+    public void setParentKey(final Key parentKey) {
         validateKey(parentKey);
         this.parentKey = parentKey;
     }
@@ -68,9 +70,9 @@ public abstract class Component {
      *
      * @return The <tt>HashMap</tt> key of the parent node
      */
-    public Integer getParentKey() {
+    public Key getParentKey() {
         validateKey(parentKey);
-        return new Integer(parentKey); 
+        return new Key(parentKey);
     }
 
     /**
@@ -79,7 +81,7 @@ public abstract class Component {
      * @param[in] layer The layer of the node in the tree
      */
     public void setLayer(final int layer) {
-        validateKey(layer);
+        validateLayer(layer);
         this.layer = layer;
     }
 
@@ -89,14 +91,20 @@ public abstract class Component {
      * @return The layer of the node in the tree
      */
     public Integer getLayer() {
-        validateKey(parentKey);
+        validateLayer(layer);
         return new Integer(layer); 
     }
 
-    protected void validateKey(final int key) {
+    protected void validateKey(final Key key) {
 
-        if (key < 0)
-            throw new NullPointerException("Parent key cannot be null or less then zero");
+        if (key == null || key.getString() == null)
+            throw new NullPointerException("Component keys cannot be null");
+    }
+
+    protected void validateLayer(final int layer) {
+
+        if (layer < 0)
+            throw new NullPointerException("Layer cannot be null or less then zero");
 
     }
 

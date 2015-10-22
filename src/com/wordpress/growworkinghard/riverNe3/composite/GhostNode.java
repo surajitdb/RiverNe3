@@ -18,6 +18,8 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+
 /**
  * @brief class Ghost Node
  *
@@ -39,8 +41,8 @@ package com.wordpress.growworkinghard.riverNe3.composite;
  */
 public class GhostNode extends Component {
 
-    private Integer leftChildKey; //!< the key of the HashMap of the left child
-    private Integer rightChildKey; //!< the key of the HashMap of the right child
+    private Key leftChildKey; //!< the key of the HashMap of the left child
+    private Key rightChildKey; //!< the key of the HashMap of the right child
 
     /**
      * @brief Default constructor
@@ -59,11 +61,11 @@ public class GhostNode extends Component {
      * @param[in] layer
      *            The layer in the tree in which this node is located
      */
-    public GhostNode(final int parentKey, final int leftChildKey, final int rightChildKey, final int layer) {
+    public GhostNode(final Key parentKey, final Key leftChildKey, final Key rightChildKey, final int layer) {
 
-        this.parentKey = new Integer(parentKey);
-        this.leftChildKey = new Integer(leftChildKey);
-        this.rightChildKey = new Integer(rightChildKey);
+        this.parentKey = new Key(parentKey);
+        this.leftChildKey = new Key(leftChildKey);
+        this.rightChildKey = new Key(rightChildKey);
         this.layer = new Integer(layer);
 
         validateState();
@@ -87,9 +89,9 @@ public class GhostNode extends Component {
      *            The <tt>HashMap</tt> key of the left child
      */
     @Override
-    public void setLeftChildKey(final int leftChildKey) {
+    public void setLeftChildKey(final Key leftChildKey) {
         validateKey(leftChildKey);
-        this.leftChildKey = new Integer(leftChildKey);
+        this.leftChildKey = new Key(leftChildKey);
     }
 
     /**
@@ -98,9 +100,9 @@ public class GhostNode extends Component {
      * @return The <tt>HashMap</tt> key of the left child
      */
     @Override
-    public Integer getLeftChildKey() {
+    public Key getLeftChildKey() {
         validateKey(leftChildKey);
-        return new Integer(leftChildKey); 
+        return new Key(leftChildKey);
     }
 
     /**
@@ -110,9 +112,9 @@ public class GhostNode extends Component {
      *            The <tt>HashMap</tt> key of the right child
      */
     @Override
-    public void setRightChildKey(final int rightChildKey) {
+    public void setRightChildKey(final Key rightChildKey) {
         validateKey(rightChildKey);
-        this.rightChildKey = new Integer(rightChildKey);
+        this.rightChildKey = new Key(rightChildKey);
     }
 
     /**
@@ -121,9 +123,9 @@ public class GhostNode extends Component {
      * @return The <tt>HashMap</tt> key of the right child
      */
     @Override
-    public Integer getRightChildKey() {
+    public Key getRightChildKey() {
         validateKey(rightChildKey);
-        return new Integer(rightChildKey); 
+        return new Key(rightChildKey);
     }
 
     /**
@@ -134,7 +136,7 @@ public class GhostNode extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Ghost - Parent Key = " + parentKey + " Left Child = " + leftChildKey + " Right Child = " + rightChildKey + " Layer = " + layer;
+        String tmp = "Ghost - Parent Key = " + parentKey.getString() + " Left Child = " + leftChildKey.getString() + " Right Child = " + rightChildKey.getString() + " Layer = " + layer;
         return tmp;
 
     }
@@ -143,7 +145,7 @@ public class GhostNode extends Component {
     protected void validateState() {
 
         validateKey(parentKey);
-        validateKey(layer);
+        validateLayer(layer);
         validateKey(leftChildKey);
         validateKey(rightChildKey);
 
