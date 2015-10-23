@@ -79,7 +79,6 @@ public class TreeBuilding {
      */
     public TreeBuilding() {}
 
-    // TODO: do I have to sychronize the get??
     public synchronized HashMap<Key, Component> get() {
 
         validateOutputData(); //!< post-condition
