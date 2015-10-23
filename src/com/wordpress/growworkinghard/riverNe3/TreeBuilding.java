@@ -79,6 +79,7 @@ public class TreeBuilding {
      */
     public TreeBuilding() {}
 
+    // TODO: do I have to sychronize the get??
     public HashMap<Key, Component> get() {
 
         validateOutputData(); //!< post-condition
@@ -117,6 +118,20 @@ public class TreeBuilding {
             synchronized (this) {
                 if (binaryTree == null || data == null) {
                     validateInputData(inputData); //!< pre-condition
+
+                    // the following parameters are necessary in order to
+                    // allocate only the useful memory. If a loadFactor and
+                    // above all the concurrencyLevel are not specified, the
+                    // default constructor of the ConcurrentHashMap allocates
+                    // many objects in order to ensure the concurrent access of
+                    // its data structure by different threads. The default
+                    // concurrencyLevel is 16.
+                    //
+                    // To reduce the amount of memory allocated, this class
+                    // return a simple HashMap and not the Concurrent version.
+                    // Based on the user necessities, it has to convert it in
+                    // concurrent if it is going to use it on a multi-threading
+                    // code
                     int size = inputData.size();
                     float loadFactor = 0.9f; // dense packaging which will optimize memory use
                     int concurrencyLevel = threadsNumber;
@@ -160,29 +175,89 @@ public class TreeBuilding {
      */
     private void findRoot() {
 
-        for (Iterator<Integer> i = data.keySet().iterator(); i.hasNext();){
+        Geometry tmpGeom = null;
+        Integer next = null;
+        boolean rootRemoved = false;
 
-            Integer next = i.next();
-            Geometry tmpGeom = data.get(next);
+        // OLDER WAY TO IMPLEMENT THE ITERATOR
+        //
+        // The following loop is surely not thread safe in the sense that
+        // threads starting the loop after the first, are not iterating the most
+        // up-to-date map. I was thinking that each thread has
+        // just to find a root node of a sub-tree. Once processes the root, the
+        // thread exits the loop and starts looking again for another root.
+        //
+        // The double check (if tmpGeom != null and if rootRemoved) should have
+        // been enough to avoid a double processing of the same root.
+        // Maybe there is still a window of vulnerability due the fact the two
+        // thread may delete the same object, but this should avoided by the
+        // @ThreadSafe class ConcurrentHashMap
+        //
+        // Iterator<Integer> i = data.keySet().iterator();
+        // while (i.hasNext()){
 
-           //!< if the <code>tmpGeom</code> is root a new <tt>sub-tree</tt> has
-           //just been identified
-           if (tmpGeom != null && tmpGeom.isRoot()) {
+        //     next = i.next();
+        //     tmpGeom = data.get(next);
 
-                boolean rootRemoved = data.remove(next, tmpGeom); //!< root node removed from the list
+        //     //!< if the <code>tmpGeom</code> is root a new <tt>sub-tree</tt> has
+        //     //just been identified
+        //     if (tmpGeom != null && tmpGeom.isRoot()) {
 
-                if (rootRemoved) { // enter only if a thread has removed the
-                                   // root under processing otherwise the root
-                                   // has been removed by a previous thread, so
-                                   // this thread has to search another root
-                    int emptyKey = next;
-                    Component newNode = computeNewNode(tmpGeom, emptyKey);
-                    binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
+        //         rootRemoved = data.remove(next, tmpGeom); //!< root node removed from the list
+        //         if (rootRemoved && !data.containsKey(next)) { // enter only if a thread has removed the
+        //                            // root under processing otherwise the root
+        //                            // has been removed by a previous thread, so
+        //                            // this thread has to search another root
+        //             int emptyKey = next;
+        //             Component newNode = computeNewNode(tmpGeom, emptyKey);
+        //             binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
+
+        //         }
+        //         break;
+
+        //     }
+
+        // }
+
+        // NEW WAY TO IMPLEMENT THE ITERATOR
+        //
+        // As written in the Java 8 Documentation for the ConcurrentHashMap
+        // class, iterators are designed to be used by only one thread at a
+        // time. So for ensuring a good concurrency, a good policy may be
+        // synchronize the iteration until a root node of a sub-tree has been
+        // found and deleted from the ConcurrentHashMap. Then release the lock
+        // (so another thread can look for a different root of a sub-tree) and
+        // process the root just found.
+        //
+        // The if rootRemoved and !data.containsKey(next) are a further double
+        // check to ensure to process the right node. No synchronization is
+        // required for that check because both the variable are local variable
+        // stored in the stack memory of each thread.
+        synchronized(this) {
+            Iterator<Integer> i = data.keySet().iterator();
+            while (i.hasNext()){
+
+                next = i.next();
+                tmpGeom = data.get(next);
+
+                //!< if the <code>tmpGeom</code> is root a new <tt>sub-tree</tt> has
+                //just been identified
+                if (tmpGeom != null && tmpGeom.isRoot()) {
+
+                    rootRemoved = data.remove(next, tmpGeom); //!< root node removed from the list
+                    break;
+
                 }
 
-                break;
-
             }
+
+        }
+
+        if (rootRemoved && !data.containsKey(next)) { // enter only if a thread has removed the
+
+            int emptyKey = next; //!< node removed, so its key is now not connected with another node
+            Component newNode = computeNewNode(tmpGeom, emptyKey);
+            binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
 
         }
 
@@ -207,10 +282,14 @@ public class TreeBuilding {
         Geometry leftChild = null;
         Geometry rightChild = null;
 
-        for (Iterator<Integer> i = data.keySet().iterator(); i.hasNext();) {
+        Iterator<Integer> i = data.keySet().iterator();
+        while (i.hasNext()) {
 
-            Integer next = i.next();
-            Geometry tmpChild = data.get(next);
+            Integer next;
+            Geometry tmpChild = null;
+
+            next = i.next();
+            tmpChild = data.get(next);
 
             if (tmpChild != null && tmpChildConnectedToRoot(tmpChild, root)) {
 
