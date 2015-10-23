@@ -71,7 +71,7 @@ public abstract class Geometry {
      *            <code>ConcurrentHashMap</code>
      */
     public void setKey(final Key key) {
-        this.key = key;
+        this.key = new Key(key);
     }
 
     /**
