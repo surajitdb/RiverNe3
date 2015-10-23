@@ -29,7 +29,7 @@ public class Key {
         if (this.hexKey == null) {
             synchronized(this) {
                 if (this.hexKey == null) {
-                    validateDoubleKey(doubleKey);
+                    validateDoubleKey(doubleKey); //!< precondition
                     this.hexKey = decimalToHex(doubleKey);
                 }
             }
@@ -42,7 +42,7 @@ public class Key {
         if (this.hexKey == null) {
             synchronized(this) {
                 if (this.hexKey == null) {
-                    validateStringKey(hexKey);
+                    validateStringKey(hexKey); //!< precondition
                     this.hexKey = hexKey;
                 }
             }
@@ -55,7 +55,7 @@ public class Key {
         if (this.hexKey == null) {
             synchronized(this) {
                 if (this.hexKey == null) {
-                    validateKey(key);
+                    validateKey(key); //!< precondition
                     this.hexKey = key.getString();
                 }
             }
@@ -64,10 +64,12 @@ public class Key {
     }
 
     public synchronized String getString() {
+        validateKey(this); //!< postcondition
         return hexKey;
     }
 
     public synchronized Double getDouble() {
+        validateKey(this); //!< postcondition
         return hexToDecimal();
     }
 
