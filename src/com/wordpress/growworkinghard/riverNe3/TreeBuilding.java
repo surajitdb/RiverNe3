@@ -282,40 +282,60 @@ public class TreeBuilding {
         Geometry leftChild = null;
         Geometry rightChild = null;
 
-        Iterator<Integer> i = data.keySet().iterator();
-        while (i.hasNext()) {
+        // iterators in ConcurrentHashMap are designed to be used by only one thread at a time
+        synchronized(this) {
+            Iterator<Integer> i = data.keySet().iterator();
+            while (i.hasNext()) {
 
-            Integer next;
-            Geometry tmpChild = null;
+                Integer next;
+                Geometry tmpChild = null;
 
-            next = i.next();
-            tmpChild = data.get(next);
+                next = i.next();
+                tmpChild = data.get(next);
 
-            if (tmpChild != null && tmpChildConnectedToRoot(tmpChild, root)) {
+                if (tmpChild != null && tmpChildConnectedToRoot(tmpChild, root)) {
 
-                if (leftChild == null) { // if no left child yet, assign it first
-                    leftChild = tmpChild;
-                    boolean isLeft = true;
-                    setNewRoot(leftChild, root, isLeft);
-                    leftIndex = next;
-                } else if (rightChild == null) { // if no right child, then assign it
-                    rightChild = tmpChild;
-                    boolean isLeft = false;
-                    setNewRoot(rightChild, root, isLeft);
-                    rightIndex = next;
-                } else {
-                    ghostNode = true; //if more than two children are identified ghost + exit
-                    break;
+                    if (leftChild == null) { // if no left child yet, assign it first
+                        leftChild = tmpChild;
+                        boolean isLeft = true;
+                        setNewRoot(leftChild, root, isLeft);
+                        leftIndex = next;
+                    } else if (rightChild == null) { // if no right child, then assign it
+                        rightChild = tmpChild;
+                        boolean isLeft = false;
+                        setNewRoot(rightChild, root, isLeft);
+                        rightIndex = next;
+                    } else {
+                        ghostNode = true; //if more than two children are identified ghost + exit
+                        break;
+                    }
+
                 }
 
             }
-
         }
 
         if (ghostNode) {
 
             ricomputeRightChild(rightChild); //!< right child becomes ghost node
+            // in replacing leftChild in data shouldn't be problems because:
+            // 1. data is ConcurrentHashMap, so it allows concurrency access
+            // 2. it's impossible that two threads are going to replace the same
+            // leftChild because the @ThreadSafe findRoot method ensures that
+            // each thread is processing a different root.
+            //
+            // Doesn't matter if the other threads don't get immediately the new
+            // value of leftChild (that can appen if they are iterating on an
+            // older iterator, otherwise both the ConcurrentHashMaps have been
+            // declared volatile). They simply are going to process other roots
+            // node. Stale data are not a problem, because the external loop go
+            // on until the last element of the data ConcurrentHashMap has been
+            // deleted.
             data.replace(leftIndex, leftChild); //!< left child is updated in the list
+            // for the same reason, it's almost impossible that a thread put the
+            // same ghost node with the same key (this is really impossible
+            // because each thread manages its own different root node) in the
+            // data ConcurrentHashMap
             data.put(emptyKey, rightChild); //!< ghost node is added to the list
             return returnNode(root, leftChild, rightChild);
 
