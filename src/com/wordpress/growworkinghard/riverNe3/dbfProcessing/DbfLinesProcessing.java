@@ -40,11 +40,10 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Line;
  */
 public class DbfLinesProcessing extends DbfProcessing {
 
-    private final HashMap<Integer, Geometry> tmpHashMap = new HashMap<Integer, Geometry>();
-
     @Override
     protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
+        final HashMap<Integer, Geometry> tmpHashMap = new HashMap<Integer, Geometry>();
 
         int hashMapKey = 1;
 
