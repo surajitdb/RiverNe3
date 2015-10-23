@@ -80,7 +80,7 @@ public class TreeBuilding {
     public TreeBuilding() {}
 
     // TODO: do I have to sychronize the get??
-    public HashMap<Key, Component> get() {
+    public synchronized HashMap<Key, Component> get() {
 
         validateOutputData(); //!< post-condition
         return new HashMap<Key, Component>(binaryTree);
