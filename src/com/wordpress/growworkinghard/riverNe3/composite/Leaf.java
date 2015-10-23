@@ -20,6 +20,8 @@ package com.wordpress.growworkinghard.riverNe3.composite;
 
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
+import net.jcip.annotations.GuardedBy;
+
 /**
  * @brief class Leaf
  *
@@ -38,8 +40,10 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public class Leaf extends Component {
+public class Leaf implements Component {
 
+    @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
+    @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
     /**
      * @brief Default constructor
      */
@@ -55,21 +59,42 @@ public class Leaf extends Component {
      */
     public Leaf(final Key parentKey, final int layer) {
 
-        this.parentKey = new Key(parentKey);
-        this.layer = new Integer(layer);
+        getInstance(parentKey, layer);
 
-        validateState();
+    }
+
+    private void getInstance(final Key parentKey, final int layer) {
+
+        if (this.parentKey == null && this.layer == null) {
+            synchronized(this) {
+                if (this.parentKey == null && this.layer == null) {
+
+                    this.parentKey = new Key(parentKey);
+                    this.layer = new Integer(layer);
+
+                    validateState();
+
+                }
+
+            }
+
+        }
 
     }
 
     @Override
-    public void put() {
+    public synchronized void put() {
         new UnsupportedOperationException("Method not implemented yet");    
     }
 
     @Override
-    public void delete() {
+    public synchronized void delete() {
         new UnsupportedOperationException("Method not implemented yet");
+    }
+
+    @Override
+    public synchronized void setLeftChildKey(final Key leftChildKey) {
+        new UnsupportedOperationException();
     }
 
     /**
@@ -81,8 +106,13 @@ public class Leaf extends Component {
      * @return <code>null</code> value because this object is a leaf
      */
     @Override
-    public Key getLeftChildKey() {
+    public synchronized Key getLeftChildKey() {
         return null; 
+    }
+
+    @Override
+    public synchronized void setRightChildKey(final Key rightChildKey) {
+        new UnsupportedOperationException();
     }
 
     /**
@@ -94,8 +124,52 @@ public class Leaf extends Component {
      * @return <code>null</code> value because this object is a leaf
      */
     @Override
-    public Key getRightChildKey() {
+    public synchronized Key getRightChildKey() {
         return null; 
+    }
+
+    /**
+     * @brief Setter method to set the key of the parent node
+     *
+     * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
+     */
+    @Override
+    public synchronized void setParentKey(final Key parentKey) {
+        validateKey(parentKey);
+        this.parentKey = parentKey;
+    }
+
+    /**
+     * @brief Getter method to get the key of the parent node
+     *
+     * @return The <tt>HashMap</tt> key of the parent node
+     */
+    @Override
+    public synchronized Key getParentKey() {
+        validateKey(parentKey);
+        return new Key(parentKey);
+    }
+
+    /**
+     * @brief Setter method to set the layer of the node
+     *
+     * @param[in] layer The layer of the node in the tree
+     */
+    @Override
+    public synchronized void setLayer(final int layer) {
+        validateLayer(layer);
+        this.layer = layer;
+    }
+
+    /**
+     * @brief Getter method to get the layer of the node
+     *
+     * @return The layer of the node in the tree
+     */
+    @Override
+    public synchronized Integer getLayer() {
+        validateLayer(layer);
+        return new Integer(layer);
     }
 
     /**
@@ -111,11 +185,23 @@ public class Leaf extends Component {
 
     }
 
-    @Override
-    protected void validateState() {
+    private void validateState() {
 
         validateKey(parentKey);
         validateLayer(layer);
+
+    }
+
+    private void validateKey(final Key key) {
+
+        if (key == null || key.getString() == null)
+            throw new NullPointerException("Component keys cannot be null");
+    }
+
+    private void validateLayer(final int layer) {
+
+        if (layer < 0)
+            throw new NullPointerException("Layer cannot be null or less then zero");
 
     }
 

@@ -32,80 +32,46 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public abstract class Component {
+public interface Component {
 
-    protected Key parentKey; //!< the key of the HashMap of the parent
-    protected Integer layer; //!< the layer in the tree in which this node is located
+    public void put();
 
-    abstract public void put();
+    public void delete();
 
-    abstract public void delete();
+    public void setLeftChildKey(final Key leftChildKey);
 
-    abstract public Key getLeftChildKey();
+    public Key getLeftChildKey();
 
-    abstract public Key getRightChildKey();
+    public void setRightChildKey(final Key rightChildKey);
 
-    abstract protected void validateState();
-
-    public void setLeftChildKey(final Key leftChildKey) {
-        new UnsupportedOperationException();    
-    }
-
-    public void setRightChildKey(final Key rightChildKey) {
-        new UnsupportedOperationException();    
-    }
+    public Key getRightChildKey();
 
     /**
      * @brief Setter method to set the key of the parent node
      *
      * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
      */
-    public void setParentKey(final Key parentKey) {
-        validateKey(parentKey);
-        this.parentKey = parentKey;
-    }
+    public void setParentKey(final Key parentKey);
 
     /**
      * @brief Getter method to get the key of the parent node
      *
      * @return The <tt>HashMap</tt> key of the parent node
      */
-    public Key getParentKey() {
-        validateKey(parentKey);
-        return new Key(parentKey);
-    }
+    public Key getParentKey();
 
     /**
      * @brief Setter method to set the layer of the node
      *
      * @param[in] layer The layer of the node in the tree
      */
-    public void setLayer(final int layer) {
-        validateLayer(layer);
-        this.layer = layer;
-    }
+    public void setLayer(final int layer);
 
     /**
      * @brief Getter method to get the layer of the node
      *
      * @return The layer of the node in the tree
      */
-    public Integer getLayer() {
-        validateLayer(layer);
-        return new Integer(layer); 
-    }
-
-    protected void validateKey(final Key key) {
-
-        if (key == null || key.getString() == null)
-            throw new NullPointerException("Component keys cannot be null");
-    }
-
-    protected void validateLayer(final int layer) {
-
-        if (layer < 0)
-            throw new NullPointerException("Layer cannot be null or less then zero");
-
-    }
+    public Integer getLayer();
 
 }

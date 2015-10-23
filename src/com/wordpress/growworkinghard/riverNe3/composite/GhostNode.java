@@ -20,6 +20,8 @@ package com.wordpress.growworkinghard.riverNe3.composite;
 
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
+import net.jcip.annotations.GuardedBy;
+
 /**
  * @brief class Ghost Node
  *
@@ -39,10 +41,12 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public class GhostNode extends Component {
+public class GhostNode implements Component {
 
-    private Key leftChildKey; //!< the key of the HashMap of the left child
-    private Key rightChildKey; //!< the key of the HashMap of the right child
+    @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
+    @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
+    @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
+    @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
 
     /**
      * @brief Default constructor
@@ -63,22 +67,38 @@ public class GhostNode extends Component {
      */
     public GhostNode(final Key parentKey, final Key leftChildKey, final Key rightChildKey, final int layer) {
 
-        this.parentKey = new Key(parentKey);
-        this.leftChildKey = new Key(leftChildKey);
-        this.rightChildKey = new Key(rightChildKey);
-        this.layer = new Integer(layer);
+        getInstance(parentKey, leftChildKey, rightChildKey, layer);
 
-        validateState();
+    }
+
+    private void getInstance(final Key parentKey, final Key leftChildKey, final Key rightChildKey, final int layer) {
+
+        if (this.parentKey == null && this.layer == null && this.leftChildKey == null && this.rightChildKey == null) {
+            synchronized(this) {
+                if (this.parentKey == null && this.layer == null && this.leftChildKey == null && this.rightChildKey == null) {
+
+                    this.parentKey = new Key(parentKey);
+                    this.leftChildKey = new Key(leftChildKey);
+                    this.rightChildKey = new Key(rightChildKey);
+                    this.layer = new Integer(layer);
+
+                    validateState();
+
+                }
+
+            }
+
+        }
 
     }
 
     @Override
-    public void put() {
+    public synchronized void put() {
         new UnsupportedOperationException("Method not implemented yet");    
     }
 
     @Override
-    public void delete() {
+    public synchronized void delete() {
         new UnsupportedOperationException("Method not implemented yet");
     }
 
@@ -89,7 +109,7 @@ public class GhostNode extends Component {
      *            The <tt>HashMap</tt> key of the left child
      */
     @Override
-    public void setLeftChildKey(final Key leftChildKey) {
+    public synchronized void setLeftChildKey(final Key leftChildKey) {
         validateKey(leftChildKey);
         this.leftChildKey = new Key(leftChildKey);
     }
@@ -100,7 +120,7 @@ public class GhostNode extends Component {
      * @return The <tt>HashMap</tt> key of the left child
      */
     @Override
-    public Key getLeftChildKey() {
+    public synchronized Key getLeftChildKey() {
         validateKey(leftChildKey);
         return new Key(leftChildKey);
     }
@@ -112,7 +132,7 @@ public class GhostNode extends Component {
      *            The <tt>HashMap</tt> key of the right child
      */
     @Override
-    public void setRightChildKey(final Key rightChildKey) {
+    public synchronized void setRightChildKey(final Key rightChildKey) {
         validateKey(rightChildKey);
         this.rightChildKey = new Key(rightChildKey);
     }
@@ -123,9 +143,53 @@ public class GhostNode extends Component {
      * @return The <tt>HashMap</tt> key of the right child
      */
     @Override
-    public Key getRightChildKey() {
+    public synchronized Key getRightChildKey() {
         validateKey(rightChildKey);
         return new Key(rightChildKey);
+    }
+
+    /**
+     * @brief Setter method to set the key of the parent node
+     *
+     * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
+     */
+    @Override
+    public synchronized void setParentKey(final Key parentKey) {
+        validateKey(parentKey);
+        this.parentKey = parentKey;
+    }
+
+    /**
+     * @brief Getter method to get the key of the parent node
+     *
+     * @return The <tt>HashMap</tt> key of the parent node
+     */
+    @Override
+    public synchronized Key getParentKey() {
+        validateKey(parentKey);
+        return new Key(parentKey);
+    }
+
+    /**
+     * @brief Setter method to set the layer of the node
+     *
+     * @param[in] layer The layer of the node in the tree
+     */
+    @Override
+    public synchronized void setLayer(final int layer) {
+        validateLayer(layer);
+        this.layer = layer;
+    }
+
+    /**
+     * @brief Getter method to get the layer of the node
+     *
+     * @return The layer of the node in the tree
+     */
+    @Override
+    public synchronized Integer getLayer() {
+        validateLayer(layer);
+        return new Integer(layer);
     }
 
     /**
@@ -141,13 +205,25 @@ public class GhostNode extends Component {
 
     }
 
-    @Override
-    protected void validateState() {
+    private void validateState() {
 
         validateKey(parentKey);
         validateLayer(layer);
         validateKey(leftChildKey);
         validateKey(rightChildKey);
+
+    }
+
+    private void validateKey(final Key key) {
+
+        if (key == null || key.getString() == null)
+            throw new NullPointerException("Component keys cannot be null");
+    }
+
+    private void validateLayer(final int layer) {
+
+        if (layer < 0)
+            throw new NullPointerException("Layer cannot be null or less then zero");
 
     }
 
