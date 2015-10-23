@@ -18,33 +18,29 @@
  */
 package com.wordpress.growworkinghard.riverNe3;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.google.common.collect.BinaryTreeTraverser;
-import com.google.common.collect.FluentIterable;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
-import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
 
 public class RiverNe3 {
  
     static DbfProcessing dfbp;
-    static ConcurrentHashMap<Integer, Geometry> test;
+    static HashMap<Integer, Geometry> test;
     static TreeBuilding tb;
-    static ConcurrentHashMap<Key, Component> binaryTree;
+    static HashMap<Key, Component> binaryTree;
 
     public static void main(String[] args) {
     
-        String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/net.dbf";
+        String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/net_big/net_big.dbf";
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
         dfbp = new DbfLinesProcessing();
@@ -53,40 +49,40 @@ public class RiverNe3 {
 
         tb = new TreeBuilding();
 
-        tb.buildTree(test);
-        // ExecutorService executor = Executors.newFixedThreadPool(4);
-        // CountDownLatch l = new CountDownLatch(4);
+        tb.buildTree(test, 4);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        CountDownLatch l = new CountDownLatch(4);
 
-        // for (int i = 0; i < 4; i++)
-        //     executor.submit(new MyRunnable(l));
+        for (int i = 0; i < 4; i++)
+            executor.submit(new MyRunnable(l));
 
-        // try {
-        //     l.await();
-        // } catch (InterruptedException e) {}
+        try {
+            l.await();
+        } catch (InterruptedException e) {}
 
-        // executor.shutdown();
+        executor.shutdown();
         binaryTree = tb.get();
 
         Iterator<Map.Entry<Key, Component>> i = binaryTree.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry pair = i.next();
             Key tmpKey = (Key)pair.getKey();
-            System.out.println(tmpKey.getString() + " --> " + pair.getValue().toString());
+            System.out.println(tmpKey.getString() + " " + tmpKey.getDouble() + " --> " + pair.getValue().toString());
         }
 
-        BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
-        double tmpKey = 6.0;
-        Key key = new Key("6");
-        Component tmpComponent = binaryTree.get(key);
-        System.out.println(tmpComponent.toString());
-        FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
-        List<Component> list = iterator.toList();
-        Iterator<Component> it = list.iterator();
+        // BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
+        // double tmpKey = 6.0;
+        // Key key = new Key("6");
+        // Component tmpComponent = binaryTree.get(key);
+        // System.out.println(tmpComponent.toString());
+        // FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
+        // List<Component> list = iterator.toList();
+        // Iterator<Component> it = list.iterator();
 
-        while(it.hasNext()) {
-            Component tmp = it.next();
-            System.out.println(tmp.getLayer());
-        }
+        // while(it.hasNext()) {
+        //     Component tmp = it.next();
+        //     System.out.println(tmp.getLayer());
+        // }
 
     }
 
@@ -100,9 +96,9 @@ public class RiverNe3 {
 
         @Override
         public void run() {
-            System.out.println(Thread.currentThread().getName() + " start thread read tree");
-            tb.buildTree(test);
-            System.out.println(Thread.currentThread().getName() + " end thread read tree");
+            // System.out.println(Thread.currentThread().getName() + " start thread read tree");
+            tb.buildTree(test, 4);
+            // System.out.println(Thread.currentThread().getName() + " end thread read tree");
             l.countDown();
         }
 
