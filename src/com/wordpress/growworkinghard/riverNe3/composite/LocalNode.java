@@ -44,11 +44,6 @@ public class LocalNode implements Component {
     @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
 
     /**
-     * @brief Default constructor
-     */
-    public LocalNode() {}
-
-    /**
      * @brief Alternative constructor which requires all the states
      *
      * @param[in] parentKey

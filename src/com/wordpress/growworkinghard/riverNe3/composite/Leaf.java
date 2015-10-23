@@ -44,10 +44,6 @@ public class Leaf implements Component {
 
     @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
-    /**
-     * @brief Default constructor
-     */
-    public Leaf() {}
 
     /**
      * @brief Alternative constructor which require all the states

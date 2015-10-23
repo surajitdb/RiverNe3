@@ -49,11 +49,6 @@ public class GhostNode implements Component {
     @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
 
     /**
-     * @brief Default constructor
-     */
-    public GhostNode() {}
-
-    /**
      * @brief Alternative constructor which requires all the states
      *
      * @param[in] parentKey
