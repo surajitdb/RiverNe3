@@ -40,7 +40,7 @@ public class RiverNe3 {
 
     public static void main(String[] args) {
     
-        String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/net_big/net_big.dbf";
+        String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/net.dbf";
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
 
         dfbp = new DbfLinesProcessing();
