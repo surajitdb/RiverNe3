@@ -256,7 +256,7 @@ public class TreeBuilding {
         if (rootRemoved && !data.containsKey(next)) { // enter only if a thread has removed the
 
             int emptyKey = next; //!< node removed, so its key is now not connected with another node
-            Component newNode = computeNewNode(tmpGeom, emptyKey);
+            Component newNode = findChildren(tmpGeom, emptyKey);
             binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
 
         }
@@ -274,7 +274,7 @@ public class TreeBuilding {
      * @param layer
      * @return
      */
-    private Component computeNewNode(Geometry root, int emptyKey) {
+    private Component findChildren(Geometry root, int emptyKey) {
 
         boolean ghostNode = false;
         int leftIndex = -1;
@@ -314,6 +314,12 @@ public class TreeBuilding {
 
             }
         }
+
+        return computeNewNode(ghostNode, root, leftIndex, rightIndex, emptyKey, leftChild, rightChild);
+
+    }
+
+    private Component computeNewNode(final boolean ghostNode, final Geometry root, final int leftIndex, final int rightIndex, final int emptyKey, Geometry leftChild, Geometry rightChild) {
 
         if (ghostNode) {
 
