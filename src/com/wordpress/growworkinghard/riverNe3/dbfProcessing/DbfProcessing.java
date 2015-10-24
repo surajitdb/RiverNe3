@@ -65,7 +65,7 @@ public abstract class DbfProcessing {
 
     private volatile static HashMap<Integer, Geometry> inputData;
 
-    public HashMap<Integer, Geometry> get() {
+    public synchronized HashMap<Integer, Geometry> get() {
         validateOutputData(); //!< post-conditions
         return new HashMap<Integer, Geometry>(inputData);
     }
@@ -97,22 +97,18 @@ public abstract class DbfProcessing {
      *            </ol>
      * @return A <code>Collections.synchronizedList</code> of the filled list
      */
-    public void process(final String filePath, final String[] colNames) {
+    public synchronized void process(final String filePath, final String[] colNames) {
 
-        validateInputData(filePath, colNames);
-        getInstance();
-        fileProcessing(filePath, colNames);
+        getInstance(filePath, colNames);
 
     }
 
-    private void getInstance() {
+    private void getInstance(final String filePath, final String[] colNames) {
 
         if (inputData == null) {
-            synchronized(this) {
-                if (inputData == null) {
-                    inputData = new HashMap<Integer, Geometry>();
-                }
-            }
+            validateInputData(filePath, colNames);
+            inputData = new HashMap<Integer, Geometry>();
+            fileProcessing(filePath, colNames);
         }
 
     }
