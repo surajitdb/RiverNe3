@@ -28,6 +28,8 @@ import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
+import net.jcip.annotations.GuardedBy;
+
 /**
  * @brief Building the binary tree of the input river net
  *
@@ -71,8 +73,8 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
  */
 public class TreeBuilding {
 
-    private volatile static ConcurrentHashMap<Key, Component> binaryTree;
-    private volatile static ConcurrentHashMap<Integer, Geometry> data;
+    @GuardedBy("this") private volatile static ConcurrentHashMap<Key, Component> binaryTree;
+    @GuardedBy("this") private volatile static ConcurrentHashMap<Integer, Geometry> data;
 
     /**
      * @brief Default Constructor
@@ -174,9 +176,9 @@ public class TreeBuilding {
      */
     private void findRoot() {
 
-        Geometry tmpGeom = null;
-        Integer next = null;
-        boolean rootRemoved = false;
+        Geometry tmpGeom = null; //!< stack confinement: this object escapes because it is going to be passed to aliens constructors. However that is not a problem, because this object is a reference to an object already removed from the ConcurrenHashMap
+        Integer next = null; //!< stack confinement: this object must not escape. This is ensured by copying it in the emptyKey variable before passing it to findChildren method
+        boolean rootRemoved = false; //!< stack confinement: primitive variables cannot escape
 
         // OLDER WAY TO IMPLEMENT THE ITERATOR
         //
@@ -278,8 +280,8 @@ public class TreeBuilding {
         boolean ghostNode = false;
         int leftIndex = -1;
         int rightIndex = -1;
-        Geometry leftChild = null;
-        Geometry rightChild = null;
+        Geometry leftChild = null; //!< stack confinement: this object must not escape. This rule must be followed in the following methods as well
+        Geometry rightChild = null; //!< stack confinement: this object must not escape. This rule must be followed in the following methods as well
 
         // iterators in ConcurrentHashMap are designed to be used by only one thread at a time
         synchronized(this) {
@@ -350,17 +352,18 @@ public class TreeBuilding {
             data.replace(rightIndex, rightChild); //!< right child is updated in the HashMap
             return returnNode(root, leftChild, rightChild);
 
-        } else 
+        } else {
             return new Leaf(new Key(Math.floor(root.getKey().getDouble() / 2)), root.getLayer());
+        }
 
     }
 
     private Component returnNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
 
-        Key parentKey = new Key(Math.floor(root.getKey().getDouble() / 2));
+        Key parentKey = new Key(Math.floor(root.getKey().getDouble() / 2)); //!< stack confinement: this object can escape, because it's a new object
         int layer = root.getLayer();
-        Key leftChildKey = leftChild.getKey();
-        Key rightChildKey = rightChild.getKey();
+        Key leftChildKey = new Key(leftChild.getKey()); //!< stack confinement: this object can escape, because it's a new object
+        Key rightChildKey = new Key(rightChild.getKey()); //!< stack confinement: this object can escape, because it's a new object
 
         if (isGhost(root))
             return new GhostNode(parentKey , leftChildKey, rightChildKey, layer);
@@ -436,7 +439,8 @@ public class TreeBuilding {
         child.setLayer(parent.getLayer()+1);
 
         if (leftChild) { //!< processing a left child
-            Key key = new Key(parent.getKey().getDouble() * 2);
+            double tmp = parent.getKey().getDouble() * 2;
+            Key key = new Key(tmp);
             child.setKey(key);
         } else { //!< processing a right child
             Key key = new Key(parent.getKey().getDouble() * 2 + 1);
