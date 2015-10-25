@@ -18,48 +18,36 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite.key;
 
-import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.Immutable;
 
+/**
+ * @todo make this object immutable
+ *
+ * @author
+ */
+@Immutable
 public class Key {
 
-    @GuardedBy("this") private String hexKey;
+    private final String hexKey;
 
     public Key (final double doubleKey) {
  
-        if (this.hexKey == null) {
-            synchronized(this) {
-                if (this.hexKey == null) {
-                    validateDoubleKey(doubleKey); //!< precondition
-                    this.hexKey = decimalToHex(doubleKey);
-                }
-            }
-        }
+        validateDoubleKey(doubleKey); //!< precondition
+        this.hexKey = decimalToHex(doubleKey);
 
     }
 
     public Key (final String hexKey) {
 
-        if (this.hexKey == null) {
-            synchronized(this) {
-                if (this.hexKey == null) {
-                    validateStringKey(hexKey); //!< precondition
-                    this.hexKey = hexKey;
-                }
-            }
-        }
+        validateStringKey(hexKey); //!< precondition
+        this.hexKey = hexKey;
 
     }
 
     public Key (final Key key) {
 
-        if (this.hexKey == null) {
-            synchronized(this) {
-                if (this.hexKey == null) {
-                    validateKey(key); //!< precondition
-                    this.hexKey = key.getString();
-                }
-            }
-        }
+        validateKey(key); //!< precondition
+        this.hexKey = key.getString();
 
     }
 
