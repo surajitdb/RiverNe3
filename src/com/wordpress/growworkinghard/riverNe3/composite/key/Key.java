@@ -33,32 +33,32 @@ public class Key {
     public Key (final double doubleKey) {
  
         validateDoubleKey(doubleKey); //!< precondition
-        this.hexKey[0] = decimalToHex(doubleKey);
+        this.hexKey[0] = new String(decimalToHex(doubleKey));
 
     }
 
     public Key (final String hexKey) {
 
         validateStringKey(hexKey); //!< precondition
-        this.hexKey[0] = hexKey;
+        this.hexKey[0] = new String(hexKey);
 
     }
 
     public Key (final Key key) {
 
         validateKey(key); //!< precondition
-        this.hexKey[0] = key.getString();
+        this.hexKey[0] = new String(key.getString());
 
     }
 
     public synchronized String getString() {
         validateKey(this); //!< postcondition
-        return hexKey[0];
+        return new String(hexKey[0]);
     }
 
     public synchronized Double getDouble() {
         validateKey(this); //!< postcondition
-        return hexToDecimal();
+        return new Double(hexToDecimal());
     }
 
     private String decimalToHex(double d) {
