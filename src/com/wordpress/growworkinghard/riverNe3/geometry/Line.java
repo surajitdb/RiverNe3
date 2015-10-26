@@ -237,13 +237,13 @@ public class Line extends Geometry {
     @Override
     protected boolean statesAreNull() {
 
-        if (this.key != null) return false;
-        if (this.parentKey != null) return false;
-        if (this.layer != null) return false;
-        if (this.startPoint != null) return false;
-        if (this.endPoint != null) return false;
+        if (this.key == null &&
+            this.parentKey == null &&
+            this.layer == null &&
+            this.startPoint == null &&
+            this.endPoint == null) return true;
 
-        return true;
+        return false;
 
     }
 

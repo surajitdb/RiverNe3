@@ -199,12 +199,12 @@ public class Point extends Geometry {
     @Override
     protected boolean statesAreNull() {
 
-        if (this.key != null) return false;
-        if (this.parentKey != null) return false;
-        if (this.layer != null) return false;
-        if (this.point != null) return false;
+        if (this.key == null &&
+            this.parentKey == null &&
+            this.layer == null &&
+            this.point == null) return true;
 
-        return true;
+        return false;
 
     }
 
