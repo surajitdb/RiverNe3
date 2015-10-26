@@ -32,46 +32,57 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public interface Component {
+public abstract class Component {
 
-    public void put();
+    abstract public void put();
 
-    public void delete();
+    abstract public void delete();
 
-    public void setLeftChildKey(final Key leftChildKey);
+    abstract public void setNewKey(final Key key);
 
-    public Key getLeftChildKey();
+    abstract public Key getKey();
 
-    public void setRightChildKey(final Key rightChildKey);
+    abstract public Key getLeftChildKey();
 
-    public Key getRightChildKey();
+    abstract public Key getRightChildKey();
 
-    /**
-     * @brief Setter method to set the key of the parent node
-     *
-     * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
-     */
-    public void setParentKey(final Key parentKey);
-
-    /**
-     * @brief Getter method to get the key of the parent node
-     *
-     * @return The <tt>HashMap</tt> key of the parent node
-     */
-    public Key getParentKey();
+    abstract public Key getParentKey();
 
     /**
      * @brief Setter method to set the layer of the node
      *
      * @param[in] layer The layer of the node in the tree
      */
-    public void setLayer(final int layer);
+    abstract public void setLayer(final int layer);
 
     /**
      * @brief Getter method to get the layer of the node
      *
      * @return The layer of the node in the tree
      */
-    public Integer getLayer();
+    abstract public Integer getLayer();
+
+    abstract protected void getInstance(final Key key, final Key leftChildKey, final Key rightChildKey, final int layer);
+
+    abstract protected boolean statesAreNull();
+
+    abstract protected void validateState();
+
+    protected void validateKey(final Key key) {
+
+        if (key == null || key.getString() == null)
+            throw new NullPointerException("Component keys cannot be null");
+    }
+
+    protected void validateLayer(final int layer) {
+
+        if (layer < 0)
+            throw new NullPointerException("Layer cannot be null or less then zero");
+
+    }
+
+    protected Key computeParentKey(final Key key) {
+        return new Key(Math.floor(key.getDouble() / 2));
+    }
 
 }

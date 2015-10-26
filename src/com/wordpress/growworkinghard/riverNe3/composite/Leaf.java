@@ -40,8 +40,9 @@ import net.jcip.annotations.GuardedBy;
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public class Leaf implements Component {
+public class Leaf extends Component {
 
+    @GuardedBy("this") private Key key;
     @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
 
@@ -53,28 +54,9 @@ public class Leaf implements Component {
      * @param[in] layer
      *            The layer in the tree in which this node is located
      */
-    public Leaf(final Key parentKey, final int layer) {
+    public Leaf(final Key key, final int layer) {
 
-        getInstance(parentKey, layer);
-
-    }
-
-    private void getInstance(final Key parentKey, final int layer) {
-
-        if (this.parentKey == null && this.layer == null) {
-            synchronized(this) {
-                if (this.parentKey == null && this.layer == null) {
-
-                    this.parentKey = new Key(parentKey);
-                    this.layer = new Integer(layer);
-
-                    validateState();
-
-                }
-
-            }
-
-        }
+        getInstance(key, null, null, layer);
 
     }
 
@@ -89,8 +71,18 @@ public class Leaf implements Component {
     }
 
     @Override
-    public synchronized void setLeftChildKey(final Key leftChildKey) {
-        new UnsupportedOperationException();
+    public synchronized void setNewKey(final Key key) {
+
+        validateKey(key);
+        this.key = new Key(key);
+        this.parentKey = new Key(computeParentKey(key));
+
+    }
+
+    @Override
+    public synchronized Key getKey() {
+        validateKey(key);
+        return new Key(key);
     }
 
     /**
@@ -106,11 +98,6 @@ public class Leaf implements Component {
         return null; 
     }
 
-    @Override
-    public synchronized void setRightChildKey(final Key rightChildKey) {
-        new UnsupportedOperationException();
-    }
-
     /**
      * @brief Getter method to get the key of the right child
      *
@@ -122,17 +109,6 @@ public class Leaf implements Component {
     @Override
     public synchronized Key getRightChildKey() {
         return null; 
-    }
-
-    /**
-     * @brief Setter method to set the key of the parent node
-     *
-     * @param[in] parentKey The <tt>HashMap</tt> key of the parent node
-     */
-    @Override
-    public synchronized void setParentKey(final Key parentKey) {
-        validateKey(parentKey);
-        this.parentKey = parentKey;
     }
 
     /**
@@ -181,23 +157,44 @@ public class Leaf implements Component {
 
     }
 
-    private void validateState() {
+    @Override
+    protected void getInstance(final Key key, final Key leftChild, final Key rightChild, final int layer) {
 
-        validateKey(parentKey);
+        if (statesAreNull()) {
+            synchronized(this) {
+                if (statesAreNull()) {
+
+                    this.key = new Key(key);
+                    this.layer = new Integer(layer);
+
+                    validateState();
+
+                    this.parentKey = new Key(computeParentKey(key));
+
+                }
+
+            }
+
+        }
+
+    }
+
+    @Override
+    protected boolean statesAreNull() {
+
+        if (this.key == null &&
+            this.parentKey == null &&
+            this.layer == null) return true;
+
+        return false;
+
+    }
+
+    @Override
+    protected void validateState() {
+
+        validateKey(key);
         validateLayer(layer);
-
-    }
-
-    private void validateKey(final Key key) {
-
-        if (key == null || key.getString() == null)
-            throw new NullPointerException("Component keys cannot be null");
-    }
-
-    private void validateLayer(final int layer) {
-
-        if (layer < 0)
-            throw new NullPointerException("Layer cannot be null or less then zero");
 
     }
 

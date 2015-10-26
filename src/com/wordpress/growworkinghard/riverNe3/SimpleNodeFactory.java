@@ -37,17 +37,17 @@ public class SimpleNodeFactory {
      */
     public Component createNewNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
 
-        Key parentKey = new Key(Math.floor(root.getKey().getDouble() / 2)); //!< stack confinement: this object can escape, because it's a new object
+        Key key = new Key(root.getKey()); //!< stack confinement: this object can escape, because it's a new object
         int layer = root.getLayer();
 
         if (isLeaf(leftChild, rightChild))
-            return new Leaf(parentKey, layer);
+            return new Leaf(key, layer);
         else {
 
             Key leftChildKey = leftChild.getKey(); //!< stack confinement: this object can escape, because it's a new object
             Key rightChildKey = rightChild.getKey(); //!< stack confinement: this object can escape, because it's a new object
-            return (isGhost(root)) ? new GhostNode(parentKey, leftChildKey, rightChildKey, layer) :
-                                     new Node(parentKey, leftChildKey, rightChildKey, layer);
+            return (isGhost(root)) ? new GhostNode(key, leftChildKey, rightChildKey, layer) :
+                                     new Node(key, leftChildKey, rightChildKey, layer);
         }
 
     }
