@@ -28,32 +28,32 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class Key {
 
-    private final String hexKey;
+    private final String[] hexKey = new String[1];
 
     public Key (final double doubleKey) {
  
         validateDoubleKey(doubleKey); //!< precondition
-        this.hexKey = decimalToHex(doubleKey);
+        this.hexKey[0] = decimalToHex(doubleKey);
 
     }
 
     public Key (final String hexKey) {
 
         validateStringKey(hexKey); //!< precondition
-        this.hexKey = hexKey;
+        this.hexKey[0] = hexKey;
 
     }
 
     public Key (final Key key) {
 
         validateKey(key); //!< precondition
-        this.hexKey = key.getString();
+        this.hexKey[0] = key.getString();
 
     }
 
     public synchronized String getString() {
         validateKey(this); //!< postcondition
-        return hexKey;
+        return hexKey[0];
     }
 
     public synchronized Double getDouble() {
@@ -84,7 +84,7 @@ public class Key {
     private double hexToDecimal() {
 
         String digits = "0123456789ABCDEF";
-        String tmpHex = hexKey.toUpperCase();
+        String tmpHex = hexKey[0].toUpperCase();
         long val = 0;
 
         for (int i = 0; i < tmpHex.length(); i++) {
