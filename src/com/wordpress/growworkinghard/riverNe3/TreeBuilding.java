@@ -75,6 +75,7 @@ public class TreeBuilding {
 
     @GuardedBy("this") private volatile static ConcurrentHashMap<Key, Component> binaryTree;
     @GuardedBy("this") private volatile static ConcurrentHashMap<Integer, Geometry> data;
+    private static SimpleNodeFactory factory = new SimpleNodeFactory();
 
     /**
      * @brief Default Constructor
@@ -282,6 +283,7 @@ public class TreeBuilding {
         int rightIndex = -1;
         Geometry leftChild = null; //!< stack confinement: this object must not escape. This rule must be followed in the following methods as well
         Geometry rightChild = null; //!< stack confinement: this object must not escape. This rule must be followed in the following methods as well
+        Component node = null;
 
         // iterators in ConcurrentHashMap are designed to be used by only one thread at a time
         synchronized(this) {
@@ -316,11 +318,13 @@ public class TreeBuilding {
             }
         }
 
-        return computeNewNode(ghostNode, root, leftIndex, rightIndex, emptyKey, leftChild, rightChild);
+        updateData(ghostNode, root, leftIndex, rightIndex, emptyKey, leftChild, rightChild);
+        node = factory.createNewNode(root, leftChild, rightChild);
+        return node;
 
     }
 
-    private Component computeNewNode(final boolean ghostNode, final Geometry root, final int leftIndex, final int rightIndex, final int emptyKey, Geometry leftChild, Geometry rightChild) {
+    private void updateData(final boolean ghostNode, final Geometry root, final int leftIndex, final int rightIndex, final int emptyKey, Geometry leftChild, Geometry rightChild) {
 
         if (ghostNode) {
 
@@ -344,31 +348,13 @@ public class TreeBuilding {
             // because each thread manages its own different root node) in the
             // data ConcurrentHashMap
             data.put(emptyKey, rightChild); //!< ghost node is added to the list
-            return returnNode(root, leftChild, rightChild);
 
         } else if (leftChild != null && rightChild != null) {
 
             data.replace(leftIndex, leftChild); //!< lefth child is updated in the HashMap
             data.replace(rightIndex, rightChild); //!< right child is updated in the HashMap
-            return returnNode(root, leftChild, rightChild);
 
-        } else {
-            return new Leaf(new Key(Math.floor(root.getKey().getDouble() / 2)), root.getLayer());
         }
-
-    }
-
-    private Component returnNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
-
-        Key parentKey = new Key(Math.floor(root.getKey().getDouble() / 2)); //!< stack confinement: this object can escape, because it's a new object
-        int layer = root.getLayer();
-        Key leftChildKey = new Key(leftChild.getKey()); //!< stack confinement: this object can escape, because it's a new object
-        Key rightChildKey = new Key(rightChild.getKey()); //!< stack confinement: this object can escape, because it's a new object
-
-        if (isGhost(root))
-            return new GhostNode(parentKey , leftChildKey, rightChildKey, layer);
-        else
-            return new Node(parentKey, leftChildKey, rightChildKey, layer);
 
     }
 
@@ -394,29 +380,6 @@ public class TreeBuilding {
         double y_root = root.getStartPoint().y;
 
         if (x_tmpChild == x_root && y_tmpChild == y_root) return true;
-        else return false;
-
-    }
-
-    /**
-     * @brief Verify if a root node is a ghost one at the same time
-     *
-     * @description A ghost node has starting point equal to the ending point
-     *
-     * @param[in] root
-     *            The root node of the sub-tree
-     * @return If the root is ghost or not
-     * @retval TRUE The root is ghost
-     * @retval FALSE The root is not ghost
-     */
-    private boolean isGhost(final Geometry root) {
-
-        double xStart = root.getStartPoint().x;
-        double yStart = root.getStartPoint().y;
-        double xEnd = root.getEndPoint().x;
-        double yEnd = root.getEndPoint().y;
-
-        if (xStart == xEnd && yStart == yEnd) return true;
         else return false;
 
     }
