@@ -18,6 +18,9 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite.key;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import net.jcip.annotations.Immutable;
 
 /**
@@ -28,37 +31,52 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class Key {
 
-    private final String[] hexKey = new String[1];
+    private final String hexKey;
 
     public Key (final double doubleKey) {
  
         validateDoubleKey(doubleKey); //!< precondition
-        this.hexKey[0] = new String(decimalToHex(doubleKey));
+        this.hexKey = new String(decimalToHex(doubleKey));
 
     }
 
     public Key (final String hexKey) {
 
         validateStringKey(hexKey); //!< precondition
-        this.hexKey[0] = new String(hexKey);
+        this.hexKey = new String(hexKey);
 
     }
 
     public Key (final Key key) {
 
         validateKey(key); //!< precondition
-        this.hexKey[0] = new String(key.getString());
+        this.hexKey = new String(key.getString());
 
     }
 
     public synchronized String getString() {
         validateKey(this); //!< postcondition
-        return new String(hexKey[0]);
+        return new String(hexKey);
     }
 
     public synchronized Double getDouble() {
         validateKey(this); //!< postcondition
         return new Double(hexToDecimal());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof Key)) return false;
+        if (o == this) return true;
+
+        Key rhs = (Key) o;
+        return new EqualsBuilder().append(hexKey, rhs.hexKey).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 3).append(hexKey).toHashCode();
     }
 
     private String decimalToHex(double d) {
@@ -84,7 +102,7 @@ public class Key {
     private double hexToDecimal() {
 
         String digits = "0123456789ABCDEF";
-        String tmpHex = hexKey[0].toUpperCase();
+        String tmpHex = hexKey.toUpperCase();
         long val = 0;
 
         for (int i = 0; i < tmpHex.length(); i++) {
