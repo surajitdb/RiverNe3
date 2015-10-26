@@ -181,46 +181,6 @@ public class TreeBuilding {
         Integer next = null; //!< stack confinement: this object must not escape. This is ensured by copying it in the emptyKey variable before passing it to findChildren method
         boolean rootRemoved = false; //!< stack confinement: primitive variables cannot escape
 
-        // OLDER WAY TO IMPLEMENT THE ITERATOR
-        //
-        // The following loop is surely not thread safe in the sense that
-        // threads starting the loop after the first, are not iterating the most
-        // up-to-date map. I was thinking that each thread has
-        // just to find a root node of a sub-tree. Once processes the root, the
-        // thread exits the loop and starts looking again for another root.
-        //
-        // The double check (if tmpGeom != null and if rootRemoved) should have
-        // been enough to avoid a double processing of the same root.
-        // Maybe there is still a window of vulnerability due the fact the two
-        // thread may delete the same object, but this should avoided by the
-        // @ThreadSafe class ConcurrentHashMap
-        //
-        // Iterator<Integer> i = data.keySet().iterator();
-        // while (i.hasNext()){
-
-        //     next = i.next();
-        //     tmpGeom = data.get(next);
-
-        //     //!< if the <code>tmpGeom</code> is root a new <tt>sub-tree</tt> has
-        //     //just been identified
-        //     if (tmpGeom != null && tmpGeom.isRoot()) {
-
-        //         rootRemoved = data.remove(next, tmpGeom); //!< root node removed from the list
-        //         if (rootRemoved && !data.containsKey(next)) { // enter only if a thread has removed the
-        //                            // root under processing otherwise the root
-        //                            // has been removed by a previous thread, so
-        //                            // this thread has to search another root
-        //             int emptyKey = next;
-        //             Component newNode = computeNewNode(tmpGeom, emptyKey);
-        //             binaryTree.putIfAbsent(tmpGeom.getKey(), newNode);
-
-        //         }
-        //         break;
-
-        //     }
-
-        // }
-
         // NEW WAY TO IMPLEMENT THE ITERATOR
         //
         // As written in the Java 8 Documentation for the ConcurrentHashMap
