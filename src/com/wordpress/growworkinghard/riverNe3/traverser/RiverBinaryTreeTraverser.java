@@ -18,6 +18,7 @@
  */
 package com.wordpress.growworkinghard.riverNe3.traverser;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.base.Optional;
@@ -29,13 +30,13 @@ public class RiverBinaryTreeTraverser extends BinaryTreeTraverser<Component> {
 
     private volatile ConcurrentHashMap<Key, Component> binaryTree;
 
-    public RiverBinaryTreeTraverser(final ConcurrentHashMap<Key, Component> binaryTree) {
+    public RiverBinaryTreeTraverser(final HashMap<Key, Component> binaryTree) {
 
         getInstance(binaryTree);
 
     }
 
-    private void getInstance(final ConcurrentHashMap<Key, Component> binaryTree) {
+    private void getInstance(final HashMap<Key, Component> binaryTree) {
 
         if (this.binaryTree == null) {
             synchronized(this) {
@@ -51,7 +52,7 @@ public class RiverBinaryTreeTraverser extends BinaryTreeTraverser<Component> {
         Key index = root.getLeftChildKey();
 
         Component node = null;
-        if (index.getString() != null)
+        if (index != null)
             node = binaryTree.get(index);
 
         return Optional.fromNullable(node);
@@ -63,7 +64,7 @@ public class RiverBinaryTreeTraverser extends BinaryTreeTraverser<Component> {
         Key index = root.getRightChildKey();
 
         Component node = null;
-        if (index.getString() != null)
+        if (index != null)
             node = binaryTree.get(index);
 
         return Optional.fromNullable(node);
