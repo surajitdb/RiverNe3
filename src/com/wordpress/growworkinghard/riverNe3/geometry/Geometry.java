@@ -38,20 +38,13 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  */
 public abstract class Geometry {
 
-    private boolean root; //!< to identify if the element is the root of the subtree
-    // private int layer;
-    private Key key; //!< the key to use in the ConcurrentHashMap
-    private int layer;
-    private Key parentKey; //!< the key in the ConcurrentHashMap of the parent node
 
     /**
      * @brief Identify if the feature is root of a subtree
      *
      * @return the boolean variable <tt>root</tt>
      */
-    public boolean isRoot() {
-        return root;
-    }
+    abstract public boolean isRoot();
 
     /**
      * @brief Setter method for the variable <tt>root</tt> 
@@ -59,9 +52,7 @@ public abstract class Geometry {
      * @param[in] root
      *            boolean <code>true</code> if the feature is root a subtree
      */
-    public void setRoot(final boolean root) {
-        this.root = root;
-    }
+    abstract public void setRoot(final boolean root);
 
     /**
      * @brief Setter method for the variable <tt>key</tt>
@@ -70,9 +61,7 @@ public abstract class Geometry {
      *            the key that is going to be used as index in the
      *            <code>ConcurrentHashMap</code>
      */
-    public void setKey(final Key key) {
-        this.key = new Key(key);
-    }
+    abstract public void setKey(final Key key);
 
     /**
      * @brief Getter method for the variable <tt>key</tt>
@@ -80,9 +69,7 @@ public abstract class Geometry {
      * @return the key that is going to be used as index in the
      *         <code>ConcurrentHashMap</code>
      */
-    public Key getKey() {
-        return key;
-    }
+    abstract public Key getKey();
 
     /**
      * @brief Setter method for the variable <tt>layer</tt>
@@ -90,18 +77,14 @@ public abstract class Geometry {
      * @param[in] layer
      *            the layer in the tree
      */
-    public void setLayer(final int layer) {
-        this.layer = layer;
-    }
+    abstract public void setLayer(final int layer);
 
     /**
      * @brief Getter method for the variable <tt>layer</tt>
      *
      * @return the layer in the tree
      */
-    public int getLayer() {
-        return layer;
-    }
+    abstract public int getLayer();
 
     /**
      * @brief Setter method for the variable <tt>parentKey</tt>
@@ -110,9 +93,7 @@ public abstract class Geometry {
      *            the key which identify the parent node in the
      *            <code>ConcurrentHashMap</code>
      */
-    public void setParentKey(final Key parentKey) {
-        this.parentKey = parentKey;
-    }
+    abstract public void setParentKey(final Key parentKey);
 
     /**
      * @brief Getter method for the variable <tt>parentKey</tt>
@@ -120,9 +101,11 @@ public abstract class Geometry {
      * @return the key of the parent node, used in the
      *         <code>ConcurrentHashMap</code>
      */
-    public Key getParentKey() {
-        return parentKey;
-    }
+    abstract public Key getParentKey();
+
+    abstract protected boolean statesAreNull();
+
+    abstract protected void validateState();
 
     /**
      * @brief Setter method for the variable <tt>point</tt>
@@ -281,6 +264,27 @@ public abstract class Geometry {
     public Coordinate2D getEndPoint() {
         new UnsupportedOperationException();
         return new Coordinate2D(0.0, 0.0);
+    }
+
+    protected void validateKey(final Key key) {
+
+        if (key == null || key.getString() == null)
+            throw new NullPointerException("Component keys cannot be null");
+
+    }
+
+    protected void validateLayer(final Integer layer) {
+
+        if (layer == null)
+            throw new NullPointerException("Layer cannot be null");
+
+    }
+
+    protected void validatePoint(final Coordinate2D point) {
+
+        if (point == null)
+            throw new NullPointerException("Point cannot be null");
+
     }
 
 }

@@ -20,6 +20,10 @@ package com.wordpress.growworkinghard.riverNe3.geometry;
 
 import org.geotools.graph.util.geom.Coordinate2D;
 
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+
+import net.jcip.annotations.GuardedBy;
+
 /**
  * @brief class Line
  *
@@ -39,13 +43,108 @@ import org.geotools.graph.util.geom.Coordinate2D;
  */
 public class Line extends Geometry {
 
-    private Coordinate2D startPoint; //!< starting point
-    private Coordinate2D endPoint; //!< ending point
+    @GuardedBy("this") private boolean root; //!< to identify if the element is the root of the subtree
+    @GuardedBy("this") private Key key; //!< the key to use in the ConcurrentHashMap
+    @GuardedBy("this") private Key parentKey; //!< the key in the ConcurrentHashMap of the parent node
+    @GuardedBy("this") private Integer layer;
+    @GuardedBy("this") private Coordinate2D startPoint; //!< starting point
+    @GuardedBy("this") private Coordinate2D endPoint; //!< ending point
+
+    public Line() {}
+
+    public Line(final boolean root, final Key key, final Key parentKey, final int layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
+
+        getInstance(root, key, parentKey, layer, startPoint, endPoint);
+
+    }
 
     /**
-     * @brief Default constructor
+     * @brief Identify if the feature is root of a subtree
+     *
+     * @return the boolean variable <tt>root</tt>
      */
-    public Line() {}
+    @Override
+    public synchronized boolean isRoot() {
+        return root;
+    }
+
+    /**
+     * @brief Setter method for the variable <tt>root</tt>
+     *
+     * @param[in] root
+     *            boolean <code>true</code> if the feature is root a subtree
+     */
+    @Override
+    public synchronized void setRoot(final boolean root) {
+        this.root = new Boolean(root);
+    }
+
+    /**
+     * @brief Setter method for the variable <tt>key</tt>
+     *
+     * @param[in] key
+     *            the key that is going to be used as index in the
+     *            <code>ConcurrentHashMap</code>
+     */
+    @Override
+    public synchronized void setKey(final Key key) {
+        this.key = new Key(key);
+    }
+
+    /**
+     * @brief Getter method for the variable <tt>key</tt>
+     *
+     * @return the key that is going to be used as index in the
+     *         <code>ConcurrentHashMap</code>
+     */
+    @Override
+    public synchronized Key getKey() {
+        return new Key(key);
+    }
+
+    /**
+     * @brief Setter method for the variable <tt>layer</tt>
+     *
+     * @param[in] layer
+     *            the layer in the tree
+     */
+    @Override
+    public synchronized void setLayer(final int layer) {
+        this.layer = new Integer(layer);
+    }
+
+    /**
+     * @brief Getter method for the variable <tt>layer</tt>
+     *
+     * @return the layer in the tree
+     */
+    @Override
+    public synchronized int getLayer() {
+        return new Integer(layer);
+    }
+
+    /**
+     * @brief Setter method for the variable <tt>parentKey</tt>
+     *
+     * @param[in] parentKey
+     *            the key which identify the parent node in the
+     *            <code>ConcurrentHashMap</code>
+     */
+    @Override
+    public synchronized void setParentKey(final Key parentKey) {
+        this.parentKey = new Key(parentKey);
+    }
+
+    /**
+     * @brief Getter method for the variable <tt>parentKey</tt>
+     *
+     * @return the key of the parent node, used in the
+     *         <code>ConcurrentHashMap</code>
+     */
+    @Override
+    public synchronized Key getParentKey() {
+        return new Key(parentKey);
+    }
 
     /**
      * @brief Setter method for the variable <tt>startPoint</tt>
@@ -56,7 +155,7 @@ public class Line extends Geometry {
      *            The y coordinate
      */
     @Override
-    public void setStartPoint(final double x, final double y) {
+    public synchronized void setStartPoint(final double x, final double y) {
         startPoint = new Coordinate2D(x, y);
     }
 
@@ -67,8 +166,8 @@ public class Line extends Geometry {
      *            The coordinates of the starting point
      */
     @Override
-    public void setStartPoint(final Coordinate2D startPoint) {
-        this.startPoint = startPoint;
+    public synchronized void setStartPoint(final Coordinate2D startPoint) {
+        this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
     }
 
     /**
@@ -77,7 +176,7 @@ public class Line extends Geometry {
      * @return The coordinates of the starting point
      */
     @Override
-    public Coordinate2D getStartPoint() {
+    public synchronized Coordinate2D getStartPoint() {
         return new Coordinate2D(startPoint.x, startPoint.y);
     }
 
@@ -90,7 +189,7 @@ public class Line extends Geometry {
      *            The y coordinate
      */
     @Override
-    public void setEndPoint(final double x, final double y) {
+    public synchronized void setEndPoint(final double x, final double y) {
         endPoint = new Coordinate2D(x, y);
     }
 
@@ -101,8 +200,8 @@ public class Line extends Geometry {
      *            The coordinates of the ending point
      */
     @Override
-    public void setEndPoint(final Coordinate2D endPoint) {
-        this.endPoint = endPoint;
+    public synchronized void setEndPoint(final Coordinate2D endPoint) {
+        this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
     }
 
     /**
@@ -111,8 +210,52 @@ public class Line extends Geometry {
      * @return The coordinates of the ending point
      */
     @Override
-    public Coordinate2D getEndPoint() {
+    public synchronized Coordinate2D getEndPoint() {
         return new Coordinate2D(endPoint.x, endPoint.y);
+    }
+
+    private void getInstance(final boolean root, final Key key, final Key parentKey, final int layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
+
+        if (statesAreNull()) {
+            synchronized(this) {
+                if (statesAreNull()) {
+                    this.root = new Boolean(root);
+                    this.key = new Key(key);
+                    this.parentKey = new Key(parentKey);
+                    this.layer = new Integer(layer);
+                    this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
+                    this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
+
+                    validateState();
+
+                }
+            }
+        }
+
+    }
+
+    @Override
+    protected boolean statesAreNull() {
+
+        if (this.key != null) return false;
+        if (this.parentKey != null) return false;
+        if (this.layer != null) return false;
+        if (this.startPoint != null) return false;
+        if (this.endPoint != null) return false;
+
+        return true;
+
+    }
+
+    @Override
+    protected void validateState() {
+
+        validateKey(key);
+        validateKey(parentKey);
+        validateLayer(layer);
+        validatePoint(startPoint);
+        validatePoint(endPoint);
+
     }
 
 }
