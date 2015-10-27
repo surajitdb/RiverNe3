@@ -18,7 +18,10 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import org.geotools.graph.util.geom.Coordinate2D;
+
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -48,33 +51,13 @@ public class GhostNode extends Component {
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
     @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
     @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
+    @GuardedBy("this") Coordinate2D startPoint;
+    @GuardedBy("this") Coordinate2D endPoint;
 
-    /**
-     * @brief Alternative constructor which requires all the states
-     *
-     * @param[in] parentKey
-     *            The <tt>HashMap</tt> key of the parent
-     * @param[in] leftChildKey
-     *            The <tt>HashMap</tt> key of the left child
-     * @param[in] rightChildKey
-     *            The <tt>HashMap</tt> key of the right child
-     * @param[in] layer
-     *            The layer in the tree in which this node is located
-     */
-    public GhostNode(final Key key, final Key leftChildKey, final Key rightChildKey, final int layer) {
+    public GhostNode(final Line root, final Key leftChildKey, final Key rightChildKey) {
 
-        getInstance(key, leftChildKey, rightChildKey, layer);
+        getInstance(root, leftChildKey, rightChildKey);
 
-    }
-
-    @Override
-    public synchronized void put() {
-        new UnsupportedOperationException("Method not implemented yet");    
-    }
-
-    @Override
-    public synchronized void delete() {
-        new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
@@ -149,6 +132,16 @@ public class GhostNode extends Component {
         return new Integer(layer);
     }
 
+    public synchronized Coordinate2D getStartPoint() {
+        validateCoordinate(startPoint);
+        return new Coordinate2D(startPoint.x, startPoint.y);
+    }
+
+    public synchronized Coordinate2D getEndPoint() {
+        validateCoordinate(endPoint);
+        return new Coordinate2D(endPoint.x, endPoint.y);
+    }
+
     /**
      * @brief Simply overriding of the <code>toString</code> method
      *
@@ -162,26 +155,22 @@ public class GhostNode extends Component {
 
     }
 
-    @Override
-    protected void getInstance(final Key key, final Key leftChildKey, final Key rightChildKey, final int layer) {
+    private void getInstance(final Line root, final Key leftChildKey, final Key rightChildKey) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-
-                    this.key = new Key(key);
+                    this.key = new Key(root.getKey());
                     this.leftChildKey = new Key(leftChildKey);
                     this.rightChildKey = new Key(rightChildKey);
-                    this.layer = new Integer(layer);
+                    this.layer = new Integer(root.getLayer());
+                    this.parentKey = new Key(root.getParentKey());
+                    this.startPoint = new Coordinate2D(root.getStartPoint().x, root.getStartPoint().y);
+                    this.endPoint = new Coordinate2D(root.getEndPoint().x, root.getEndPoint().y);
 
                     validateState();
-
-                    this.parentKey = new Key(computeParentKey(key));
-
                 }
-
             }
-
         }
 
     }
@@ -193,7 +182,9 @@ public class GhostNode extends Component {
             this.parentKey == null &&
             this.layer == null &&
             this.leftChildKey == null &&
-            this.rightChildKey == null) return true;
+            this.rightChildKey == null &&
+            this.startPoint == null &&
+            this.endPoint == null) return true;
 
         return false;
 
@@ -206,6 +197,9 @@ public class GhostNode extends Component {
         validateLayer(layer);
         validateKey(leftChildKey);
         validateKey(rightChildKey);
+        validateKey(parentKey);
+        validateCoordinate(startPoint);
+        validateCoordinate(endPoint);
 
     }
 

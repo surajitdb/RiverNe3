@@ -24,6 +24,7 @@ import com.wordpress.growworkinghard.riverNe3.composite.Leaf;
 import com.wordpress.growworkinghard.riverNe3.composite.Node;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
+import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 public class SimpleNodeFactory {
 
@@ -37,17 +38,14 @@ public class SimpleNodeFactory {
      */
     public Component createNewNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
 
-        Key key = new Key(root.getKey()); //!< stack confinement: this object can escape, because it's a new object
-        int layer = root.getLayer();
-
         if (isLeaf(leftChild, rightChild))
-            return new Leaf(key, layer);
+            return new Leaf((Line) root);
         else {
 
             Key leftChildKey = leftChild.getKey(); //!< stack confinement: this object can escape, because it's a new object
             Key rightChildKey = rightChild.getKey(); //!< stack confinement: this object can escape, because it's a new object
-            return (isGhost(root)) ? new GhostNode(key, leftChildKey, rightChildKey, layer) :
-                                     new Node(key, leftChildKey, rightChildKey, layer);
+            return (isGhost(root)) ? new GhostNode((Line) root, leftChildKey, rightChildKey) :
+                                     new Node((Line) root, leftChildKey, rightChildKey);
         }
 
     }
