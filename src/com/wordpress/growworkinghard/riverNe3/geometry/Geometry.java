@@ -103,8 +103,6 @@ public abstract class Geometry {
      */
     abstract public Key getParentKey();
 
-    abstract protected boolean statesAreNull();
-
     abstract protected void validateState();
 
     /**

@@ -52,7 +52,13 @@ public class Point extends Geometry {
 
     public Point(final boolean root, final Key key, final Key parentKey, final Integer layer, final Coordinate2D point) {
 
-        getInstance(root, key, parentKey, layer, point);
+        this.root = root;
+        this.key = new Key(key);
+        this.parentKey = new Key(parentKey);
+        this.layer = new Integer(layer);
+        this.point = new Coordinate2D(point.x, point.y);
+
+        validateState();
 
     }
 
@@ -176,36 +182,6 @@ public class Point extends Geometry {
     @Override
     public synchronized Coordinate2D getPoint() {
         return point;
-    }
-
-    private void getInstance(final boolean root, final Key key, final Key parentKey, final Integer layer, final Coordinate2D point) {
-
-        if (statesAreNull()) {
-            synchronized(this) {
-                if (statesAreNull()) {
-                    this.root = root;
-                    this.key = new Key(key);
-                    this.parentKey = new Key(parentKey);
-                    this.layer = new Integer(layer);
-                    this.point = new Coordinate2D(point.x, point.y);
-
-                    validateState();
-
-                }
-            }
-        }
-    }
-
-    @Override
-    protected boolean statesAreNull() {
-
-        if (this.key == null &&
-            this.parentKey == null &&
-            this.layer == null &&
-            this.point == null) return true;
-
-        return false;
-
     }
 
     @Override

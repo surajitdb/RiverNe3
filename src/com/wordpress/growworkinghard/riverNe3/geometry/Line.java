@@ -54,7 +54,14 @@ public class Line extends Geometry {
 
     public Line(final boolean root, final Key key, final Key parentKey, final int layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
-        getInstance(root, key, parentKey, layer, startPoint, endPoint);
+        this.root = new Boolean(root);
+        this.key = new Key(key);
+        this.parentKey = new Key(parentKey);
+        this.layer = new Integer(layer);
+        this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
+        this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
+
+        validateState();
 
     }
 
@@ -212,39 +219,6 @@ public class Line extends Geometry {
     @Override
     public synchronized Coordinate2D getEndPoint() {
         return new Coordinate2D(endPoint.x, endPoint.y);
-    }
-
-    private void getInstance(final boolean root, final Key key, final Key parentKey, final int layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
-
-        if (statesAreNull()) {
-            synchronized(this) {
-                if (statesAreNull()) {
-                    this.root = new Boolean(root);
-                    this.key = new Key(key);
-                    this.parentKey = new Key(parentKey);
-                    this.layer = new Integer(layer);
-                    this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
-                    this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
-
-                    validateState();
-
-                }
-            }
-        }
-
-    }
-
-    @Override
-    protected boolean statesAreNull() {
-
-        if (this.key == null &&
-            this.parentKey == null &&
-            this.layer == null &&
-            this.startPoint == null &&
-            this.endPoint == null) return true;
-
-        return false;
-
     }
 
     @Override

@@ -58,7 +58,14 @@ public class LocalNode extends Component {
      */
     public LocalNode(final Key key, final Key leftChildKey, final Key rightChildKey, final int layer) {
 
-        getInstance(key, leftChildKey, rightChildKey, layer);
+        this.key = new Key(key);
+        this.leftChildKey = new Key(leftChildKey);
+        this.rightChildKey = new Key(rightChildKey);
+        this.layer = new Integer(layer);
+
+        validateState();
+
+        this.parentKey = new Key(computeParentKey(key));
 
     }
 
@@ -156,43 +163,6 @@ public class LocalNode extends Component {
         tmp += " Left Child = " + leftChildKey.getString() + " Right Child = " + rightChildKey.getString();
         tmp += " Layer = " + layer;
         return tmp;
-
-    }
-
-    @Override
-    protected void getInstance(final Key key, final Key leftChildKey, final Key rightChildKey, final int layer) {
-
-        if (statesAreNull()) {
-            synchronized(this) {
-                if (statesAreNull()) {
-
-                    this.key = new Key(key);
-                    this.leftChildKey = new Key(leftChildKey);
-                    this.rightChildKey = new Key(rightChildKey);
-                    this.layer = new Integer(layer);
-
-                    validateState();
-
-                    this.parentKey = new Key(computeParentKey(key));
-
-                }
-
-            }
-
-        }
-
-    }
-
-    @Override
-    protected boolean statesAreNull() {
-
-        if (this.key == null &&
-            this.parentKey == null &&
-            this.layer == null &&
-            this.leftChildKey == null &&
-            this.rightChildKey == null) return true;
-
-        return false;
 
     }
 

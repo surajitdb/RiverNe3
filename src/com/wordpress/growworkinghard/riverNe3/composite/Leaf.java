@@ -56,7 +56,12 @@ public class Leaf extends Component {
      */
     public Leaf(final Key key, final int layer) {
 
-        getInstance(key, null, null, layer);
+        this.key = new Key(key);
+        this.layer = new Integer(layer);
+
+        validateState();
+
+        this.parentKey = new Key(computeParentKey(key));
 
     }
 
@@ -154,39 +159,6 @@ public class Leaf extends Component {
   
         String tmp = "Leaf - Parent Key = " + parentKey.getString() + " Layer = " + layer;
         return tmp;
-
-    }
-
-    @Override
-    protected void getInstance(final Key key, final Key leftChild, final Key rightChild, final int layer) {
-
-        if (statesAreNull()) {
-            synchronized(this) {
-                if (statesAreNull()) {
-
-                    this.key = new Key(key);
-                    this.layer = new Integer(layer);
-
-                    validateState();
-
-                    this.parentKey = new Key(computeParentKey(key));
-
-                }
-
-            }
-
-        }
-
-    }
-
-    @Override
-    protected boolean statesAreNull() {
-
-        if (this.key == null &&
-            this.parentKey == null &&
-            this.layer == null) return true;
-
-        return false;
 
     }
 

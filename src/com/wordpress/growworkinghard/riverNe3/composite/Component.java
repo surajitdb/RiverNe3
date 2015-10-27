@@ -62,10 +62,6 @@ public abstract class Component {
      */
     abstract public Integer getLayer();
 
-    abstract protected void getInstance(final Key key, final Key leftChildKey, final Key rightChildKey, final int layer);
-
-    abstract protected boolean statesAreNull();
-
     abstract protected void validateState();
 
     protected void validateKey(final Key key) {
