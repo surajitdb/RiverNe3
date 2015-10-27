@@ -18,6 +18,8 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import org.geotools.graph.util.geom.Coordinate2D;
+
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 /**
@@ -33,10 +35,6 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 public abstract class Component {
-
-    abstract public void put();
-
-    abstract public void delete();
 
     abstract public void setNewKey(final Key key);
 
@@ -62,6 +60,8 @@ public abstract class Component {
      */
     abstract public Integer getLayer();
 
+    abstract boolean statesAreNull();
+
     abstract protected void validateState();
 
     abstract protected Key computeParentKey(final Key key);
@@ -76,6 +76,16 @@ public abstract class Component {
 
         if (layer < 0)
             throw new NullPointerException("Layer cannot be null or less then zero");
+
+    }
+
+    protected void validateCoordinate(final Coordinate2D point) {
+
+        if (point == null)
+            throw new NullPointerException("Component coordinates cannot be null");
+
+        if (point.x < 0 || point.y < 0)
+            throw new IllegalArgumentException("Coordinates cannot be negative");
 
     }
 

@@ -18,7 +18,10 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import org.geotools.graph.util.geom.Coordinate2D;
+
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+import com.wordpress.growworkinghard.riverNe3.geometry.Point;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -43,6 +46,7 @@ public class LocalNode extends Component {
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
     @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
     @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
+    @GuardedBy("this") Coordinate2D point;
 
     /**
      * @brief Alternative constructor which requires all the states
@@ -56,27 +60,10 @@ public class LocalNode extends Component {
      * @param[in] layer
      *            The layer in the tree in which this node is located
      */
-    public LocalNode(final Key key, final Key leftChildKey, final Key rightChildKey, final int layer) {
+    public LocalNode(final Point root, final Key leftChildKey, final Key rightChildKey) {
 
-        this.key = new Key(key);
-        this.leftChildKey = new Key(leftChildKey);
-        this.rightChildKey = new Key(rightChildKey);
-        this.layer = new Integer(layer);
+        getInstance(root, leftChildKey, rightChildKey);
 
-        validateState();
-
-        this.parentKey = new Key(computeParentKey(key));
-
-    }
-
-    @Override
-    public synchronized void put() {
-        new UnsupportedOperationException("Method not implemented yet");    
-    }
-
-    @Override
-    public synchronized void delete() {
-        new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
@@ -151,6 +138,11 @@ public class LocalNode extends Component {
         return new Integer(layer);
     }
 
+    public synchronized Coordinate2D getPoint() {
+        validateCoordinate(point);
+        return new Coordinate2D(point.x, point.y);
+    }
+
     /**
      * @brief Simply overriding of the <code>toString</code> method
      *
@@ -166,13 +158,50 @@ public class LocalNode extends Component {
 
     }
 
+    private void getInstance(final Point root, final Key leftChildKey, final Key rightChildKey) {
+
+        if (statesAreNull()) {
+            synchronized(this) {
+                if (statesAreNull()) {
+                    this.key = new Key(root.getKey());
+                    this.leftChildKey = new Key(leftChildKey);
+                    this.rightChildKey = new Key(rightChildKey);
+                    this.layer = new Integer(root.getLayer());
+                    this.parentKey = new Key(root.getParentKey());
+                    this.point = new Coordinate2D(root.getPoint().x, root.getPoint().y);
+
+                    validateState();
+                }
+
+            }
+
+        }
+
+    }
+
+    @Override
+    protected boolean statesAreNull() {
+
+        if (this.key == null &&
+            this.layer == null &&
+            this.leftChildKey == null &&
+            this.rightChildKey == null &&
+            this.parentKey == null &&
+            this.point == null) return true;
+
+        return false;
+
+    }
+
     @Override
     protected void validateState() {
 
+        validateKey(key);
         validateKey(parentKey);
         validateLayer(layer);
         validateKey(leftChildKey);
         validateKey(rightChildKey);
+        validateCoordinate(point);
 
     }
 

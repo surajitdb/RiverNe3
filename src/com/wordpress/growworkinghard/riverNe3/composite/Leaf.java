@@ -18,7 +18,10 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import org.geotools.graph.util.geom.Coordinate2D;
+
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -45,6 +48,8 @@ public class Leaf extends Component {
     @GuardedBy("this") private Key key;
     @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
+    @GuardedBy("this") Coordinate2D startPoint;
+    @GuardedBy("this") Coordinate2D endPoint;
 
     /**
      * @brief Alternative constructor which require all the states
@@ -54,25 +59,10 @@ public class Leaf extends Component {
      * @param[in] layer
      *            The layer in the tree in which this node is located
      */
-    public Leaf(final Key key, final int layer) {
+    public Leaf(final Line root) {
 
-        this.key = new Key(key);
-        this.layer = new Integer(layer);
+        getInstance(root, null, null);
 
-        validateState();
-
-        this.parentKey = new Key(computeParentKey(key));
-
-    }
-
-    @Override
-    public synchronized void put() {
-        new UnsupportedOperationException("Method not implemented yet");    
-    }
-
-    @Override
-    public synchronized void delete() {
-        new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
@@ -149,6 +139,16 @@ public class Leaf extends Component {
         return new Integer(layer);
     }
 
+    public synchronized Coordinate2D getStartPoint() {
+        validateCoordinate(startPoint);
+        return new Coordinate2D(startPoint.x, startPoint.y);
+    }
+
+    public synchronized Coordinate2D getEndPoint() {
+        validateCoordinate(endPoint);
+        return new Coordinate2D(endPoint.x, endPoint.y);
+    }
+
     /**
      * @brief Simply overriding of the <code>toString</code> method
      *
@@ -162,11 +162,46 @@ public class Leaf extends Component {
 
     }
 
+    private void getInstance(final Line root, final Key leftChildKey, final Key rightChildKey) {
+
+        if (statesAreNull()) {
+            synchronized(this) {
+                if (statesAreNull()) {
+                    this.key = new Key(root.getKey());
+                    this.layer = new Integer(root.getLayer());
+                    this.parentKey = new Key(root.getParentKey());
+                    this.startPoint = new Coordinate2D(root.getStartPoint().x, root.getStartPoint().y);
+                    this.endPoint = new Coordinate2D(root.getEndPoint().x, root.getEndPoint().y);
+                    validateState();
+                }
+
+            }
+
+        }
+
+    }
+
+    @Override
+    protected boolean statesAreNull() {
+
+        if (this.key == null &&
+            this.parentKey == null &&
+            this.layer == null &&
+            this.startPoint == null &&
+            this.endPoint == null) return true;
+
+        return false;
+
+    }
+
     @Override
     protected void validateState() {
 
         validateKey(key);
         validateLayer(layer);
+        validateKey(parentKey);
+        validateCoordinate(startPoint);
+        validateCoordinate(endPoint);
 
     }
 
