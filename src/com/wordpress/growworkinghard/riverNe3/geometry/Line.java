@@ -106,7 +106,7 @@ public class Line extends Geometry {
      */
     @Override
     public synchronized Key getKey() {
-        return new Key(key);
+        return key;
     }
 
     /**
@@ -150,7 +150,7 @@ public class Line extends Geometry {
      */
     @Override
     public synchronized Key getParentKey() {
-        return new Key(parentKey);
+        return parentKey;
     }
 
     /**

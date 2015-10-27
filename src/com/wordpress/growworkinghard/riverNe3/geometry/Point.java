@@ -136,7 +136,7 @@ public class Point extends Geometry {
      */
     @Override
     public synchronized void setParentKey(final Key parentKey) {
-        this.parentKey = parentKey;
+        this.parentKey = new Key(parentKey);
     }
 
     /**

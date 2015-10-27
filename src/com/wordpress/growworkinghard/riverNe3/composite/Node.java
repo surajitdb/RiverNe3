@@ -93,7 +93,7 @@ public class Node extends Component {
     @Override
     public synchronized Key getKey() {
         validateKey(key);
-        return new Key(key);
+        return key;
     }
 
     /**
@@ -104,7 +104,7 @@ public class Node extends Component {
     @Override
     public synchronized Key getLeftChildKey() {
         validateKey(leftChildKey);
-        return new Key(leftChildKey);
+        return leftChildKey;
     }
 
     /**
@@ -115,7 +115,7 @@ public class Node extends Component {
     @Override
     public synchronized Key getRightChildKey() {
         validateKey(rightChildKey);
-        return new Key(rightChildKey);
+        return rightChildKey;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Node extends Component {
      */
     public synchronized Key getParentKey() {
         validateKey(parentKey);
-        return new Key(parentKey);
+        return parentKey;
     }
 
     /**

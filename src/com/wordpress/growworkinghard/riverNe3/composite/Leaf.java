@@ -87,7 +87,7 @@ public class Leaf extends Component {
     @Override
     public synchronized Key getKey() {
         validateKey(key);
-        return new Key(key);
+        return key;
     }
 
     /**
@@ -124,7 +124,7 @@ public class Leaf extends Component {
     @Override
     public synchronized Key getParentKey() {
         validateKey(parentKey);
-        return new Key(parentKey);
+        return parentKey;
     }
 
     /**
