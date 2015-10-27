@@ -20,16 +20,20 @@ package com.wordpress.growworkinghard.riverNe3;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.google.common.collect.BinaryTreeTraverser;
+import com.google.common.collect.FluentIterable;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
+import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
 
 public class RiverNe3 {
  
@@ -63,26 +67,23 @@ public class RiverNe3 {
         executor.shutdown();
         binaryTree = tb.get();
 
-        Iterator<Map.Entry<Key, Component>> i = binaryTree.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry pair = i.next();
-            Key tmpKey = (Key)pair.getKey();
-            System.out.println(tmpKey.getString() + " " + tmpKey.getDouble() + " --> " + pair.getValue().toString());
-        }
-
-        // BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
-        // double tmpKey = 6.0;
-        // Key key = new Key("6");
-        // Component tmpComponent = binaryTree.get(key);
-        // System.out.println(tmpComponent.toString());
-        // FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
-        // List<Component> list = iterator.toList();
-        // Iterator<Component> it = list.iterator();
-
-        // while(it.hasNext()) {
-        //     Component tmp = it.next();
-        //     System.out.println(tmp.getLayer());
+        // Iterator<Map.Entry<Key, Component>> i = binaryTree.entrySet().iterator();
+        // while (i.hasNext()) {
+        //     Map.Entry pair = i.next();
+        //     Key tmpKey = (Key)pair.getKey();
+        //     System.out.println(tmpKey.getString() + " " + tmpKey.getDouble() + " --> " + pair.getValue().toString());
         // }
+
+        BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
+        Key key = new Key(3.0);
+        FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
+        List<Component> list = iterator.toList();
+        Iterator<Component> it = list.iterator();
+
+        while(it.hasNext()) {
+            Component tmp = it.next();
+            System.out.println(tmp.getParentKey().getString());
+        }
 
     }
 
