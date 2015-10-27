@@ -34,6 +34,7 @@ import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.TreeBuilding;
 
 public class RiverNe3 {
  
