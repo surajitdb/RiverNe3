@@ -24,6 +24,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import net.jcip.annotations.Immutable;
 
 /**
+ * @brief http://commons.apache.org/proper/commons-lang/download_lang.cgi
  * @todo make this object immutable
  *
  * @author
