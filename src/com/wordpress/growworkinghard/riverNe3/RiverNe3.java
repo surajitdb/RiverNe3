@@ -21,7 +21,6 @@ package com.wordpress.growworkinghard.riverNe3;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,13 +33,14 @@ import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
-import com.wordpress.growworkinghard.riverNe3.treeBuilding.TreeBuilding;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.RiverBinaryTree;
 
 public class RiverNe3 {
  
     static DbfProcessing dfbp;
     static HashMap<Integer, Geometry> test;
-    static TreeBuilding tb;
+    static BinaryTree tb;
     static HashMap<Key, Component> binaryTree;
 
     public static void main(String[] args) {
@@ -52,9 +52,8 @@ public class RiverNe3 {
         dfbp.process(filePath, colNames);
         test = dfbp.get();
 
-        tb = new TreeBuilding();
+        tb = new RiverBinaryTree(test, 4);
 
-        tb.buildTree(test, 4);
         ExecutorService executor = Executors.newFixedThreadPool(4);
         CountDownLatch l = new CountDownLatch(4);
 
@@ -66,7 +65,7 @@ public class RiverNe3 {
         } catch (InterruptedException e) {}
 
         executor.shutdown();
-        binaryTree = tb.get();
+        binaryTree = tb.computeNodes();
 
         // Iterator<Map.Entry<Key, Component>> i = binaryTree.entrySet().iterator();
         // while (i.hasNext()) {
@@ -99,7 +98,7 @@ public class RiverNe3 {
         @Override
         public void run() {
             // System.out.println(Thread.currentThread().getName() + " start thread read tree");
-            tb.buildTree(test, 4);
+            tb.buildTree();
             // System.out.println(Thread.currentThread().getName() + " end thread read tree");
             l.countDown();
         }

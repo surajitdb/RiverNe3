@@ -22,56 +22,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.wordpress.growworkinghard.riverNe3.composite.*;
+import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
-import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
 import net.jcip.annotations.GuardedBy;
 
-/**
- * @brief Building the binary tree of the input river net
- *
- * @description This class parses a <code>List</code> of <tt>Geometry</tt>
- *              objects, finds the <strong>root node</strong> of a sub-tree,
- *              adds it to the <code>ConcurrentHashMap</code> structure after
- *              having computed its <em>left child</em> and <em>right child</em>
- *              . Then, the latter two become the new root nodes of a sub-tree
- *              and when a thread, which is parsing the <code>List</code>
- *              structure recognizes that, it executes the complete procedure.
- *              <p>
- *              This algorithm is able to recognize 3 type of <tt>Component</tt>
- *              (from the <strong>Composite Pattern</strong> implemented in the
- *              <code>composite</code> package):
- *              <ul>
- *              <li><tt>Leaf</tt>: node without children;</li>
- *              <li><tt>Node</tt>: node with children;</li>
- *              <li><tt>Ghost Node</tt>: node created when a river intersection
- *              is composed by 3 or more rivers. In a <tt>binary tree</tt>
- *              structure a node cannot have three children, so that a ghost
- *              node is necessary to gather the flow of two rivers and then
- *              releases it with the flow of the remaining river into the root
- *              node of the sub-tree. At the end it does nothing special, it is
- *              just a virtual structure required to build a binary tree.</li>
- *              </ul>
- *              </p>
- *
- * @code{.java}
- * TreeBuilding treeBuilding = new TreeBuilding();
- * ConcurrentHashMap<Integer, Component> tree = treeBuilding.get(listGeometries);
- * @endcode
- *
- * @todo design a better implementation for the method <code>computeNewNode</code>
- *
- * @todo complete the documentation
- *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
- * @version 0.1
- * @date October 13, 2015
- * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
- */
-public class TreeBuilding {
+public class RiverBinaryTree extends BinaryTree {
 
     @GuardedBy("this") private volatile static ConcurrentHashMap<Key, Component> binaryTree;
     @GuardedBy("this") private volatile static ConcurrentHashMap<Integer, Geometry> data;
@@ -80,26 +37,28 @@ public class TreeBuilding {
     /**
      * @brief Default Constructor
      */
-    public TreeBuilding() {}
-
-    public synchronized HashMap<Key, Component> get() {
-
-        validateOutputData(); //!< post-condition
-        return new HashMap<Key, Component>(binaryTree);
+    public RiverBinaryTree(final HashMap<Integer, Geometry> inputData, final int threadsNumber) {
+ 
+        getInstance(inputData, threadsNumber);
 
     }
 
-    /**
-     * @brief Getter method which returns the tree structure
-     *
-     * @param[in] list
-     *            The <code>List</code> of <tt>Geometry</tt> objects
-     * @return The tree structure in a <code>ConcurrentHashMap</code>
-     */
-    public void buildTree(final HashMap<Integer, Geometry> inputData, final int threadsNumber) {
+    public synchronized HashMap<Key, Component> computeNodes() {
 
-        getInstance(inputData, threadsNumber);
+        validateOutputData(); //!< post-condition
+        return deepCopy(binaryTree);
+
+    }
+
+    public void buildTree() {
         while(!data.isEmpty()) findRoot(); // find each root of the sub-tree
+    }
+
+    private static HashMap<Key, Component> deepCopy(final ConcurrentHashMap<Key, Component> computeTree) {
+
+        HashMap<Key, Component> result = new HashMap<Key, Component>();
+        result.putAll(computeTree);
+        return result;
 
     }
 
@@ -403,28 +362,6 @@ public class TreeBuilding {
 
         if (binaryTree.isEmpty())
             throw new NullPointerException("The output HashMap is empty. Something was wrong during the computation");
-
-    }
-
-    /**
-     * @brief A simple test of the class
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-
-        String filePath = "/home/francesco/vcs/git/personal/RiverNe3/data/net.dbf";
-        String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
-
-        DbfProcessing dfbp = new DbfLinesProcessing();
-        dfbp.process(filePath, colNames);
-        HashMap<Integer, Geometry> test = dfbp.get();
-
-        TreeBuilding tb = new TreeBuilding();
-        tb.buildTree(test, 1);
-        HashMap<Key, Component> binaryTree = tb.get();
-
-        System.out.println(binaryTree);
 
     }
 
