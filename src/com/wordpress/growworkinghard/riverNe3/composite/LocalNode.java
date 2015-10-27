@@ -176,4 +176,9 @@ public class LocalNode extends Component {
 
     }
 
+    @Override
+    protected Key computeParentKey(final Key key) {
+        return new Key(Math.floor(key.getDouble() / 2));
+    }
+
 }

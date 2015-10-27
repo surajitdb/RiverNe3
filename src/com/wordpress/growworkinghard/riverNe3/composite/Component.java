@@ -64,6 +64,8 @@ public abstract class Component {
 
     abstract protected void validateState();
 
+    abstract protected Key computeParentKey(final Key key);
+
     protected void validateKey(final Key key) {
 
         if (key == null || key.getString() == null)
@@ -75,10 +77,6 @@ public abstract class Component {
         if (layer < 0)
             throw new NullPointerException("Layer cannot be null or less then zero");
 
-    }
-
-    protected Key computeParentKey(final Key key) {
-        return new Key(Math.floor(key.getDouble() / 2));
     }
 
 }
