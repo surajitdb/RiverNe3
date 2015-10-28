@@ -121,7 +121,7 @@ public abstract class Geometry {
      *                subclass
      */
     public void setPoint(final double x, final double y) {
-        new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -138,7 +138,7 @@ public abstract class Geometry {
      *                subclass
      */
     public void setPoint(final Coordinate2D point) {
-        new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -154,8 +154,7 @@ public abstract class Geometry {
      *                subclass
      */
     public Coordinate2D getPoint() {
-        new UnsupportedOperationException();
-        return new Coordinate2D(0.0, 0.0);
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -174,7 +173,7 @@ public abstract class Geometry {
      *                subclass
      */
     public void setStartPoint(final double x, final double y) {
-        new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -191,7 +190,7 @@ public abstract class Geometry {
      *                subclass
      */
     public void setStartPoint(final Coordinate2D startPoint) {
-        new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -207,8 +206,7 @@ public abstract class Geometry {
      *                subclass
      */
     public Coordinate2D getStartPoint() {
-        new UnsupportedOperationException();
-        return new Coordinate2D(0.0, 0.0);
+        throw new NullPointerException("Operation not supported");
     }
 
     /**
@@ -227,7 +225,7 @@ public abstract class Geometry {
      *                subclass
      */
     public void setEndPoint(final double x, final double y) {
-        new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -244,7 +242,7 @@ public abstract class Geometry {
      *                subclass
      */
     public void setEndPoint(final Coordinate2D endPoint) {
-        new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -260,8 +258,7 @@ public abstract class Geometry {
      *                subclass
      */
     public Coordinate2D getEndPoint() {
-        new UnsupportedOperationException();
-        return new Coordinate2D(0.0, 0.0);
+        throw new UnsupportedOperationException();
     }
 
     protected void validateKey(final Key key) {
