@@ -50,7 +50,7 @@ public class LocalNode extends Component {
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
     @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
     @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
-    @GuardedBy("this") Coordinate2D point;
+    @GuardedBy("this") private Coordinate2D point;
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser;
 
     /**
@@ -66,9 +66,7 @@ public class LocalNode extends Component {
      *            The layer in the tree in which this node is located
      */
     public LocalNode(final Point root, final Key leftChildKey, final Key rightChildKey) {
-
         getInstance(root, leftChildKey, rightChildKey);
-
     }
 
     public synchronized void setNewKey(final Key key) {
@@ -102,7 +100,7 @@ public class LocalNode extends Component {
      * @return The <tt>HashMap</tt> key of the right child
      */
     public synchronized Key getRightChildKey() {
-        validateKey(rightChildKey);
+        // validateKey(rightChildKey); this key might be null
         return rightChildKey;
     }
 
@@ -114,6 +112,16 @@ public class LocalNode extends Component {
     public synchronized Key getParentKey() {
         validateKey(parentKey);
         return parentKey;
+    }
+
+    public synchronized Coordinate2D getStartPoint() {
+        validateCoordinate(point);
+        return new Coordinate2D(point.x, point.y);
+    }
+
+    public synchronized Coordinate2D getEndPoint() {
+        validateCoordinate(point);
+        return new Coordinate2D(point.x, point.y);
     }
 
     /**
@@ -189,8 +197,8 @@ public class LocalNode extends Component {
             synchronized(this) {
                 if (statesAreNull()) {
                     this.key = new Key(root.getKey());
-                    this.leftChildKey = new Key(leftChildKey);
-                    this.rightChildKey = new Key(rightChildKey);
+                    this.leftChildKey = leftChildKey;
+                    this.rightChildKey = rightChildKey;
                     this.layer = new Integer(root.getLayer());
                     this.parentKey = new Key(root.getParentKey());
                     this.point = new Coordinate2D(root.getPoint().x, root.getPoint().y);
@@ -223,7 +231,7 @@ public class LocalNode extends Component {
         validateKey(parentKey);
         validateLayer(layer);
         validateKey(leftChildKey);
-        validateKey(rightChildKey);
+        // validateKey(rightChildKey); this key might be null
         validateCoordinate(point);
 
     }

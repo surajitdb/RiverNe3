@@ -49,6 +49,10 @@ public abstract class Component {
 
     abstract public Key getParentKey();
 
+    abstract public Coordinate2D getStartPoint();
+
+    abstract public Coordinate2D getEndPoint();
+
     /**
      * @brief Setter method to set the layer of the node
      *

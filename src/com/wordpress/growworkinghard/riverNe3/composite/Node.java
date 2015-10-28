@@ -193,8 +193,8 @@ public class Node extends Component {
             synchronized(this) {
                 if (statesAreNull()) {
                     this.key = new Key(root.getKey());
-                    this.leftChildKey = new Key(leftChildKey);
-                    this.rightChildKey = new Key(rightChildKey);
+                    this.leftChildKey = leftChildKey;
+                    this.rightChildKey = rightChildKey;
                     this.layer = new Integer(root.getLayer());
                     this.parentKey = new Key(root.getParentKey());
                     this.startPoint = new Coordinate2D(root.getStartPoint().x, root.getStartPoint().y);
@@ -228,7 +228,7 @@ public class Node extends Component {
         validateKey(key);
         validateLayer(layer);
         validateKey(leftChildKey);
-        validateKey(rightChildKey);
+        // validateKey(rightChildKey); this key might be null
         validateKey(parentKey);
         validateCoordinate(startPoint);
         validateCoordinate(endPoint);
