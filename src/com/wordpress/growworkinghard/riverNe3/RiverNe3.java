@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
+import com.wordpress.growworkinghard.riverNe3.composite.Node;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
@@ -76,10 +77,14 @@ public class RiverNe3 {
 
         BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
         Key key = new Key(3.0);
-        FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
-        List<Component> list = iterator.toList();
-        Iterator<Component> it = list.iterator();
+        // FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
+        // List<Component> list = iterator.toList();
+        // Iterator<Component> it = list.iterator();
 
+        Component node = binaryTree.get(key);
+        node.setTraverser(traverser);
+        List<Component> list = node.postOrderTraversal();
+        Iterator<Component> it = list.iterator();
         while(it.hasNext()) {
             Component tmp = it.next();
             System.out.println(tmp.getParentKey().getString());
