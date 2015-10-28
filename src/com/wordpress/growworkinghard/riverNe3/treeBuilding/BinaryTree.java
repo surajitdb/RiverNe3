@@ -68,6 +68,4 @@ public abstract class BinaryTree {
 
     public abstract HashMap<Key, Component> computeNodes();
 
-    public abstract void buildTree();
-
 }
