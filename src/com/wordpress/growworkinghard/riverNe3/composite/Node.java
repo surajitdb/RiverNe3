@@ -18,8 +18,12 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import java.util.List;
+
 import org.geotools.graph.util.geom.Coordinate2D;
 
+import com.google.common.collect.BinaryTreeTraverser;
+import com.google.common.collect.FluentIterable;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
@@ -46,8 +50,9 @@ public class Node extends Component {
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
     @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
     @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
-    @GuardedBy("this") Coordinate2D startPoint;
-    @GuardedBy("this") Coordinate2D endPoint;
+    @GuardedBy("this") private Coordinate2D startPoint;
+    @GuardedBy("this") private Coordinate2D endPoint;
+    @GuardedBy("this") private BinaryTreeTraverser<Component> traverser;
 
     /**
      * @brief Alternative constructor which requires all the states
@@ -67,7 +72,6 @@ public class Node extends Component {
 
     }
 
-    @Override
     public synchronized void setNewKey(final Key key) {
 
         validateKey(key);
@@ -78,7 +82,6 @@ public class Node extends Component {
 
     }
 
-    @Override
     public synchronized Key getKey() {
         validateKey(key);
         return key;
@@ -89,7 +92,6 @@ public class Node extends Component {
      *
      * @return The <tt>HashMap</tt> key of the left child
      */
-    @Override
     public synchronized Key getLeftChildKey() {
         validateKey(leftChildKey);
         return leftChildKey;
@@ -100,7 +102,6 @@ public class Node extends Component {
      *
      * @return The <tt>HashMap</tt> key of the right child
      */
-    @Override
     public synchronized Key getRightChildKey() {
         validateKey(rightChildKey);
         return rightChildKey;
@@ -146,6 +147,33 @@ public class Node extends Component {
         return new Coordinate2D(endPoint.x, endPoint.y);
     }
 
+    public synchronized void setTraverser(final BinaryTreeTraverser<Component> traverser) {
+
+        this.traverser = traverser;
+
+    }
+
+    public synchronized List<Component> preOrderTraversal() {
+
+        FluentIterable<Component> iterator = traverser.preOrderTraversal(this);
+        return iterator.toList();
+
+    }
+
+    public synchronized List<Component> postOrderTraversal() {
+
+        FluentIterable<Component> iterator = traverser.postOrderTraversal(this);
+        return iterator.toList();
+
+    }
+
+    public synchronized List<Component> inOrderTraversal() {
+
+        FluentIterable<Component> iterator = traverser.inOrderTraversal(this);
+        return iterator.toList();
+
+    }
+
     /**
      * @brief Simply overriding of the <code>toString</code> method
      *
@@ -181,7 +209,6 @@ public class Node extends Component {
 
     }
 
-    @Override
     protected boolean statesAreNull() {
 
         if (this.key == null &&
@@ -196,7 +223,6 @@ public class Node extends Component {
 
     }
 
-    @Override
     protected void validateState() {
 
         validateKey(key);
@@ -209,7 +235,6 @@ public class Node extends Component {
 
     }
 
-    @Override
     protected Key computeParentKey(final Key key) {
         return new Key(Math.floor(key.getDouble() / 2));
     }

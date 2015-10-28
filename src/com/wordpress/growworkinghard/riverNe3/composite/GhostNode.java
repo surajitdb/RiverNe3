@@ -18,8 +18,12 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import java.util.List;
+
 import org.geotools.graph.util.geom.Coordinate2D;
 
+import com.google.common.collect.BinaryTreeTraverser;
+import com.google.common.collect.FluentIterable;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
@@ -51,8 +55,9 @@ public class GhostNode extends Component {
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
     @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
     @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
-    @GuardedBy("this") Coordinate2D startPoint;
-    @GuardedBy("this") Coordinate2D endPoint;
+    @GuardedBy("this") private Coordinate2D startPoint;
+    @GuardedBy("this") private Coordinate2D endPoint;
+    @GuardedBy("this") private BinaryTreeTraverser<Component> traverser;
 
     public GhostNode(final Line root, final Key leftChildKey, final Key rightChildKey) {
 
@@ -60,7 +65,6 @@ public class GhostNode extends Component {
 
     }
 
-    @Override
     public synchronized void setNewKey(final Key key) {
 
         validateKey(key);
@@ -71,7 +75,6 @@ public class GhostNode extends Component {
 
     }
 
-    @Override
     public synchronized Key getKey() {
         validateKey(key);
         return key;
@@ -82,7 +85,6 @@ public class GhostNode extends Component {
      *
      * @return The <tt>HashMap</tt> key of the left child
      */
-    @Override
     public synchronized Key getLeftChildKey() {
         validateKey(leftChildKey);
         return leftChildKey;
@@ -93,7 +95,6 @@ public class GhostNode extends Component {
      *
      * @return The <tt>HashMap</tt> key of the right child
      */
-    @Override
     public synchronized Key getRightChildKey() {
         validateKey(rightChildKey);
         return rightChildKey;
@@ -104,7 +105,6 @@ public class GhostNode extends Component {
      *
      * @return The <tt>HashMap</tt> key of the parent node
      */
-    @Override
     public synchronized Key getParentKey() {
         validateKey(parentKey);
         return parentKey;
@@ -115,7 +115,6 @@ public class GhostNode extends Component {
      *
      * @param[in] layer The layer of the node in the tree
      */
-    @Override
     public synchronized void setLayer(final int layer) {
         validateLayer(layer);
         this.layer = layer;
@@ -126,7 +125,6 @@ public class GhostNode extends Component {
      *
      * @return The layer of the node in the tree
      */
-    @Override
     public synchronized Integer getLayer() {
         validateLayer(layer);
         return new Integer(layer);
@@ -140,6 +138,33 @@ public class GhostNode extends Component {
     public synchronized Coordinate2D getEndPoint() {
         validateCoordinate(endPoint);
         return new Coordinate2D(endPoint.x, endPoint.y);
+    }
+
+    public synchronized void setTraverser(final BinaryTreeTraverser<Component> traverser) {
+
+        this.traverser = traverser;
+
+    }
+
+    public synchronized List<Component> preOrderTraversal() {
+
+        FluentIterable<Component> iterator = traverser.preOrderTraversal(this);
+        return iterator.toList();
+
+    }
+
+    public synchronized List<Component> postOrderTraversal() {
+
+        FluentIterable<Component> iterator = traverser.postOrderTraversal(this);
+        return iterator.toList();
+
+    }
+
+    public synchronized List<Component> inOrderTraversal() {
+
+        FluentIterable<Component> iterator = traverser.inOrderTraversal(this);
+        return iterator.toList();
+
     }
 
     /**
@@ -175,7 +200,6 @@ public class GhostNode extends Component {
 
     }
 
-    @Override
     protected boolean statesAreNull() {
 
         if (this.key == null &&
@@ -190,7 +214,6 @@ public class GhostNode extends Component {
 
     }
 
-    @Override
     protected void validateState() {
 
         validateKey(key);
@@ -203,7 +226,6 @@ public class GhostNode extends Component {
 
     }
 
-    @Override
     protected Key computeParentKey(final Key key) {
         return new Key(Math.floor(key.getDouble() / 2));
     }

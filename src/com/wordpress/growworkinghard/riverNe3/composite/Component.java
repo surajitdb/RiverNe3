@@ -18,8 +18,11 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import java.util.List;
+
 import org.geotools.graph.util.geom.Coordinate2D;
 
+import com.google.common.collect.BinaryTreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 /**
@@ -53,6 +56,14 @@ public abstract class Component {
      */
     abstract public void setLayer(final int layer);
 
+    abstract public void setTraverser(final BinaryTreeTraverser<Component> traverser);
+
+    abstract public List<Component> preOrderTraversal();
+
+    abstract public List<Component> postOrderTraversal();
+
+    abstract public List<Component> inOrderTraversal();
+
     /**
      * @brief Getter method to get the layer of the node
      *
@@ -60,7 +71,7 @@ public abstract class Component {
      */
     abstract public Integer getLayer();
 
-    abstract boolean statesAreNull();
+    abstract protected boolean statesAreNull();
 
     abstract protected void validateState();
 
