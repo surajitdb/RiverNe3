@@ -16,8 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3.treeBuilding;
+package com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator;
+
+import java.util.HashMap;
+
+import com.wordpress.growworkinghard.riverNe3.composite.Component;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
 
 public abstract class BinaryTreeDecorator extends BinaryTree {
+
+    public abstract HashMap<Key, Component> computeNodes();
+
+    public abstract void buildTree();
 
 }
