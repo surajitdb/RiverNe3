@@ -67,7 +67,6 @@ public class Point extends Geometry {
      *
      * @return the boolean variable <tt>root</tt>
      */
-    @Override
     public synchronized boolean isRoot() {
         return root;
     }
@@ -78,7 +77,6 @@ public class Point extends Geometry {
      * @param[in] root
      *            boolean <code>true</code> if the feature is root a subtree
      */
-    @Override
     public synchronized void setRoot(final boolean root) {
         this.root = root;
     }
@@ -90,7 +88,6 @@ public class Point extends Geometry {
      *            the key that is going to be used as index in the
      *            <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized void setKey(final Key key) {
         this.key = new Key(key);
     }
@@ -101,7 +98,6 @@ public class Point extends Geometry {
      * @return the key that is going to be used as index in the
      *         <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized Key getKey() {
         return key;
     }
@@ -112,7 +108,6 @@ public class Point extends Geometry {
      * @param[in] layer
      *            the layer in the tree
      */
-    @Override
     public synchronized void setLayer(final int layer) {
         this.layer = layer;
     }
@@ -122,7 +117,6 @@ public class Point extends Geometry {
      *
      * @return the layer in the tree
      */
-    @Override
     public synchronized int getLayer() {
         return layer;
     }
@@ -134,7 +128,6 @@ public class Point extends Geometry {
      *            the key which identify the parent node in the
      *            <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized void setParentKey(final Key parentKey) {
         this.parentKey = new Key(parentKey);
     }
@@ -145,7 +138,6 @@ public class Point extends Geometry {
      * @return the key of the parent node, used in the
      *         <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized Key getParentKey() {
         return parentKey;
     }
@@ -158,7 +150,6 @@ public class Point extends Geometry {
      * @param[in] y
      *            The y coordinate
      */
-    @Override
     public synchronized void setPoint(final double x, final double y) {
         point = new Coordinate2D(x, y);
     }
@@ -169,7 +160,6 @@ public class Point extends Geometry {
      * @param[in] point
      *            The coordinates of the point
      */
-    @Override
     public synchronized void setPoint(final Coordinate2D point) {
         this.point = point;
     }
@@ -179,12 +169,10 @@ public class Point extends Geometry {
      *
      * @return The coordinates of the point
      */
-    @Override
     public synchronized Coordinate2D getPoint() {
         return point;
     }
 
-    @Override
     protected void validateState() {
 
         validateKey(key);

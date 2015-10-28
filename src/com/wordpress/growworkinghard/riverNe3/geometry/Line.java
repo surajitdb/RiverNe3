@@ -70,7 +70,6 @@ public class Line extends Geometry {
      *
      * @return the boolean variable <tt>root</tt>
      */
-    @Override
     public synchronized boolean isRoot() {
         return root;
     }
@@ -81,7 +80,6 @@ public class Line extends Geometry {
      * @param[in] root
      *            boolean <code>true</code> if the feature is root a subtree
      */
-    @Override
     public synchronized void setRoot(final boolean root) {
         this.root = new Boolean(root);
     }
@@ -93,7 +91,6 @@ public class Line extends Geometry {
      *            the key that is going to be used as index in the
      *            <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized void setKey(final Key key) {
         this.key = new Key(key);
     }
@@ -104,7 +101,6 @@ public class Line extends Geometry {
      * @return the key that is going to be used as index in the
      *         <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized Key getKey() {
         return key;
     }
@@ -115,7 +111,6 @@ public class Line extends Geometry {
      * @param[in] layer
      *            the layer in the tree
      */
-    @Override
     public synchronized void setLayer(final int layer) {
         this.layer = new Integer(layer);
     }
@@ -125,7 +120,6 @@ public class Line extends Geometry {
      *
      * @return the layer in the tree
      */
-    @Override
     public synchronized int getLayer() {
         return new Integer(layer);
     }
@@ -137,7 +131,6 @@ public class Line extends Geometry {
      *            the key which identify the parent node in the
      *            <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized void setParentKey(final Key parentKey) {
         this.parentKey = new Key(parentKey);
     }
@@ -148,7 +141,6 @@ public class Line extends Geometry {
      * @return the key of the parent node, used in the
      *         <code>ConcurrentHashMap</code>
      */
-    @Override
     public synchronized Key getParentKey() {
         return parentKey;
     }
@@ -161,7 +153,6 @@ public class Line extends Geometry {
      * @param[in] y
      *            The y coordinate
      */
-    @Override
     public synchronized void setStartPoint(final double x, final double y) {
         startPoint = new Coordinate2D(x, y);
     }
@@ -172,7 +163,6 @@ public class Line extends Geometry {
      * @param[in] startPoint
      *            The coordinates of the starting point
      */
-    @Override
     public synchronized void setStartPoint(final Coordinate2D startPoint) {
         this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
     }
@@ -182,7 +172,6 @@ public class Line extends Geometry {
      *
      * @return The coordinates of the starting point
      */
-    @Override
     public synchronized Coordinate2D getStartPoint() {
         return new Coordinate2D(startPoint.x, startPoint.y);
     }
@@ -195,7 +184,6 @@ public class Line extends Geometry {
      * @param[in] y
      *            The y coordinate
      */
-    @Override
     public synchronized void setEndPoint(final double x, final double y) {
         endPoint = new Coordinate2D(x, y);
     }
@@ -206,7 +194,6 @@ public class Line extends Geometry {
      * @param[in] endPoint
      *            The coordinates of the ending point
      */
-    @Override
     public synchronized void setEndPoint(final Coordinate2D endPoint) {
         this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
     }
@@ -216,12 +203,10 @@ public class Line extends Geometry {
      *
      * @return The coordinates of the ending point
      */
-    @Override
     public synchronized Coordinate2D getEndPoint() {
         return new Coordinate2D(endPoint.x, endPoint.y);
     }
 
-    @Override
     protected void validateState() {
 
         validateKey(key);

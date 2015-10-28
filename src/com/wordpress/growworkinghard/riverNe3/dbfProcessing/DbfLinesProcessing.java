@@ -40,7 +40,6 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Line;
  */
 public class DbfLinesProcessing extends DbfProcessing {
 
-    @Override
     protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
         final HashMap<Integer, Geometry> tmpHashMap = new HashMap<Integer, Geometry>();
@@ -113,7 +112,6 @@ public class DbfLinesProcessing extends DbfProcessing {
 
     }
 
-    @Override
     protected void validateInputData(final String filePath, final String[] colNames) {
 
         if (filePath == null)

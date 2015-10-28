@@ -27,7 +27,6 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
 public class DbfPointsProcessing extends DbfProcessing {
 
-    @Override
     protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
         new UnsupportedOperationException("Method not implemented yet");
@@ -35,7 +34,6 @@ public class DbfPointsProcessing extends DbfProcessing {
 
     }
 
-    @Override
     protected void validateInputData(final String filePath, final String[] colNames) {
 
         new UnsupportedOperationException("Method not implemented yet");
