@@ -153,6 +153,7 @@ public class Line extends Geometry {
      * @param[in] y
      *            The y coordinate
      */
+    @Override
     public synchronized void setStartPoint(final double x, final double y) {
         startPoint = new Coordinate2D(x, y);
     }
@@ -163,6 +164,7 @@ public class Line extends Geometry {
      * @param[in] startPoint
      *            The coordinates of the starting point
      */
+    @Override
     public synchronized void setStartPoint(final Coordinate2D startPoint) {
         this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
     }
@@ -172,6 +174,7 @@ public class Line extends Geometry {
      *
      * @return The coordinates of the starting point
      */
+    @Override
     public synchronized Coordinate2D getStartPoint() {
         return new Coordinate2D(startPoint.x, startPoint.y);
     }
@@ -184,6 +187,7 @@ public class Line extends Geometry {
      * @param[in] y
      *            The y coordinate
      */
+    @Override
     public synchronized void setEndPoint(final double x, final double y) {
         endPoint = new Coordinate2D(x, y);
     }
@@ -194,6 +198,7 @@ public class Line extends Geometry {
      * @param[in] endPoint
      *            The coordinates of the ending point
      */
+    @Override
     public synchronized void setEndPoint(final Coordinate2D endPoint) {
         this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
     }
@@ -203,6 +208,7 @@ public class Line extends Geometry {
      *
      * @return The coordinates of the ending point
      */
+    @Override
     public synchronized Coordinate2D getEndPoint() {
         return new Coordinate2D(endPoint.x, endPoint.y);
     }

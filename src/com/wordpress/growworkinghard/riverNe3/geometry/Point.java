@@ -150,6 +150,7 @@ public class Point extends Geometry {
      * @param[in] y
      *            The y coordinate
      */
+    @Override
     public synchronized void setPoint(final double x, final double y) {
         point = new Coordinate2D(x, y);
     }
@@ -160,6 +161,7 @@ public class Point extends Geometry {
      * @param[in] point
      *            The coordinates of the point
      */
+    @Override
     public synchronized void setPoint(final Coordinate2D point) {
         this.point = point;
     }
@@ -169,6 +171,7 @@ public class Point extends Geometry {
      *
      * @return The coordinates of the point
      */
+    @Override
     public synchronized Coordinate2D getPoint() {
         return point;
     }
