@@ -37,31 +37,27 @@ public class Key {
     public Key (final double doubleKey) {
  
         validateDoubleKey(doubleKey); //!< precondition
-        this.hexKey = new String(decimalToHex(doubleKey));
+        this.hexKey = decimalToHex(doubleKey);
 
     }
 
     public Key (final String hexKey) {
-
-        validateStringKey(hexKey); //!< precondition
-        this.hexKey = new String(hexKey);
-
+        validateStringKey(hexKey);
+        this.hexKey = hexKey;
     }
 
     public Key (final Key key) {
 
         validateKey(key); //!< precondition
-        this.hexKey = new String(key.getString());
+        this.hexKey = key.getString();
 
     }
 
     public synchronized String getString() {
-        validateKey(this); //!< postcondition
-        return new String(hexKey);
+        return hexKey;
     }
 
     public synchronized Double getDouble() {
-        validateKey(this); //!< postcondition
         return new Double(hexToDecimal());
     }
 
@@ -135,14 +131,16 @@ public class Key {
 
     private void validateStringKey(final String hexKey) {
 
-        String digits = "0123456789ABCDEF";
-        String tmpHexKey = hexKey.toUpperCase();
+        if (hexKey != null) { // the null value is allowed for keys
+            String digits = "0123456789ABCDEF";
+            String tmpHexKey = hexKey.toUpperCase();
 
-        for (int i = 0; i < tmpHexKey.length(); i++) {
-            char c = tmpHexKey.charAt(i);
-            int d = digits.indexOf(c);
-            if (d < 0)
-                throw new IllegalArgumentException("String '" + hexKey + "' cannot be converted in hexadecimal format");
+            for (int i = 0; i < tmpHexKey.length(); i++) {
+                char c = tmpHexKey.charAt(i);
+                int d = digits.indexOf(c);
+                if (d < 0)
+                    throw new NumberFormatException("String '" + hexKey + "' cannot be converted in hexadecimal format");
+            }
         }
 
     }
@@ -151,7 +149,7 @@ public class Key {
 
         if (key == null)
             throw new NullPointerException("The input key is null");
-
+        validateStringKey(key.getString());
     }
 
 }
