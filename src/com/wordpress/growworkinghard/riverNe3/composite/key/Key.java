@@ -65,6 +65,16 @@ public class Key {
         return new Double(hexToDecimal());
     }
 
+    public synchronized boolean isEven() {
+
+        Double d = hexToDecimal() / 2;
+        String tmpString = d.toString();
+        String[] result = tmpString.split("\\.");
+
+        return (result[1].compareTo("0") == 0) ? true : false;
+
+    }
+
     @Override
     public boolean equals(Object o) {
 
