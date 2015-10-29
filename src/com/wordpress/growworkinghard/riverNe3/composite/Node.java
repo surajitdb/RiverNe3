@@ -182,7 +182,17 @@ public class Node extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Node - Parent Key = " + parentKey.getString() + " Left Child = " + leftChildKey.getString() + " Right Child = " + rightChildKey.getString() + " Layer = " + layer;
+        String tmp = "Node";
+        tmp += " - Key = " + key.getString();
+        tmp += " Parent Key = " + parentKey.getString();
+
+        if (leftChildKey != null)
+            tmp += " Left Child = " + leftChildKey.getString();
+        if (rightChildKey != null)
+            tmp += " Right Child = " + rightChildKey.getString();
+
+        tmp += " Layer = " + layer;
+
         return tmp;
 
     }

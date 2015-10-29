@@ -189,7 +189,11 @@ public class Leaf extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Leaf - Parent Key = " + parentKey.getString() + " Layer = " + layer;
+        String tmp = "Leaf";
+        tmp += " - Key = " + key.getString();
+        tmp += " Parent Key = " + parentKey.getString();
+        tmp += " Layer = " + layer;
+
         return tmp;
 
     }

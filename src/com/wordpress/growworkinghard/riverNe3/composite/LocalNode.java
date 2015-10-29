@@ -184,9 +184,17 @@ public class LocalNode extends Component {
     @Override
     public String toString() {
   
-        String tmp = "LocalNode - Parent Key = " + parentKey.getString();
-        tmp += " Left Child = " + leftChildKey.getString() + " Right Child = " + rightChildKey.getString();
+        String tmp = "LocalNode";
+        tmp += " - Key = " + key.getString();
+        tmp += " Parent Key = " + parentKey.getString();
+
+        if (leftChildKey != null)
+            tmp += " Left Child = " + leftChildKey.getString();
+        if (rightChildKey != null)
+            tmp += " Right Child = " + rightChildKey.getString();
+
         tmp += " Layer = " + layer;
+
         return tmp;
 
     }
