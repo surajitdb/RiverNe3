@@ -18,26 +18,89 @@
  */
 package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
+import com.wordpress.growworkinghard.riverNe3.geometry.Point;
 
 public class DbfPointsProcessing extends DbfProcessing {
 
     protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
-        new UnsupportedOperationException("Method not implemented yet");
-        return new HashMap<Integer, Geometry>();
+        final HashMap<Integer, Geometry> tmpHashMap = new HashMap<Integer, Geometry>();
+
+        int hashMapKey = 1;
+
+        while(dbfReader.hasNext()) {
+
+            try {
+
+                Object[] fields;
+                Point tmpPoint = new Point();
+
+                double x = 0.0, y = 0.0;
+
+                fields = dbfReader.readEntry();
+
+                for (int i = 0; i < colIndices.size(); i++) {
+
+                    int index = colIndices.get(i);
+                    Double tmp;
+                    double tmpVal;
+
+                    tmp = Double.parseDouble(fields[index].toString());
+                    tmpVal = tmp.doubleValue();
+
+                    switch (i)
+                    {
+                        case 0:
+                            x = tmpVal;
+                            break;
+                        case 1:
+                            y = tmpVal;
+                            break;
+                    }
+                }
+
+                tmpPoint.setPoint(x, y);
+
+                tmpHashMap.putIfAbsent(hashMapKey, tmpPoint);
+                hashMapKey++;
+
+            } catch (IOException exception) { new IOException(exception); }
+
+        }
+
+        return tmpHashMap;
 
     }
 
     protected void validateInputData(final String filePath, final String[] colNames) {
 
-        new UnsupportedOperationException("Method not implemented yet");
+        if (filePath == null)
+            throw new NullPointerException("The file path cannot be null");
+
+        if (colNames.length != 2)
+            throw new IllegalArgumentException("You must provide 2 columns: X and Y");
 
     }
 
+    public static void main(String[] args) {
+
+        String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/mon_point.dbf";
+        String[] colNames = {"X_coord", "Y_coord"};
+
+        DbfProcessing dfbp = new DbfPointsProcessing();
+        dfbp.process(filePath, colNames);
+        HashMap<Integer, Geometry> test = dfbp.get();
+
+        for (int i = 0; i < test.size(); i++) {
+            System.out.println(test.get(i+1).getClass() + " " + test.get(i+1).getPoint().x + " " + test.get(i+1).getPoint().y);
+        }
+
+    }
 }
