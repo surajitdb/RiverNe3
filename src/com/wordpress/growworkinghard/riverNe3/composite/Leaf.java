@@ -24,8 +24,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -41,6 +42,7 @@ import net.jcip.annotations.GuardedBy;
  *              </ul>
  *
  * @todo make this class <em>ThreadSafe</em>
+ * @todo add invariant: RCHILD and LCHILD must be null!
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
@@ -49,8 +51,7 @@ import net.jcip.annotations.GuardedBy;
  */
 public class Leaf extends Component {
 
-    @GuardedBy("this") private Key key;
-    @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
+    @GuardedBy("this") private Connections connKeys;
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
     @GuardedBy("this") private Coordinate2D startPoint;
     @GuardedBy("this") private Coordinate2D endPoint;
@@ -64,62 +65,31 @@ public class Leaf extends Component {
      * @param[in] layer
      *            The layer in the tree in which this node is located
      */
-    public Leaf(final Line root) {
+    public Leaf(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
-        getInstance(root, null, null);
-
-    }
-
-    @Override
-    public synchronized void setNewKey(final Key key) {
-
-        validateKey(key);
-        this.key = new Key(key);
-        this.parentKey = new Key(computeParentKey(key));
+        getInstance(connKeys, layer, startPoint, endPoint);
 
     }
 
-    @Override
-    public synchronized Key getKey() {
-        validateKey(key);
-        return key;
+    public synchronized void setNewConnections(final Connections connKeys) {
+
+        validateConnections(connKeys);
+        this.connKeys = connKeys;
+
     }
 
-    /**
-     * @brief Getter method to get the key of the left child
-     *
-     * @description This getter is useful because returning <code>null</code>
-     *              value easily allows to identify which node is a leaf
-     *
-     * @return <code>null</code> value because this object is a leaf
-     */
-    @Override
-    public synchronized Key getLeftChildKey() {
-        return null; 
+    public synchronized void setNewBinaryConnections(final Key ID) {
+
+        validateKey(ID);
+        Key PARENT = computeParentKey(ID);
+        Key LCHILD = null;
+        Key RCHILD = null;
+
+        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
-    /**
-     * @brief Getter method to get the key of the right child
-     *
-     * @description This getter is useful beacuse returning <code>null</code>
-     *              vaule easily allows to identify which node is a leaf
-     *
-     * @return <code>null</code> value because this object is a leaf
-     */
-    @Override
-    public synchronized Key getRightChildKey() {
-        return null; 
-    }
-
-    /**
-     * @brief Getter method to get the key of the parent node
-     *
-     * @return The <tt>HashMap</tt> key of the parent node
-     */
-    @Override
-    public synchronized Key getParentKey() {
-        validateKey(parentKey);
-        return parentKey;
+    public synchronized Connections getConnections() {
+        return connKeys;
     }
 
     /**
@@ -189,25 +159,24 @@ public class Leaf extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Leaf";
-        tmp += " - Key = " + key.getString();
-        tmp += " Parent Key = " + parentKey.getString();
-        tmp += " Layer = " + layer;
+        String tmp = "LEAF       ==> ";
+        tmp += connKeys.toString();
+        tmp += " - Layer = " + layer;
 
         return tmp;
 
     }
 
-    private void getInstance(final Line root, final Key leftChildKey, final Key rightChildKey) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-                    this.key = new Key(root.getKey());
-                    this.layer = new Integer(root.getLayer());
-                    this.parentKey = new Key(root.getParentKey());
-                    this.startPoint = new Coordinate2D(root.getStartPoint().x, root.getStartPoint().y);
-                    this.endPoint = new Coordinate2D(root.getEndPoint().x, root.getEndPoint().y);
+                    this.connKeys = connKeys;
+                    this.layer = new Integer(layer);
+                    this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
+                    this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
+
                     validateState();
                 }
 
@@ -217,11 +186,9 @@ public class Leaf extends Component {
 
     }
 
-    @Override
     protected boolean statesAreNull() {
 
-        if (this.key == null &&
-            this.parentKey == null &&
+        if (this.connKeys == null &&
             this.layer == null &&
             this.startPoint == null &&
             this.endPoint == null) return true;
@@ -230,18 +197,15 @@ public class Leaf extends Component {
 
     }
 
-    @Override
     protected void validateState() {
 
-        validateKey(key);
+        validateConnections(connKeys);
         validateLayer(layer);
-        validateKey(parentKey);
         validateCoordinate(startPoint);
         validateCoordinate(endPoint);
 
     }
 
-    @Override
     protected Key computeParentKey(final Key key) {
         return new Key(Math.floor(key.getDouble() / 2));
     }

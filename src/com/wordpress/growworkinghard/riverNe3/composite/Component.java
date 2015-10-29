@@ -23,6 +23,7 @@ import java.util.List;
 import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 /**
@@ -39,19 +40,24 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  */
 public abstract class Component {
 
-    abstract public void setNewKey(final Key key);
+    public abstract void setNewConnections(final Connections connKeys);
 
-    abstract public Key getKey();
+    public abstract void setNewBinaryConnections(final Key ID);
 
-    abstract public Key getLeftChildKey();
-
-    abstract public Key getRightChildKey();
-
-    abstract public Key getParentKey();
+    /**
+     * @brief In order to return a unique instance of invariants
+     *
+     * JCIP p69
+     *
+     * @return
+     */
+    public abstract Connections getConnections();
 
     abstract public Coordinate2D getStartPoint();
 
-    abstract public Coordinate2D getEndPoint();
+    public Coordinate2D getEndPoint() {
+        throw new UnsupportedOperationException("Method not implemented.");
+    }
 
     /**
      * @brief Setter method to set the layer of the node
@@ -102,6 +108,11 @@ public abstract class Component {
         if (point.x < 0 || point.y < 0)
             throw new IllegalArgumentException("Coordinates cannot be negative");
 
+    }
+
+    protected void validateConnections(final Connections connKeys) {
+        if (connKeys == null)
+            throw new NullPointerException("Input Connections object cannot be null.");
     }
 
 }

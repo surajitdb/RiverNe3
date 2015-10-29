@@ -24,8 +24,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -42,6 +43,7 @@ import net.jcip.annotations.GuardedBy;
  *              <tt>ghost node</tt> where the other two streams flows
  *
  * @todo make this class <em>ThreadSafe</em>
+ * @todo add invariant on startPoint and endPoint ==> must be equal!
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
@@ -50,64 +52,39 @@ import net.jcip.annotations.GuardedBy;
  */
 public class GhostNode extends Component {
 
-    @GuardedBy("this") private Key key;
-    @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
+    @GuardedBy("this") private Connections connKeys;
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
-    @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
-    @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
     @GuardedBy("this") private Coordinate2D startPoint;
     @GuardedBy("this") private Coordinate2D endPoint;
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser;
 
-    public GhostNode(final Line root, final Key leftChildKey, final Key rightChildKey) {
+    public GhostNode(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
-        getInstance(root, leftChildKey, rightChildKey);
-
-    }
-
-    public synchronized void setNewKey(final Key key) {
-
-        validateKey(key);
-        this.key = new Key(key);
-        this.parentKey = new Key(computeParentKey(key));
-        if (leftChildKey != null) this.leftChildKey = new Key(key.getDouble() * 2);
-        if (rightChildKey != null) this.rightChildKey = new Key(key.getDouble() * 2 + 1);
+        getInstance(connKeys, layer, startPoint, endPoint);
 
     }
 
-    public synchronized Key getKey() {
-        validateKey(key);
-        return key;
+    public synchronized void setNewConnections(final Connections connKeys) {
+
+        validateConnections(connKeys);
+        this.connKeys = connKeys;
+
     }
 
-    /**
-     * @brief Getter method to get the key of the left child
-     *
-     * @return The <tt>HashMap</tt> key of the left child
-     */
-    public synchronized Key getLeftChildKey() {
-        validateKey(leftChildKey);
-        return leftChildKey;
+    public synchronized void setNewBinaryConnections(final Key ID) {
+
+        validateKey(ID);
+        Key PARENT = computeParentKey(ID);
+        Key LCHILD, RCHILD;
+        LCHILD = new Key(ID.getDouble() * 2);
+        if (connKeys.getRCHILD() != null) RCHILD = new Key(ID.getDouble() * 2 + 1);
+        else RCHILD = null;
+
+        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
-    /**
-     * @brief Getter method to get the key of the right child
-     *
-     * @return The <tt>HashMap</tt> key of the right child
-     */
-    public synchronized Key getRightChildKey() {
-        // validateKey(rightChildKey); this key might be null
-        return rightChildKey;
-    }
-
-    /**
-     * @brief Getter method to get the key of the parent node
-     *
-     * @return The <tt>HashMap</tt> key of the parent node
-     */
-    public synchronized Key getParentKey() {
-        validateKey(parentKey);
-        return parentKey;
+    public synchronized Connections getConnections() {
+        return connKeys;
     }
 
     /**
@@ -175,48 +152,37 @@ public class GhostNode extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Ghost";
-        tmp += " - Key = " + key.getString();
-        tmp += " Parent Key = " + parentKey.getString();
-
-        if (leftChildKey != null)
-            tmp += " Left Child = " + leftChildKey.getString();
-        if (rightChildKey != null)
-            tmp += " Right Child = " + rightChildKey.getString();
-
-        tmp += " Layer = " + layer;
+        String tmp = "GHOST NODE ==> ";
+        tmp += connKeys.toString();
+        tmp += " - Layer = " + layer;
 
         return tmp;
 
     }
 
-    private void getInstance(final Line root, final Key leftChildKey, final Key rightChildKey) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-                    this.key = new Key(root.getKey());
-                    this.leftChildKey = leftChildKey;
-                    this.rightChildKey = rightChildKey;
-                    this.layer = new Integer(root.getLayer());
-                    this.parentKey = new Key(root.getParentKey());
-                    this.startPoint = new Coordinate2D(root.getStartPoint().x, root.getStartPoint().y);
-                    this.endPoint = new Coordinate2D(root.getEndPoint().x, root.getEndPoint().y);
+                    this.connKeys = connKeys;
+                    this.layer = new Integer(layer);
+                    this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
+                    this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
 
                     validateState();
                 }
+
             }
+
         }
 
     }
 
     protected boolean statesAreNull() {
 
-        if (this.key == null &&
-            this.parentKey == null &&
+        if (this.connKeys == null &&
             this.layer == null &&
-            this.leftChildKey == null &&
-            this.rightChildKey == null &&
             this.startPoint == null &&
             this.endPoint == null) return true;
 
@@ -226,11 +192,8 @@ public class GhostNode extends Component {
 
     protected void validateState() {
 
-        validateKey(key);
+        validateConnections(connKeys);
         validateLayer(layer);
-        validateKey(leftChildKey);
-        // validateKey(rightChildKey); this key might be null
-        validateKey(parentKey);
         validateCoordinate(startPoint);
         validateCoordinate(endPoint);
 

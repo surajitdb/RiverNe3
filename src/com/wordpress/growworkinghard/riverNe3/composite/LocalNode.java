@@ -24,8 +24,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.geometry.Point;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -45,11 +46,8 @@ import net.jcip.annotations.GuardedBy;
  */
 public class LocalNode extends Component {
 
-    @GuardedBy("this") private Key key;
-    @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
+    @GuardedBy("this") private Connections connKeys;
     @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
-    @GuardedBy("this") private Key leftChildKey; //!< the key of the HashMap of the left child
-    @GuardedBy("this") private Key rightChildKey; //!< the key of the HashMap of the right child
     @GuardedBy("this") private Coordinate2D point;
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser;
 
@@ -65,63 +63,31 @@ public class LocalNode extends Component {
      * @param[in] layer
      *            The layer in the tree in which this node is located
      */
-    public LocalNode(final Point root, final Key leftChildKey, final Key rightChildKey) {
-        getInstance(root, leftChildKey, rightChildKey);
+    public LocalNode(final Connections connKeys, final Integer layer, final Coordinate2D point) {
+        getInstance(connKeys, layer, point);
     }
 
-    public synchronized void setNewKey(final Key key) {
+    public synchronized void setNewConnections(final Connections connKeys) {
 
-        validateKey(key);
-        this.key = new Key(key);
-        this.parentKey = new Key(computeParentKey(key));
-        if (leftChildKey != null) this.leftChildKey = new Key(key.getDouble() * 2);
-        if (rightChildKey != null) this.rightChildKey = new Key(key.getDouble() * 2 + 1);
+        validateConnections(connKeys);
+        this.connKeys = connKeys;
 
     }
 
-    public synchronized Key getKey() {
-        validateKey(key);
-        return key;
+    public synchronized void setNewBinaryConnections(final Key ID) {
+
+        validateKey(ID);
+        Key PARENT = computeParentKey(ID);
+        Key LCHILD, RCHILD;
+        LCHILD = new Key(ID.getDouble() * 2);
+        if (connKeys.getRCHILD() != null) RCHILD = new Key(ID.getDouble() * 2 + 1);
+        else RCHILD = null;
+
+        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
-    /**
-     * @brief Getter method to get the key of the left child
-     *
-     * @return The <tt>HashMap</tt> key of the left child
-     */
-    public synchronized Key getLeftChildKey() {
-        validateKey(leftChildKey);
-        return leftChildKey;
-    }
-
-    /**
-     * @brief Getter method to get the key of the right child
-     *
-     * @return The <tt>HashMap</tt> key of the right child
-     */
-    public synchronized Key getRightChildKey() {
-        // validateKey(rightChildKey); this key might be null
-        return rightChildKey;
-    }
-
-    /**
-     * @brief Getter method to get the key of the parent node
-     *
-     * @return The <tt>HashMap</tt> key of the parent node
-     */
-    public synchronized Key getParentKey() {
-        validateKey(parentKey);
-        return parentKey;
-    }
-
-    public synchronized Coordinate2D getStartPoint() {
-        validateCoordinate(point);
-        return new Coordinate2D(point.x, point.y);
-    }
-
-    public synchronized Coordinate2D getEndPoint() {
-        validateCoordinate(point);
-        return new Coordinate2D(point.x, point.y);
+    public synchronized Connections getConnections() {
+        return connKeys;
     }
 
     /**
@@ -144,6 +110,17 @@ public class LocalNode extends Component {
         return new Integer(layer);
     }
 
+    public synchronized Coordinate2D getStartPoint() {
+        validateCoordinate(point);
+        return new Coordinate2D(point.x, point.y);
+    }
+
+    public synchronized Coordinate2D getEndPoint() {
+        validateCoordinate(point);
+        return new Coordinate2D(point.x, point.y);
+    }
+
+    @Override
     public synchronized Coordinate2D getPoint() {
         validateCoordinate(point);
         return new Coordinate2D(point.x, point.y);
@@ -184,32 +161,22 @@ public class LocalNode extends Component {
     @Override
     public String toString() {
   
-        String tmp = "LocalNode";
-        tmp += " - Key = " + key.getString();
-        tmp += " Parent Key = " + parentKey.getString();
-
-        if (leftChildKey != null)
-            tmp += " Left Child = " + leftChildKey.getString();
-        if (rightChildKey != null)
-            tmp += " Right Child = " + rightChildKey.getString();
-
-        tmp += " Layer = " + layer;
+        String tmp = "LOCAL NODE ==> ";
+        tmp += connKeys.toString();
+        tmp += " - Layer = " + layer;
 
         return tmp;
 
     }
 
-    private void getInstance(final Point root, final Key leftChildKey, final Key rightChildKey) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D point) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-                    this.key = new Key(root.getKey());
-                    this.leftChildKey = leftChildKey;
-                    this.rightChildKey = rightChildKey;
-                    this.layer = new Integer(root.getLayer());
-                    this.parentKey = new Key(root.getParentKey());
-                    this.point = new Coordinate2D(root.getPoint().x, root.getPoint().y);
+                    this.connKeys = connKeys;
+                    this.layer = new Integer(layer);
+                    this.point = new Coordinate2D(point.x, point.y);
 
                     validateState();
                 }
@@ -222,11 +189,8 @@ public class LocalNode extends Component {
 
     protected boolean statesAreNull() {
 
-        if (this.key == null &&
+        if (this.connKeys == null &&
             this.layer == null &&
-            this.leftChildKey == null &&
-            this.rightChildKey == null &&
-            this.parentKey == null &&
             this.point == null) return true;
 
         return false;
@@ -235,11 +199,8 @@ public class LocalNode extends Component {
 
     protected void validateState() {
 
-        validateKey(key);
-        validateKey(parentKey);
+        validateConnections(connKeys);
         validateLayer(layer);
-        validateKey(leftChildKey);
-        // validateKey(rightChildKey); this key might be null
         validateCoordinate(point);
 
     }
