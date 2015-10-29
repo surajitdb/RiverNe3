@@ -30,4 +30,20 @@ public abstract class BinaryTreeDecorator extends BinaryTree {
 
     public abstract void buildTree();
 
+    protected abstract void validateState();
+
+    protected void validateBinaryTree(final BinaryTree binaryTree) {
+        if (binaryTree == null)
+            throw new NullPointerException("Object BinaryTree cannot be null");
+    }
+
+    protected synchronized HashMap<Key, Component> deepCopy(final HashMap<Key, Component> tree) {
+
+        HashMap<Key, Component> result = new HashMap<Key, Component>();
+        result.putAll(tree);
+
+        return result;
+
+    }
+
 }
