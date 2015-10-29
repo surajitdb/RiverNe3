@@ -67,7 +67,10 @@ public abstract class DbfProcessing {
 
     public synchronized HashMap<Integer, Geometry> get() {
         validateOutputData(); //!< post-conditions
-        return new HashMap<Integer, Geometry>(inputData);
+        HashMap<Integer, Geometry> result = new HashMap<Integer, Geometry>();
+        result.putAll(inputData);
+        inputData = null;
+        return result;
     }
 
     /**
