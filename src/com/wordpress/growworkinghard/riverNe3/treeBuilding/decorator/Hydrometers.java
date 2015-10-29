@@ -51,8 +51,8 @@ public class Hydrometers extends BinaryTreeDecorator {
         Component root = null;
 
         while(!data.isEmpty()) {
-            retrievePoint(point);
-            retrieveRootNode(point, root);
+            point = retrievePoint();
+            root = retrieveRootNode(point);
             if (root != null) updateBinaryTree(point, root);
         }
 
@@ -74,6 +74,8 @@ public class Hydrometers extends BinaryTreeDecorator {
                     this.binaryTree = binaryTree;
                     this.tolerance = tolerance;
 
+                    validateState();
+
                     tree.putAll(binaryTree.computeNodes());
                 }
             }
@@ -92,11 +94,11 @@ public class Hydrometers extends BinaryTreeDecorator {
 
     }
 
-    private void retrievePoint(Geometry point) {
-        point = data.remove(0);
+    private Geometry retrievePoint() {
+        return data.remove(0);
     }
 
-    private void retrieveRootNode(final Geometry point, Component root) {
+    private Component retrieveRootNode(final Geometry point) {
         Key next;
         Component tmpComp;
 
@@ -105,18 +107,19 @@ public class Hydrometers extends BinaryTreeDecorator {
             next = i.next();
             tmpComp = tree.get(next);
             if (pointIsClosure(point, tmpComp)) {
-                root = tmpComp;
-                break;
+                return tmpComp;
             }
         }
 
+        return null;
     }
 
     private void updateBinaryTree(final Geometry point, final Component root) {
         HashMap<Key, Component> tmpTree = new HashMap<Key, Component>();
-
         root.setTraverser(new RiverBinaryTreeTraverser(tree));
-        List<Component> list = root.preOrderTraversal();
+        List<Component> tmpList = root.preOrderTraversal();
+        List<Component> list = new ArrayList<Component>();
+        list.addAll(tmpList);
         if (!list.remove(root))
             throw new NullPointerException("Root not present in list");
 
@@ -130,6 +133,7 @@ public class Hydrometers extends BinaryTreeDecorator {
 
     private void substituteRoot(final Geometry point, final Component root, HashMap<Key, Component> tmpTree) {
 
+        Key oldRootKey = root.getKey();
         point.setKey(root.getKey());
         point.setLayer(root.getLayer());
         point.setParentKey(root.getParentKey());
@@ -140,8 +144,8 @@ public class Hydrometers extends BinaryTreeDecorator {
             root.setNewKey(new Key(point.getKey().getDouble() * 2));
             root.setLayer(point.getLayer() + 1);
 
-            tree.replace(point.getKey(), new LocalNode((Point) point, root.getKey()));
-            tmpTree.put(root.getKey(), root);
+            tree.replace(point.getKey(), new LocalNode((Point) point, root.getKey(), null));
+            tmpTree.put(oldRootKey, root);
         }
 
     }
@@ -151,18 +155,23 @@ public class Hydrometers extends BinaryTreeDecorator {
         Iterator<Component> it = list.iterator();
         while(it.hasNext()) {
             Component tmp = it.next();
-            tree.remove(tmp.getKey(), tmp);
+            Key oldTmpKey = tmp.getKey();
+            if(!tree.remove(tmp.getKey(), tmp))
+                throw new NullPointerException("object not deleted from the tree");
+
             Component tmpParent = tmpTree.get(tmp.getParentKey());
-            Key newKey;
+            if (tmpParent != null) {
+                Key newKey;
 
-            if (tmpParent.getRightChildKey().getDouble() == (tmp.getKey().getDouble() * 2))
-                newKey = new Key(tmpParent.getRightChildKey());
-            else
-                newKey = new Key(tmpParent.getLeftChildKey());
+                if (tmp.getKey().isEven())
+                    newKey = tmpParent.getLeftChildKey();
+                else
+                    newKey = tmpParent.getRightChildKey();
 
-            tmp.setNewKey(newKey);
-            tmp.setLayer(tmp.getLayer() + 1);
-            tmpTree.put(tmp.getKey(), tmp);
+                tmp.setNewKey(newKey);
+                tmp.setLayer(tmp.getLayer() + 1);
+                tmpTree.put(oldTmpKey, tmp);
+            }
         }
 
     }
@@ -174,7 +183,8 @@ public class Hydrometers extends BinaryTreeDecorator {
         Iterator<Key> i = tmpTree.keySet().iterator();
         while(i.hasNext()) {
             next = i.next();
-            tree.putIfAbsent(next, tmpTree.get(next));
+            Component tmp = tmpTree.get(next);
+            tree.putIfAbsent(tmp.getKey(), tmp);
             // add control if put is fine
         }
 
@@ -185,20 +195,31 @@ public class Hydrometers extends BinaryTreeDecorator {
     }
 
     private double computeDistance(final Geometry point, final Component tmpComp) {
-        final double pointX = point.getPoint().x;
-        final double pointY = point.getPoint().y;
+        double pointX = point.getPoint().x;
+        double pointY = point.getPoint().y;
+        double tmpCompX = tmpComp.getEndPoint().x;
+        double tmpCompY = tmpComp.getEndPoint().y;
 
-        final double tmpCompX = tmpComp.getStartPoint().x;
-        final double tmpCompY = tmpComp.getStartPoint().y;
-
-        return Math.sqrt(Math.abs(Math.pow(pointX, 2) - Math.pow(tmpCompX, 2)) + Math.abs(Math.pow(pointY, 2) - Math.pow(tmpCompY, 2)));
+        return Math.sqrt(Math.pow(pointX - tmpCompX, 2) + Math.pow(pointY- tmpCompY, 2));
 
     }
 
-    private HashMap<Key, Component> deepCopy(final HashMap<Key, Component> tree) {
+    protected void validateState() {
 
-        return tree;
+        validateBinaryTree(binaryTree);
+        validateInputData(data);
+        validateTolerance(tolerance);
 
+    }
+
+    private void validateInputData(final List<Geometry> data) {
+        if (data == null || data.size() == 0)
+            throw new NullPointerException("List of input data cannot be null or empty");
+    }
+
+    private void validateTolerance(final double tolerance) {
+        if (tolerance < 0)
+            throw new NullPointerException("Tolerance must be positive");
     }
 
 }
