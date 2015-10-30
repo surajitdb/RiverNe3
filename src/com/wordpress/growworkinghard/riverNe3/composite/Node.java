@@ -18,6 +18,7 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.geotools.graph.util.geom.Coordinate2D;
@@ -53,6 +54,7 @@ public class Node extends Component {
     @GuardedBy("this") private Coordinate2D startPoint;
     @GuardedBy("this") private Coordinate2D endPoint;
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser;
+    @GuardedBy("this") private final HashMap<Key, Boolean> readyForSim = new HashMap<Key, Boolean>();
 
     /**
      * @brief Alternative constructor which requires all the states
@@ -72,6 +74,28 @@ public class Node extends Component {
 
     }
 
+    @Override
+    public synchronized void notify(final Key child) {
+        readyForSim.replace(child, true);
+    }
+
+    public synchronized boolean isReadyForSimulation() {
+        return (!readyForSim.values().contains(false)) ? true : false;
+    }
+
+    public synchronized void runSimulation(final Component parent) {
+        if (!key.getDouble().equals(1.0) && !parent.getKey().equals(parentKey))
+            throw new IllegalArgumentException("Node not connected with parent");
+
+        try {
+            if (!key.getDouble().equals(1.0)) System.out.println("Node" + key.getDouble() + " ==> Computing..." + " PARENT = " + parent.getKey().getDouble());
+            else System.out.println("Node" + key.getDouble() + " ==> Computing..." + " PARENT = 0");
+
+            Thread.sleep(5000); // lock is hold
+        } catch (InterruptedException e) {}
+        if (!key.getDouble().equals(1.0)) parent.notify(key);
+    }
+
     public synchronized void setNewKey(final Key key) {
 
         validateKey(key);
@@ -80,6 +104,7 @@ public class Node extends Component {
         if (leftChildKey != null) this.leftChildKey = new Key(key.getDouble() * 2);
         if (rightChildKey != null) this.rightChildKey = new Key(key.getDouble() * 2 + 1);
 
+        allocateSimulationFlags();
     }
 
     public synchronized Key getKey() {
@@ -211,11 +236,20 @@ public class Node extends Component {
                     this.endPoint = new Coordinate2D(root.getEndPoint().x, root.getEndPoint().y);
 
                     validateState();
+                    allocateSimulationFlags();
                 }
-
             }
-
         }
+
+    }
+
+    protected void allocateSimulationFlags() {
+        readyForSim.clear();
+
+        if (leftChildKey != null && rightChildKey != null) {
+            readyForSim.put(leftChildKey, false);
+            readyForSim.put(rightChildKey, false);
+        } else readyForSim.put(leftChildKey, false);
 
     }
 

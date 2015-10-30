@@ -70,7 +70,21 @@ public class Leaf extends Component {
 
     }
 
-    @Override
+    public synchronized boolean isReadyForSimulation() {
+        return true;
+    }
+
+    public synchronized void runSimulation(final Component parent) {
+        if (!parent.getKey().equals(parentKey))
+            throw new IllegalArgumentException("Node not connected with parent");
+
+        try {
+            System.out.println("Leaf " + key.getDouble() + " ==> " + Thread.currentThread() + " Computing..." + " PARENT = " + parent.getKey().getDouble());
+            Thread.sleep(5000); // lock is hold
+        } catch (InterruptedException e) {}
+        parent.notify(key);
+    }
+
     public synchronized void setNewKey(final Key key) {
 
         validateKey(key);
@@ -79,7 +93,6 @@ public class Leaf extends Component {
 
     }
 
-    @Override
     public synchronized Key getKey() {
         validateKey(key);
         return key;
@@ -93,7 +106,6 @@ public class Leaf extends Component {
      *
      * @return <code>null</code> value because this object is a leaf
      */
-    @Override
     public synchronized Key getLeftChildKey() {
         return null; 
     }
@@ -106,7 +118,6 @@ public class Leaf extends Component {
      *
      * @return <code>null</code> value because this object is a leaf
      */
-    @Override
     public synchronized Key getRightChildKey() {
         return null; 
     }
@@ -116,7 +127,6 @@ public class Leaf extends Component {
      *
      * @return The <tt>HashMap</tt> key of the parent node
      */
-    @Override
     public synchronized Key getParentKey() {
         validateKey(parentKey);
         return parentKey;
@@ -127,7 +137,6 @@ public class Leaf extends Component {
      *
      * @param[in] layer The layer of the node in the tree
      */
-    @Override
     public synchronized void setLayer(final int layer) {
         validateLayer(layer);
         this.layer = layer;
@@ -138,7 +147,6 @@ public class Leaf extends Component {
      *
      * @return The layer of the node in the tree
      */
-    @Override
     public synchronized Integer getLayer() {
         validateLayer(layer);
         return new Integer(layer);
@@ -217,7 +225,10 @@ public class Leaf extends Component {
 
     }
 
-    @Override
+    protected void allocateSimulationFlags() {
+        // nothing to implement here. Leaf has no simulation flags
+    }
+
     protected boolean statesAreNull() {
 
         if (this.key == null &&
@@ -230,7 +241,6 @@ public class Leaf extends Component {
 
     }
 
-    @Override
     protected void validateState() {
 
         validateKey(key);
@@ -241,7 +251,6 @@ public class Leaf extends Component {
 
     }
 
-    @Override
     protected Key computeParentKey(final Key key) {
         return new Key(Math.floor(key.getDouble() / 2));
     }

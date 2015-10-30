@@ -39,6 +39,16 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  */
 public abstract class Component {
 
+    public void notify(final Key child) {
+        throw new UnsupportedOperationException("Method not implemented for class LEAF");
+    }
+
+    abstract public boolean isReadyForSimulation();
+
+    abstract public void runSimulation(final Component parent);
+
+    abstract protected void allocateSimulationFlags();
+
     abstract public void setNewKey(final Key key);
 
     abstract public Key getKey();

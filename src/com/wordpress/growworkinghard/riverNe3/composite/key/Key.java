@@ -25,7 +25,6 @@ import net.jcip.annotations.Immutable;
 
 /**
  * @brief http://commons.apache.org/proper/commons-lang/download_lang.cgi
- * @todo make this object immutable
  *
  * @author
  */
@@ -131,16 +130,14 @@ public class Key {
 
     private void validateStringKey(final String hexKey) {
 
-        if (hexKey != null) { // the null value is allowed for keys
-            String digits = "0123456789ABCDEF";
-            String tmpHexKey = hexKey.toUpperCase();
+        String digits = "0123456789ABCDEF";
+        String tmpHexKey = hexKey.toUpperCase();
 
-            for (int i = 0; i < tmpHexKey.length(); i++) {
-                char c = tmpHexKey.charAt(i);
-                int d = digits.indexOf(c);
-                if (d < 0)
-                    throw new NumberFormatException("String '" + hexKey + "' cannot be converted in hexadecimal format");
-            }
+        for (int i = 0; i < tmpHexKey.length(); i++) {
+            char c = tmpHexKey.charAt(i);
+            int d = digits.indexOf(c);
+            if (d < 0)
+                throw new NumberFormatException("String '" + hexKey + "' cannot be converted in hexadecimal format");
         }
 
     }
