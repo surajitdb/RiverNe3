@@ -44,6 +44,7 @@ public class RiverNe3 {
     static HashMap<Integer, Geometry> points;
     static BinaryTree tb;
     static HashMap<Key, Component> binaryTree;
+    static RunSimulations sim;
 
     public static void main(String[] args) {
     
@@ -82,18 +83,28 @@ public class RiverNe3 {
         tb.buildTree();
         binaryTree = tb.computeNodes();
 
-        Iterator<Key> it = binaryTree.keySet().iterator();
-        while(it.hasNext()) {
-            Key next = it.next();
-            Component comp = binaryTree.get(next);
+        // Iterator<Key> it = binaryTree.keySet().iterator();
+        // while(it.hasNext()) {
+        //     Key next = it.next();
+        //     Component comp = binaryTree.get(next);
 
-            System.out.println(comp.toString());
+        //     System.out.println(comp.toString());
 
-        }
+        // }
 
+        sim = new RunSimulations(binaryTree);
+        ExecutorService executor2 = Executors.newFixedThreadPool(4);
+        CountDownLatch l2 = new CountDownLatch(4);
+        for (int i = 0; i < 4; i++)
+            executor2.submit(new MyRunnableSim(l2));
 
+        try {
+            l2.await();
+        } catch (InterruptedException e) {}
 
+        executor2.shutdown();
 
+        System.out.println("Exit");
         // BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
         // Key key = new Key(3.0);
         // // FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
@@ -123,6 +134,24 @@ public class RiverNe3 {
         public void run() {
             // System.out.println(Thread.currentThread().getName() + " start thread read tree");
             tb.buildTree();
+            // System.out.println(Thread.currentThread().getName() + " end thread read tree");
+            l.countDown();
+        }
+
+    }
+
+    public static class MyRunnableSim implements Runnable {
+
+        CountDownLatch l;
+
+        MyRunnableSim(CountDownLatch l) {
+            this.l = l;
+        }
+
+        @Override
+        public void run() {
+            // System.out.println(Thread.currentThread().getName() + " start thread read tree");
+            sim.run();
             // System.out.println(Thread.currentThread().getName() + " end thread read tree");
             l.countDown();
         }
