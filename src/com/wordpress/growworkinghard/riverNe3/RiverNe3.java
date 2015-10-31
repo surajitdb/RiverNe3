@@ -20,20 +20,17 @@ package com.wordpress.growworkinghard.riverNe3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.google.common.collect.BinaryTreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfPointsProcessing;
 import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
-import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.RiverBinaryTree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers;
@@ -45,30 +42,59 @@ public class RiverNe3 {
     static BinaryTree tb;
     static HashMap<Key, Component> binaryTree;
     static RunSimulations sim;
+    static List<Geometry> pointList;
+    static int count;
+    static Reader[] readers = new Reader[2];
+    static DbfProcessing dfbp;
+    static DbfProcessing dbfPoints;
+    static CountDownLatch lRead;
+
+    private static class Reader implements Runnable {
+        private final DbfProcessing dbf;
+
+        public Reader(final DbfProcessing dbf) {this.dbf = dbf;}
+
+        public void run() {
+            dbf.fileProcessing();
+            lRead.countDown();
+
+        }
+    }
+
+    private static void readData() {
+        for (int i = 0; i < readers.length; i++)
+            new Thread(readers[i]).start();
+    }
 
     public static void main(String[] args) {
-    
-        DbfProcessing dfbp;
-        DbfProcessing dbfPoints;
+
+        count = Runtime.getRuntime().availableProcessors();
         String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/net.dbf";
         String filePathPoints = "/home/francesco/vcs/git/personal/riverNe3/data/mon_point.dbf";
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
         String[] colNamesPoints = {"X_coord", "Y_coord"};
 
-        dfbp = new DbfLinesProcessing();
-        dfbp.process(filePath, colNames);
+        dfbp = new DbfLinesProcessing(filePath, colNames);
+
+        dbfPoints = new DbfPointsProcessing(filePathPoints, colNamesPoints);
+
+        readers[0] = new Reader(dfbp);
+        readers[1] = new Reader(dbfPoints);
+
+        lRead = new CountDownLatch(2);
+        readData();
+
+        try {
+            lRead.await();
+        } catch (InterruptedException e) {}
         test = dfbp.get();
-
-        dbfPoints = new DbfPointsProcessing();
-        dbfPoints.process(filePathPoints, colNamesPoints);
         points = dbfPoints.get();
+        pointList = new ArrayList<Geometry>(points.values());
 
-        tb = new RiverBinaryTree(test, 4);
+        ExecutorService executor = Executors.newFixedThreadPool(count);
+        CountDownLatch l = new CountDownLatch(count);
 
-        ExecutorService executor = Executors.newFixedThreadPool(4);
-        CountDownLatch l = new CountDownLatch(4);
-
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < count; i++)
             executor.submit(new MyRunnable(l));
 
         try {
@@ -78,24 +104,14 @@ public class RiverNe3 {
         executor.shutdown();
 
 
-        List<Geometry> pointList = new ArrayList<Geometry>(points.values());
         tb = new Hydrometers(tb, pointList, 500.0);
         tb.buildTree();
         binaryTree = tb.computeNodes();
 
-        // Iterator<Key> it = binaryTree.keySet().iterator();
-        // while(it.hasNext()) {
-        //     Key next = it.next();
-        //     Component comp = binaryTree.get(next);
-
-        //     System.out.println(comp.toString());
-
-        // }
-
         sim = new RunSimulations(binaryTree);
-        ExecutorService executor2 = Executors.newFixedThreadPool(4);
-        CountDownLatch l2 = new CountDownLatch(4);
-        for (int i = 0; i < 4; i++)
+        ExecutorService executor2 = Executors.newFixedThreadPool(count);
+        CountDownLatch l2 = new CountDownLatch(count);
+        for (int i = 0; i < count; i++)
             executor2.submit(new MyRunnableSim(l2));
 
         try {
@@ -105,20 +121,6 @@ public class RiverNe3 {
         executor2.shutdown();
 
         System.out.println("Exit");
-        // BinaryTreeTraverser<Component> traverser = new RiverBinaryTreeTraverser(binaryTree);
-        // Key key = new Key(3.0);
-        // // FluentIterable<Component> iterator = traverser.postOrderTraversal(binaryTree.get(key));
-        // // List<Component> list = iterator.toList();
-        // // Iterator<Component> it = list.iterator();
-
-        // Component node = binaryTree.get(key);
-        // node.setTraverser(traverser);
-        // List<Component> list = node.preOrderTraversal();
-        // Iterator<Component> it = list.iterator();
-        // while(it.hasNext()) {
-        //     Component tmp = it.next();
-        //     System.out.println(tmp.getKey().getDouble());
-        // }
 
     }
 
@@ -132,9 +134,8 @@ public class RiverNe3 {
 
         @Override
         public void run() {
-            // System.out.println(Thread.currentThread().getName() + " start thread read tree");
+            tb = new RiverBinaryTree(test, count);
             tb.buildTree();
-            // System.out.println(Thread.currentThread().getName() + " end thread read tree");
             l.countDown();
         }
 
@@ -150,9 +151,7 @@ public class RiverNe3 {
 
         @Override
         public void run() {
-            // System.out.println(Thread.currentThread().getName() + " start thread read tree");
             sim.run();
-            // System.out.println(Thread.currentThread().getName() + " end thread read tree");
             l.countDown();
         }
 

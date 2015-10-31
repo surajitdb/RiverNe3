@@ -18,7 +18,9 @@
  */
 package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -40,9 +42,48 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Line;
  */
 public class DbfLinesProcessing extends DbfProcessing {
 
-    protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
+    private volatile static HashMap<Integer, Geometry> inputData;
+    private String filePath;
+    private String[] colNames;
 
-        final HashMap<Integer, Geometry> tmpHashMap = new HashMap<Integer, Geometry>();
+    public DbfLinesProcessing(final String filePath, final String[] colNames) {
+        getInstance(filePath, colNames);
+    }
+
+    public synchronized HashMap<Integer, Geometry> get() {
+        validateOutputData(inputData); //!< post-conditions
+        return inputData;
+    }
+
+    private synchronized void getInstance(final String filePath, final String[] colNames) {
+
+        if (inputData == null) {
+            validateInputData(filePath, colNames);
+            inputData = new HashMap<Integer, Geometry>();
+            this.filePath = filePath;
+            this.colNames = colNames;
+        }
+
+    }
+
+    public synchronized void fileProcessing() {
+
+        try {
+
+            FileInputStream inputFile = new FileInputStream(filePath);
+            DbaseFileReader dbfReader = new DbaseFileReader(inputFile.getChannel(), false, Charset.defaultCharset());
+
+            Vector<Integer> colIndices = headerProcessing(dbfReader, colNames);
+            bodyProcessing(dbfReader, colIndices); //!< factory method
+
+            dbfReader.close();
+            inputFile.close();
+
+        } catch (IOException exception) { new IOException(exception); }
+
+    }
+
+    protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
 
         int hashMapKey = 1;
 
@@ -101,44 +142,22 @@ public class DbfLinesProcessing extends DbfProcessing {
                 tmpLine.setStartPoint(x_start, y_start);
                 tmpLine.setEndPoint(x_end, y_end);
 
-                tmpHashMap.putIfAbsent(hashMapKey, tmpLine);
+                inputData.put(hashMapKey, tmpLine);
                 hashMapKey++;
 
             } catch (IOException exception) { new IOException(exception); }
 
         }
 
-        return tmpHashMap;
-
     }
 
-    protected void validateInputData(final String filePath, final String[] colNames) {
+    protected synchronized void validateInputData(final String filePath, final String[] colNames) {
 
         if (filePath == null)
             throw new NullPointerException("The file path cannot be null");
 
         if (colNames.length != 5)
             throw new IllegalArgumentException("You must provide 5 columns: Pfafstetter, X_start, Y_start, X_end, Y_end");
-
-    }
-
-    /**
-     * @brief This main is just a simple to test.
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-
-        String filePath = "/home/francesco/vcs/git/personal/RiverNe3/data/net.dbf";
-        String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
-
-        DbfProcessing dfbp = new DbfLinesProcessing();
-        dfbp.process(filePath, colNames);
-        HashMap<Integer, Geometry> test = dfbp.get();
-
-        for (int i = 0; i < test.size(); i++) {
-            System.out.println(test.get(i).getStartPoint().x + " " + test.get(i).isRoot());
-        }
 
     }
 

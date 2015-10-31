@@ -18,9 +18,6 @@
  */
 package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -63,101 +60,8 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public abstract class DbfProcessing {
 
-    private volatile static HashMap<Integer, Geometry> inputData;
-
-    public synchronized HashMap<Integer, Geometry> get() {
-        validateOutputData(); //!< post-conditions
-        HashMap<Integer, Geometry> result = new HashMap<Integer, Geometry>();
-        result.putAll(inputData);
-        inputData = null;
-        return result;
-    }
-
-    /**
-     * @brief Getter method which return the list of geometric features
-     *
-     * @description This is the only one public method. It returns a
-     *              synchronizedList of objects of type Geometry.
-     *
-     * @param[in] filePath
-     *            The complete input path of the <code>.dbf</code> file
-     * @param[in] colNames
-     *            An array of strings of the column names to search. It has to
-     *            be structured in the following way
-     *            <ol>
-     *                <li><strong>Line</strong>:
-     *                <ul>
-     *                    <li>Column name of the Pfafstetter numbering;</li>
-     *                    <li>Column name of the X coordinate of the starting
-     *                        point;</li>
-     *                    <li>Column name of the Y coordinate of the starting
-     *                        point;</li>
-     *                    <li>Column name of the X coordinate of the ending
-     *                        point;</li>
-     *                    <li>Column name of the Y coordinate fo the ending
-     *                        point.</li>
-     *                </ul>
-     *            </ol>
-     * @return A <code>Collections.synchronizedList</code> of the filled list
-     */
-    public synchronized void process(final String filePath, final String[] colNames) {
-
-        getInstance(filePath, colNames);
-
-    }
-
-    private void getInstance(final String filePath, final String[] colNames) {
-
-        if (inputData == null) {
-            validateInputData(filePath, colNames);
-            inputData = new HashMap<Integer, Geometry>();
-            fileProcessing(filePath, colNames);
-        }
-
-    }
-
-    /**
-     * @brief The method which runs the parsing of the <code>.dbf</code> file
-     *
-     * @description This method allocates the two variables required to open the
-     *              <code>.dbf</code> file.
-     *              <ol>
-     *                  <li><code>FileInputStream</code>: to open the
-     *                      <code>.dbf</code> file</li>
-     *                  <li><code>DbaseFileReader</code>: to get an object
-     *                      which can be easily parsed with a <code>for</code>
-     *                      loop or through an <code>iterator</code></li>
-     *              </ol>
-     *              The choice of reading a <code>.dbf</code> file of points
-     *              rather then lines is decided by the user in the <tt>main
-     *              class</tt> and thanks to the <strong>Factory Method Pattern
-     *              </strong> there is a unique call to <code>bodyProcessing
-     *              </code>.
-     *
-     * @param[in] filePath
-     *            The complete input path of the <code>.dbf</code> file
-     * @param[in] colNames
-     *            The array of strings which contains the column names to search
-     * @exception IOException
-     *                If no file is found
-     */
-    private void fileProcessing(final String filePath, final String[] colNames) {
-
-        try {
-
-            FileInputStream inputFile = new FileInputStream(filePath);
-            DbaseFileReader dbfReader = new DbaseFileReader(inputFile.getChannel(), false, Charset.defaultCharset());
-
-            Vector<Integer> colIndices = headerProcessing(dbfReader, colNames);
-            inputData = bodyProcessing(dbfReader, colIndices); //!< factory method
-
-            dbfReader.close();
-            inputFile.close();
-
-        } catch (IOException exception) { new IOException(exception); }
-
-    }
-
+    public abstract void fileProcessing();
+    public abstract HashMap<Integer, Geometry> get();
     /**
      * @brief The processing of the header of the <code>.dbf</code> file
      *
@@ -172,7 +76,7 @@ public abstract class DbfProcessing {
      * @return A <code>Vector</code> of <code>Integer</code> with the indices of
      *         the columns from which retrieve the data
      */
-    private Vector<Integer> headerProcessing(final DbaseFileReader dbfReader, final String[] colNames) {
+    protected Vector<Integer> headerProcessing(final DbaseFileReader dbfReader, final String[] colNames) {
 
         Vector<Integer> tmpVec = new Vector<Integer>(colNames.length);
         DbaseFileHeader dbfheader = dbfReader.getHeader();
@@ -190,14 +94,14 @@ public abstract class DbfProcessing {
 
     }
 
-    private void validateOutputData() {
+    protected void validateOutputData(final HashMap<Integer, Geometry> inputData) {
 
         if (inputData.isEmpty())
             throw new NullPointerException("The output HashMap is empty. Something was wrong during the computation");
 
     }
 
-    abstract protected HashMap<Integer, Geometry> bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
+    abstract protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
 
     abstract protected void validateInputData(final String filePath, final String[] colNames);
 
