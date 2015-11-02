@@ -27,9 +27,11 @@ import java.util.concurrent.Executors;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfLinesProcessing;
-import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfPointsProcessing;
-import com.wordpress.growworkinghard.riverNe3.dbfProcessing.DbfProcessing;
+import com.wordpress.growworkinghard.riverNe3.dataReader.DataProcessing;
+import com.wordpress.growworkinghard.riverNe3.dataReader.Reader;
+import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfLinesProcessing;
+import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfPointsProcessing;
+import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.RiverBinaryTree;
@@ -44,27 +46,10 @@ public class RiverNe3 {
     static RunSimulations sim;
     static List<Geometry> pointList;
     static int count;
-    static Reader[] readers = new Reader[2];
+    static List<DataProcessing> list = new ArrayList<DataProcessing>();
     static DbfProcessing dfbp;
     static DbfProcessing dbfPoints;
     static CountDownLatch lRead;
-
-    private static class Reader implements Runnable {
-        private final DbfProcessing dbf;
-
-        public Reader(final DbfProcessing dbf) {this.dbf = dbf;}
-
-        public void run() {
-            dbf.fileProcessing();
-            lRead.countDown();
-
-        }
-    }
-
-    private static void readData() {
-        for (int i = 0; i < readers.length; i++)
-            new Thread(readers[i]).start();
-    }
 
     public static void main(String[] args) {
 
@@ -78,15 +63,12 @@ public class RiverNe3 {
 
         dbfPoints = new DbfPointsProcessing(filePathPoints, colNamesPoints);
 
-        readers[0] = new Reader(dfbp);
-        readers[1] = new Reader(dbfPoints);
+        list.add(dfbp);
+        list.add(dbfPoints);
 
-        lRead = new CountDownLatch(2);
-        readData();
+        Reader reader = new Reader(list);
+        reader.start();
 
-        try {
-            lRead.await();
-        } catch (InterruptedException e) {}
         test = dfbp.get();
         points = dbfPoints.get();
         pointList = new ArrayList<Geometry>(points.values());

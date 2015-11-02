@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3.dbfProcessing;
+package com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -24,6 +24,7 @@ import java.util.Vector;
 import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
 
+import com.wordpress.growworkinghard.riverNe3.dataReader.DataProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
 import net.jcip.annotations.ThreadSafe;
@@ -58,7 +59,7 @@ import net.jcip.annotations.ThreadSafe;
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 @ThreadSafe
-public abstract class DbfProcessing {
+public abstract class DbfProcessing implements DataProcessing {
 
     public abstract void fileProcessing();
     public abstract HashMap<Integer, Geometry> get();
