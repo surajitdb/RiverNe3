@@ -54,6 +54,7 @@ public class RiverNe3 {
     public static void main(String[] args) {
 
         count = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(count);
         String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/net.dbf";
         String filePathPoints = "/home/francesco/vcs/git/personal/riverNe3/data/mon_point.dbf";
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
@@ -66,14 +67,13 @@ public class RiverNe3 {
         list.add(dfbp);
         list.add(dbfPoints);
 
-        Reader reader = new Reader(list);
+        Reader reader = new Reader(list, executor);
         reader.start();
 
         test = dfbp.get();
         points = dbfPoints.get();
         pointList = new ArrayList<Geometry>(points.values());
 
-        ExecutorService executor = Executors.newFixedThreadPool(count);
         CountDownLatch l = new CountDownLatch(count);
 
         for (int i = 0; i < count; i++)
@@ -83,24 +83,21 @@ public class RiverNe3 {
             l.await();
         } catch (InterruptedException e) {}
 
-        executor.shutdown();
-
 
         tb = new Hydrometers(tb, pointList, 500.0);
         tb.buildTree();
         binaryTree = tb.computeNodes();
 
         sim = new RunSimulations(binaryTree);
-        ExecutorService executor2 = Executors.newFixedThreadPool(count);
         CountDownLatch l2 = new CountDownLatch(count);
         for (int i = 0; i < count; i++)
-            executor2.submit(new MyRunnableSim(l2));
+            executor.submit(new MyRunnableSim(l2));
 
         try {
             l2.await();
         } catch (InterruptedException e) {}
 
-        executor2.shutdown();
+        executor.shutdown();
 
         System.out.println("Exit");
 

@@ -22,16 +22,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Reader {
+    private final ExecutorService exec;
     private final List<DataProcessing> mainList;
     private final List<Worker> workers = new ArrayList<Worker>();
     private final List<Integer> nSplit = new ArrayList<Integer>();
     private CyclicBarrier barrier;
+    private boolean executorShutdown = false;
+
+    public Reader(final List<DataProcessing> list, final ExecutorService exec) {
+        this.mainList = list;
+        computeThreadsNumber();
+        this.exec = exec;
+    }
 
     public Reader(final List<DataProcessing> list) {
         this.mainList = list;
-        computeThreadsNumber(); 
+        computeThreadsNumber();
+        this.exec = Executors.newFixedThreadPool(nSplit.get(0));
+        this.executorShutdown = true;
     }
 
     public void start() {
@@ -48,12 +61,14 @@ public class Reader {
             int endLoop = nSplit.get(i);
             for (int j = 0; j < endLoop; j++) {
                 workers.add(new Worker(mainList.get(0)));
-                new Thread(workers.get(j)).start();
+                exec.execute(workers.get(j));
                 mainList.remove(0);
             }
         }
+
         try {
             barrier.await();
+            if (executorShutdown) exec.shutdown();
         } catch (InterruptedException ex) {
             return;
         } catch (BrokenBarrierException ex) {
@@ -83,6 +98,7 @@ public class Reader {
 
         public void run() {
             fileProcess.fileProcessing();
+
             try {
                 barrier.await();
             } catch (InterruptedException ex) {
@@ -93,4 +109,9 @@ public class Reader {
         }
     }
 
+    private class ThreadPerTaskExecutor implements Executor {
+        public void execute(Runnable worker) {
+            new Thread(worker).start();
+        };
+    }
 }
