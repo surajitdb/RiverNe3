@@ -134,7 +134,6 @@ public class Node extends Component {
         validateConnections(connKeys);
         this.connKeys = connKeys;
 
-        validateInvariant(key, parentKey, leftChildKey, rightChildKey);
         allocateSimulationFlags();
     }
 

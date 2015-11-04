@@ -125,8 +125,6 @@ public class LocalNode extends Component {
         validateConnections(connKeys);
         this.connKeys = connKeys;
 
-        validateInvariant(key, parentKey, leftChildKey, rightChildKey);
-        allocateSimulationFlags();
     }
 
     public synchronized void setNewBinaryConnections(final Key ID) {

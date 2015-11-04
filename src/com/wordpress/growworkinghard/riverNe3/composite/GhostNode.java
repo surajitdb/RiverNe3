@@ -73,15 +73,10 @@ public class GhostNode extends Component {
     @GuardedBy("this") private final HashMap<Key, Boolean> readyForSim
         = new HashMap<Key, Boolean>(); //!< <code>HashMap</code> of flags for start sim
 
-    /**
-     * @brief Constructor
-     *
-     * @param[in] root The root of the sub-tree.
-     * @param[in] leftChildKey The key of the left child
-     * @param[in] rightChildKey The key of the right child
-     */
-    public GhostNode(final Line root, final Key leftChildKey, final Key rightChildKey) {
-        getInstance(root, leftChildKey, rightChildKey);
+    public GhostNode(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
+
+        getInstance(connKeys, layer, startPoint, endPoint);
+
     }
 
     /**

@@ -78,49 +78,18 @@ public abstract class Component {
      */
     abstract public void runSimulation(final Component parent);
 
-    /**
-     * @brief Set the new <tt>key</tt> of the node
-     *
-     * @description Set the new <tt>key</tt> of the node, changing the parent
-     *              key, left and right key as consequence. These states are
-     *              related with an <strong>invariant</strong> because:
-     *              <ul>
-     *              <li>\f$parentKey = key / 2\f$;</li>
-     *              <li>\f$leftChildKey = key * 2\f$;</li>
-     *              <li>\f$rightChildKey = leftChildKey + 1\f$.</li>
-     *              </ul>
-     *
-     * @param[in] key The new input key
-     */
-    abstract public void setNewKey(final Key key);
+    public abstract void setNewConnections(final Connections connKeys);
+
+    public abstract void setNewBinaryConnections(final Key ID);
 
     /**
-     * @brief Get the <tt>key</tt> of the node
+     * @brief In order to return a unique instance of invariants
      *
-     * @return The <tt>key</tt> of the node
-     */
-    abstract public Key getKey();
-
-    /**
-     * @brief Get the <tt>key</tt> of the left child
+     * JCIP p69
      *
-     * @return The <tt>key</tt> of the left child
+     * @return
      */
-    abstract public Key getLeftChildKey();
-
-    /**
-     * @brief Get the <tt>key</tt> of the right child
-     *
-     * @return The <tt>key</tt> of the right child
-     */
-    abstract public Key getRightChildKey();
-
-    /**
-     * @brief Get the <tt>key</tt> of the parent node
-     *
-     * @return The <tt>key</tt> of the parent node
-     */
-    abstract public Key getParentKey();
+    public abstract Connections getConnections();
 
     /**
      * @brief Set the <tt>layer</tt> of the node
@@ -321,6 +290,11 @@ public abstract class Component {
             throw new IllegalArgumentException(message);
         }
 
+    }
+
+    protected void validateConnections(final Connections connKeys) {
+        if (connKeys == null)
+            throw new NullPointerException("Input Connections object cannot be null.");
     }
 
     protected void validateConnections(final Connections connKeys) {
