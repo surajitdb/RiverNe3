@@ -21,7 +21,6 @@ package com.wordpress.growworkinghard.riverNe3;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
@@ -34,16 +33,21 @@ public class RunSimulations {
         if (this.binaryTree == null)
             synchronized(this) {
                 if (this.binaryTree == null) {
-                    this.binaryTree = new ConcurrentHashMap<Key, Component>(binaryTree.size(), 0.9f, 4);
+                    this.binaryTree
+                        = new ConcurrentHashMap<Key, Component>(binaryTree.size(), 0.9f, 4);
                     this.binaryTree.putAll(binaryTree);
                 }
             }
     }
 
     public void run() {
-        while(!binaryTree.isEmpty()) runSim();
-
-        System.out.println("Exit run");
+        while(!binaryTree.isEmpty()) {
+            try {
+                while (!Thread.interrupted()) runSim();
+            } finally {
+                return;
+            }
+        }
     }
 
     private void runSim() {
