@@ -300,7 +300,7 @@ public abstract class Component {
      */
     protected synchronized void validateInvariant(final Key key, final Key parentKey, final Key leftChildKey, final Key rightChildKey) {
 
-        if (parentKey.getDouble() * 2 != key.getDouble()) {
+        if (parentKey.getDouble() != Math.floor(key.getDouble() / 2)) {
             String message = "Parent key " + parentKey.getString();
             message += " is not the half of the key " + key.getString();
             throw new IllegalArgumentException(message);
