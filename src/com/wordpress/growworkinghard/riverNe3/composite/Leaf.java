@@ -33,14 +33,20 @@ import net.jcip.annotations.GuardedBy;
  * @brief class Leaf
  *
  * @description The main purpose of this class is the representation of
- *              subbasins that don't have children. Instead this class has only
- *              two <tt>state variables</tt>
+ *              subbasins that don't have children.
+ *              <p>
+ *              This class is <em>ThreadSafe</em> because:
  *              <ul>
- *                  <li><tt>parent key</tt></li>
- *                  <li><tt>layer</tt></li>
+ *              <li>Each state is guarded by the <strong>intrinsic lock</strong>
+ *              ;</li>
+ *              <li>Each method is <strong>synchronized</strong> in order to
+ *              deny stale data if a two threads simultaneously call setter and
+ *              getter methods;</li>
+ *              <li>The <strong>invariant</strong> is ensured by the method
+ *              GhostNode#setNewKey(final Key) and checked by the method
+ *              Component#validateInvariant(final Key, final Key, final Key, final Key).</li>
  *              </ul>
- *
- * @todo make this class <em>ThreadSafe</em>
+ *              </p>
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
@@ -49,83 +55,96 @@ import net.jcip.annotations.GuardedBy;
  */
 public class Leaf extends Component {
 
-    @GuardedBy("this") private Key key;
-    @GuardedBy("this") private Key parentKey; //!< the key of the HashMap of the parent
-    @GuardedBy("this") private Integer layer; //!< the layer in the tree in which this node is located
-    @GuardedBy("this") private Coordinate2D startPoint;
-    @GuardedBy("this") private Coordinate2D endPoint;
-    @GuardedBy("this") private BinaryTreeTraverser<Component> traverser;
+    @GuardedBy("this") private Key key; //!< key of the node
+    @GuardedBy("this") private Key parentKey; //!< key of the parent
+    @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
+    @GuardedBy("this") private Coordinate2D startPoint; //!< starting point of the sub-basin
+    @GuardedBy("this") private Coordinate2D endPoint; //!< ending point of the sub-basin
+    @GuardedBy("this") private BinaryTreeTraverser<Component> traverser; //!< traverser object
 
     /**
-     * @brief Alternative constructor which require all the states
+     * @brief Constructor
      *
-     * @param[in] parentKey
-     *            The <tt>HashMap</tt> key of the parent
-     * @param[in] layer
-     *            The layer in the tree in which this node is located
+     * @param[in] root The root of the sub-tree
      */
     public Leaf(final Line root) {
-
-        getInstance(root, null, null);
-
+        getInstance(root);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#isReadyForSimulation()
+     */
     public synchronized boolean isReadyForSimulation() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#runSimulation(final Component)
+     */
     public synchronized void runSimulation(final Component parent) {
         if (!parent.getKey().equals(parentKey))
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            System.out.println("Leaf " + key.getDouble() + " ==> " + Thread.currentThread() + " Computing..." + " PARENT = " + parent.getKey().getDouble());
+            String message = "Leaf       " + key.getDouble();
+            message += " ==> " + Thread.currentThread();
+            message += " Computing..." + " PARENT = ";
+            message += parent.getKey().getDouble();
+            System.out.println(message);
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
         parent.notify(key);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#setNewKey(final Key)
+     */
     public synchronized void setNewKey(final Key key) {
 
         validateKey(key);
-        this.key = new Key(key);
-        this.parentKey = new Key(computeParentKey(key));
+        this.key = key;
+        this.parentKey = computeParentKey(key);
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#getKey()
+     */
     public synchronized Key getKey() {
         validateKey(key);
         return key;
     }
 
     /**
-     * @brief Getter method to get the key of the left child
+     * {@inheritDoc}
      *
-     * @description This getter is useful because returning <code>null</code>
-     *              value easily allows to identify which node is a leaf
-     *
-     * @return <code>null</code> value because this object is a leaf
+     * @see Component#getLeftChildKey()
      */
     public synchronized Key getLeftChildKey() {
         return null; 
     }
 
     /**
-     * @brief Getter method to get the key of the right child
+     * {@inheritDoc}
      *
-     * @description This getter is useful beacuse returning <code>null</code>
-     *              vaule easily allows to identify which node is a leaf
-     *
-     * @return <code>null</code> value because this object is a leaf
+     * @see Component#getRightChildKey()
      */
     public synchronized Key getRightChildKey() {
         return null; 
     }
 
     /**
-     * @brief Getter method to get the key of the parent node
+     * {@inheritDoc}
      *
-     * @return The <tt>HashMap</tt> key of the parent node
+     * @see Component#getParentKey()
      */
     public synchronized Key getParentKey() {
         validateKey(parentKey);
@@ -133,9 +152,9 @@ public class Leaf extends Component {
     }
 
     /**
-     * @brief Setter method to set the layer of the node
+     * {@inheritDoc}
      *
-     * @param[in] layer The layer of the node in the tree
+     * @see Component#setLayer(final int)
      */
     public synchronized void setLayer(final int layer) {
         validateLayer(layer);
@@ -143,50 +162,72 @@ public class Leaf extends Component {
     }
 
     /**
-     * @brief Getter method to get the layer of the node
+     * {@inheritDoc}
      *
-     * @return The layer of the node in the tree
+     * @see Component#getLayer()
      */
     public synchronized Integer getLayer() {
         validateLayer(layer);
         return new Integer(layer);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#getStartPoint()
+     */
     public synchronized Coordinate2D getStartPoint() {
         validateCoordinate(startPoint);
         return new Coordinate2D(startPoint.x, startPoint.y);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#getEndPoint()
+     */
     public synchronized Coordinate2D getEndPoint() {
         validateCoordinate(endPoint);
         return new Coordinate2D(endPoint.x, endPoint.y);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#setTraverser(final BinaryTreeTraverser<Component>)
+     */
     public synchronized void setTraverser(final BinaryTreeTraverser<Component> traverser) {
-
         this.traverser = traverser;
-
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#preOrderTraversal()
+     */
     public synchronized List<Component> preOrderTraversal() {
-
         FluentIterable<Component> iterator = traverser.preOrderTraversal(this);
         return iterator.toList();
-
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#postOrderTraversal()
+     */
     public synchronized List<Component> postOrderTraversal() {
-
         FluentIterable<Component> iterator = traverser.postOrderTraversal(this);
         return iterator.toList();
-
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#inOrderTraversal()
+     */
     public synchronized List<Component> inOrderTraversal() {
-
         FluentIterable<Component> iterator = traverser.inOrderTraversal(this);
         return iterator.toList();
-
     }
 
     /**
@@ -206,16 +247,26 @@ public class Leaf extends Component {
 
     }
 
-    private void getInstance(final Line root, final Key leftChildKey, final Key rightChildKey) {
+    /**
+     * @brief Method that follows the rules of the <strong>Singleton
+     * Pattern</strong> @cite freeman2004:head
+     *
+     * @description Double-checked locking
+     *
+     * @param[in] root The root of the sub-tree
+     */
+    private void getInstance(final Line root) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-                    this.key = new Key(root.getKey());
+                    this.key = root.getKey();
                     this.layer = new Integer(root.getLayer());
-                    this.parentKey = new Key(root.getParentKey());
-                    this.startPoint = new Coordinate2D(root.getStartPoint().x, root.getStartPoint().y);
-                    this.endPoint = new Coordinate2D(root.getEndPoint().x, root.getEndPoint().y);
+                    this.parentKey = root.getParentKey();
+                    this.startPoint = new Coordinate2D(root.getStartPoint().x,
+                                                       root.getStartPoint().y);
+                    this.endPoint = new Coordinate2D(root.getEndPoint().x,
+                                                     root.getEndPoint().y);
                     validateState();
                 }
 
@@ -225,10 +276,11 @@ public class Leaf extends Component {
 
     }
 
-    protected void allocateSimulationFlags() {
-        // nothing to implement here. Leaf has no simulation flags
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#statesAreNull()
+     */
     protected boolean statesAreNull() {
 
         if (this.key == null &&
@@ -241,6 +293,11 @@ public class Leaf extends Component {
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#validateState()
+     */
     protected void validateState() {
 
         validateKey(key);
@@ -251,6 +308,15 @@ public class Leaf extends Component {
 
     }
 
+    protected void allocateSimulationFlags() {
+        // nothing to implement here. Leaf has no simulation flags
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#computeParentKey(final Key)
+     */
     protected Key computeParentKey(final Key key) {
         return new Key(Math.floor(key.getDouble() / 2));
     }
