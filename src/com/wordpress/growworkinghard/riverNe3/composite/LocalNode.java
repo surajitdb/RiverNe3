@@ -25,8 +25,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.geometry.Point;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
@@ -59,11 +60,8 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class LocalNode extends Component {
 
-    @GuardedBy("this") private Key key; //!< key of the node
-    @GuardedBy("this") private Key parentKey; //!< key of the parent
+    @GuardedBy("this") private Connections connKeys;
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
-    @GuardedBy("this") private Key leftChildKey; //!< key of the left child
-    @GuardedBy("this") private Key rightChildKey; //!< key of the right child
     @GuardedBy("this") private Coordinate2D point; //!< coordinate of the local point
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser; //!< traverser object
     @GuardedBy("this") private final HashMap<Key, Boolean> readyForSim
@@ -76,8 +74,8 @@ public class LocalNode extends Component {
      * @param[in] leftChildKey The key of the left child
      * @param[in] rightChildKey The key of the right child
      */
-    public LocalNode(final Point root, final Key leftChildKey, final Key rightChildKey) {
-        getInstance(root, leftChildKey, rightChildKey);
+    public LocalNode(final Connections connKeys, final Integer layer, final Coordinate2D point) {
+        getInstance(connKeys, layer, point);
     }
 
     /**
@@ -122,61 +120,29 @@ public class LocalNode extends Component {
         parent.notify(key);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#setNewKey(final Key)
-     */
-    public synchronized void setNewKey(final Key key) {
+    public synchronized void setNewConnections(final Connections connKeys) {
 
-        validateKey(key);
-        this.key = new Key(key);
-        this.parentKey = new Key(computeParentKey(key));
-        if (leftChildKey != null) this.leftChildKey = new Key(key.getDouble() * 2);
-        if (rightChildKey != null) this.rightChildKey = new Key(key.getDouble() * 2 + 1);
+        validateConnections(connKeys);
+        this.connKeys = connKeys;
 
         validateInvariant(key, parentKey, leftChildKey, rightChildKey);
         allocateSimulationFlags();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getKey()
-     */
-    public synchronized Key getKey() {
-        validateKey(key);
-        return key;
+    public synchronized void setNewBinaryConnections(final Key ID) {
+
+        validateKey(ID);
+        Key PARENT = computeParentKey(ID);
+        Key LCHILD, RCHILD;
+        LCHILD = new Key(ID.getDouble() * 2);
+        if (connKeys.getRCHILD() != null) RCHILD = new Key(ID.getDouble() * 2 + 1);
+        else RCHILD = null;
+
+        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getLeftChildKey()
-     */
-    public synchronized Key getLeftChildKey() {
-        validateKey(leftChildKey);
-        return leftChildKey;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getRightChildKey()
-     */
-    public synchronized Key getRightChildKey() {
-        // validateKey(rightChildKey); this key might be null
-        return rightChildKey;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getParentKey()
-     */
-    public synchronized Key getParentKey() {
-        validateKey(parentKey);
-        return parentKey;
+    public synchronized Connections getConnections() {
+        return connKeys;
     }
 
     /**
@@ -219,6 +185,7 @@ public class LocalNode extends Component {
         return new Coordinate2D(point.x, point.y);
     }
 
+    @Override
     public synchronized Coordinate2D getPoint() {
         validateCoordinate(point);
         return new Coordinate2D(point.x, point.y);
@@ -271,16 +238,9 @@ public class LocalNode extends Component {
     @Override
     public String toString() {
   
-        String tmp = "LocalNode";
-        tmp += " - Key = " + key.getString();
-        tmp += " Parent Key = " + parentKey.getString();
-
-        if (leftChildKey != null)
-            tmp += " Left Child = " + leftChildKey.getString();
-        if (rightChildKey != null)
-            tmp += " Right Child = " + rightChildKey.getString();
-
-        tmp += " Layer = " + layer;
+        String tmp = "LOCAL NODE ==> ";
+        tmp += connKeys.toString();
+        tmp += " - Layer = " + layer;
 
         return tmp;
 
@@ -296,18 +256,14 @@ public class LocalNode extends Component {
      * @param[in] leftChildKey The key of the left child
      * @param[in] rightChildKey The key of the right child
      */
-    private void getInstance(final Point root, final Key leftChildKey, final Key rightChildKey) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D point) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-                    this.key = root.getKey();
-                    this.leftChildKey = leftChildKey;
-                    this.rightChildKey = rightChildKey;
-                    this.layer = new Integer(root.getLayer());
-                    this.parentKey = root.getParentKey();
-                    this.point = new Coordinate2D(root.getPoint().x,
-                                                  root.getPoint().y);
+                    this.connKeys = connKeys;
+                    this.layer = new Integer(layer);
+                    this.point = new Coordinate2D(point.x, point.y);
 
                     validateState();
                     allocateSimulationFlags();
@@ -324,11 +280,8 @@ public class LocalNode extends Component {
      */
     protected boolean statesAreNull() {
 
-        if (this.key == null &&
+        if (this.connKeys == null &&
             this.layer == null &&
-            this.leftChildKey == null &&
-            this.rightChildKey == null &&
-            this.parentKey == null &&
             this.point == null) return true;
 
         return false;
@@ -342,12 +295,8 @@ public class LocalNode extends Component {
      */
     protected void validateState() {
 
-        validateKey(key);
-        validateKey(parentKey);
+        validateConnections(connKeys);
         validateLayer(layer);
-        validateKey(leftChildKey);
-        // validateKey(rightChildKey); this key might be null
-        validateInvariant(key, parentKey, leftChildKey, rightChildKey);
         validateCoordinate(point);
 
     }
@@ -365,15 +314,6 @@ public class LocalNode extends Component {
             readyForSim.put(rightChildKey, false);
         } else readyForSim.put(leftChildKey, false);
 
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#computeParentKey(final Key)
-     */
-    protected Key computeParentKey(final Key key) {
-        return new Key(Math.floor(key.getDouble() / 2));
     }
 
 }

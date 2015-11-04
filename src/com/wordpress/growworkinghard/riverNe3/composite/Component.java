@@ -23,6 +23,7 @@ import java.util.List;
 import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 /**
@@ -320,6 +321,11 @@ public abstract class Component {
             throw new IllegalArgumentException(message);
         }
 
+    }
+
+    protected void validateConnections(final Connections connKeys) {
+        if (connKeys == null)
+            throw new NullPointerException("Input Connections object cannot be null.");
     }
 
 }

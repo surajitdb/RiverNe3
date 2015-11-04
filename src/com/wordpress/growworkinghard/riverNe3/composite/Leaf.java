@@ -24,8 +24,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -55,20 +56,15 @@ import net.jcip.annotations.GuardedBy;
  */
 public class Leaf extends Component {
 
-    @GuardedBy("this") private Key key; //!< key of the node
-    @GuardedBy("this") private Key parentKey; //!< key of the parent
+    @GuardedBy("this") private Connections connKeys;
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
     @GuardedBy("this") private Coordinate2D startPoint; //!< starting point of the sub-basin
     @GuardedBy("this") private Coordinate2D endPoint; //!< ending point of the sub-basin
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser; //!< traverser object
 
-    /**
-     * @brief Constructor
-     *
-     * @param[in] root The root of the sub-tree
-     */
-    public Leaf(final Line root) {
-        getInstance(root);
+    public Leaf(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
+
+        getInstance(connKeys, layer, startPoint, endPoint);
     }
 
     /**
@@ -100,55 +96,25 @@ public class Leaf extends Component {
         parent.notify(key);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#setNewKey(final Key)
-     */
-    public synchronized void setNewKey(final Key key) {
+    public synchronized void setNewConnections(final Connections connKeys) {
 
-        validateKey(key);
-        this.key = key;
-        this.parentKey = computeParentKey(key);
+        validateConnections(connKeys);
+        this.connKeys = connKeys;
 
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getKey()
-     */
-    public synchronized Key getKey() {
-        validateKey(key);
-        return key;
+    public synchronized void setNewBinaryConnections(final Key ID) {
+
+        validateKey(ID);
+        Key PARENT = computeParentKey(ID);
+        Key LCHILD = null;
+        Key RCHILD = null;
+
+        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getLeftChildKey()
-     */
-    public synchronized Key getLeftChildKey() {
-        return null; 
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getRightChildKey()
-     */
-    public synchronized Key getRightChildKey() {
-        return null; 
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getParentKey()
-     */
-    public synchronized Key getParentKey() {
-        validateKey(parentKey);
-        return parentKey;
+    public synchronized Connections getConnections() {
+        return connKeys;
     }
 
     /**
@@ -238,35 +204,24 @@ public class Leaf extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Leaf";
-        tmp += " - Key = " + key.getString();
-        tmp += " Parent Key = " + parentKey.getString();
-        tmp += " Layer = " + layer;
+        String tmp = "LEAF       ==> ";
+        tmp += connKeys.toString();
+        tmp += " - Layer = " + layer;
 
         return tmp;
 
     }
 
-    /**
-     * @brief Method that follows the rules of the <strong>Singleton
-     * Pattern</strong> @cite freeman2004:head
-     *
-     * @description Double-checked locking
-     *
-     * @param[in] root The root of the sub-tree
-     */
-    private void getInstance(final Line root) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-                    this.key = root.getKey();
-                    this.layer = new Integer(root.getLayer());
-                    this.parentKey = root.getParentKey();
-                    this.startPoint = new Coordinate2D(root.getStartPoint().x,
-                                                       root.getStartPoint().y);
-                    this.endPoint = new Coordinate2D(root.getEndPoint().x,
-                                                     root.getEndPoint().y);
+                    this.connKeys = connKeys;
+                    this.layer = new Integer(layer);
+                    this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
+                    this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
+
                     validateState();
                 }
 
@@ -283,8 +238,7 @@ public class Leaf extends Component {
      */
     protected boolean statesAreNull() {
 
-        if (this.key == null &&
-            this.parentKey == null &&
+        if (this.connKeys == null &&
             this.layer == null &&
             this.startPoint == null &&
             this.endPoint == null) return true;
@@ -300,9 +254,8 @@ public class Leaf extends Component {
      */
     protected void validateState() {
 
-        validateKey(key);
+        validateConnections(connKeys);
         validateLayer(layer);
-        validateKey(parentKey);
         validateCoordinate(startPoint);
         validateCoordinate(endPoint);
 
@@ -310,15 +263,6 @@ public class Leaf extends Component {
 
     protected void allocateSimulationFlags() {
         // nothing to implement here. Leaf has no simulation flags
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#computeParentKey(final Key)
-     */
-    protected Key computeParentKey(final Key key) {
-        return new Key(Math.floor(key.getDouble() / 2));
     }
 
 }

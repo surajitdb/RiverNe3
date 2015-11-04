@@ -25,8 +25,9 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
@@ -64,11 +65,8 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class GhostNode extends Component {
 
-    @GuardedBy("this") private Key key; //!< key of the node
-    @GuardedBy("this") private Key parentKey; //!< key of the parent
+    @GuardedBy("this") private Connections connKeys;
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
-    @GuardedBy("this") private Key leftChildKey; //!< key of the left child
-    @GuardedBy("this") private Key rightChildKey; //!< key of the right child
     @GuardedBy("this") private Coordinate2D startPoint; //!< starting point of the sub-basin
     @GuardedBy("this") private Coordinate2D endPoint; //!< ending point of the sub-basin
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser; //!< traverser object
@@ -128,61 +126,27 @@ public class GhostNode extends Component {
         parent.notify(key);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#setNewKey(final Key)
-     */
-    public synchronized void setNewKey(final Key key) {
+    public synchronized void setNewConnections(final Connections connKeys) {
 
-        validateKey(key);
-        this.key = key;
-        this.parentKey = computeParentKey(key);
-        if (leftChildKey != null) this.leftChildKey = new Key(key.getDouble() * 2);
-        if (rightChildKey != null) this.rightChildKey = new Key(key.getDouble() * 2 + 1);
+        validateConnections(connKeys);
+        this.connKeys = connKeys;
 
-        validateInvariant(key, parentKey, leftChildKey, rightChildKey);
-        allocateSimulationFlags();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getKey()
-     */
-    public synchronized Key getKey() {
-        validateKey(key);
-        return key;
+    public synchronized void setNewBinaryConnections(final Key ID) {
+
+        validateKey(ID);
+        Key PARENT = computeParentKey(ID);
+        Key LCHILD, RCHILD;
+        LCHILD = new Key(ID.getDouble() * 2);
+        if (connKeys.getRCHILD() != null) RCHILD = new Key(ID.getDouble() * 2 + 1);
+        else RCHILD = null;
+
+        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getLeftChildKey()
-     */
-    public synchronized Key getLeftChildKey() {
-        validateKey(leftChildKey);
-        return leftChildKey;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getRightChildKey()
-     */
-    public synchronized Key getRightChildKey() {
-        // validateKey(rightChildKey); this key might be null
-        return rightChildKey;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#getParentKey()
-     */
-    public synchronized Key getParentKey() {
-        validateKey(parentKey);
-        return parentKey;
+    public synchronized Connections getConnections() {
+        return connKeys;
     }
 
     /**
@@ -272,50 +236,30 @@ public class GhostNode extends Component {
     @Override
     public String toString() {
   
-        String tmp = "Ghost";
-        tmp += " - Key = " + key.getString();
-        tmp += " Parent Key = " + parentKey.getString();
-
-        if (leftChildKey != null)
-            tmp += " Left Child = " + leftChildKey.getString();
-        if (rightChildKey != null)
-            tmp += " Right Child = " + rightChildKey.getString();
-
-        tmp += " Layer = " + layer;
+        String tmp = "GHOST NODE ==> ";
+        tmp += connKeys.toString();
+        tmp += " - Layer = " + layer;
 
         return tmp;
 
     }
 
-    /**
-     * @brief Method that follows the rules of the <strong>Singleton
-     * Pattern</strong> @cite freeman2004:head
-     *
-     * @description Double-checked locking
-     *
-     * @param[in] root The root of the sub-tree
-     * @param[in] leftChildKey The key of the left child
-     * @param[in] rightChildKey The key of the right child
-     */
-    private void getInstance(final Line root, final Key leftChildKey, final Key rightChildKey) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
-                    this.key = root.getKey();
-                    this.leftChildKey = leftChildKey;
-                    this.rightChildKey = rightChildKey;
-                    this.layer = new Integer(root.getLayer());
-                    this.parentKey = root.getParentKey();
-                    this.startPoint = new Coordinate2D(root.getStartPoint().x,
-                                                       root.getStartPoint().y);
-                    this.endPoint = new Coordinate2D(root.getEndPoint().x,
-                                                     root.getEndPoint().y);
+                    this.connKeys = connKeys;
+                    this.layer = new Integer(layer);
+                    this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
+                    this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
 
                     validateState();
                     allocateSimulationFlags();
                 }
+
             }
+
         }
 
     }
@@ -327,11 +271,8 @@ public class GhostNode extends Component {
      */
     protected boolean statesAreNull() {
 
-        if (this.key == null &&
-            this.parentKey == null &&
+        if (this.connKeys == null &&
             this.layer == null &&
-            this.leftChildKey == null &&
-            this.rightChildKey == null &&
             this.startPoint == null &&
             this.endPoint == null) return true;
 
@@ -346,12 +287,8 @@ public class GhostNode extends Component {
      */
     protected void validateState() {
 
-        validateKey(key);
+        validateConnections(connKeys);
         validateLayer(layer);
-        validateKey(leftChildKey);
-        // validateKey(rightChildKey); this key might be null
-        validateKey(parentKey);
-        validateInvariant(key, parentKey, leftChildKey, rightChildKey);
         validateCoordinate(startPoint);
         validateCoordinate(endPoint);
 
@@ -370,15 +307,6 @@ public class GhostNode extends Component {
             readyForSim.put(rightChildKey, false);
         } else readyForSim.put(leftChildKey, false);
 
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#computeParentKey(final Key)
-     */
-    protected Key computeParentKey(final Key key) {
-        return new Key(Math.floor(key.getDouble() / 2));
     }
 
 }
