@@ -64,16 +64,11 @@ public class Reader {
                 exec.execute(workers.get(j));
                 mainList.remove(0);
             }
+            barrier.reset();
         }
 
-        try {
-            barrier.await();
-            if (executorShutdown) exec.shutdown();
-        } catch (InterruptedException ex) {
-            return;
-        } catch (BrokenBarrierException ex) {
-            return;
-        }
+        if (executorShutdown) exec.shutdown();
+
     }
 
     private void computeThreadsNumber() {
@@ -109,7 +104,7 @@ public class Reader {
         }
     }
 
-    private class ThreadPerTaskExecutor implements Executor {
+    public class ThreadPerTaskExecutor implements Executor {
         public void execute(Runnable worker) {
             new Thread(worker).start();
         };
