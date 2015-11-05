@@ -83,7 +83,8 @@ public class Leaf extends Component {
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Leaf       " + connKeys.getID().getDouble();
+            String message = this.getClass().getSimpleName();
+            message += "       " + connKeys.getID().getDouble();
             message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
             message += connKeys.getPARENT().getDouble();

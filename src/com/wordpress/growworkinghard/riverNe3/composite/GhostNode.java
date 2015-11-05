@@ -108,7 +108,8 @@ public class GhostNode extends Component {
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Ghost Node " + connKeys.getID().getDouble();
+            String message = this.getClass().getSimpleName();
+            message += "  " + connKeys.getID().getDouble();
             message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
             message += parent.getConnections().getPARENT().getDouble();

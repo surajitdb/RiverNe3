@@ -111,7 +111,8 @@ public class Node extends Component {
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Node       " + connKeys.getID().getDouble();
+            String message = this.getClass().getSimpleName();
+            message += "       " + connKeys.getID().getDouble();
             message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
             if (!connKeys.getID().getDouble().equals(1.0)) {

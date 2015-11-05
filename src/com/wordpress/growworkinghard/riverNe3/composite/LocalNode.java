@@ -109,7 +109,8 @@ public class LocalNode extends Component {
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Local Node " + connKeys.getID().getDouble();
+            String message = this.getClass().getSimpleName();
+            message += "  " + connKeys.getID().getDouble();
             message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
             message += connKeys.getPARENT().getDouble();
