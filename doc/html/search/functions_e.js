@@ -1,5 +1,0 @@
-var searchData=
-[
-  ['tmpchildconnectedtoroot',['tmpChildConnectedToRoot',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1RiverBinaryTree.html#ac12c6c345355e1423b028ca8891e5b75',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::RiverBinaryTree']]],
-  ['tostring',['toString',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1GhostNode.html#ad146fa8579a5f8a876c4688cc5a68520',1,'com.wordpress.growworkinghard.riverNe3.composite.GhostNode.toString()'],['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Leaf.html#ad146fa8579a5f8a876c4688cc5a68520',1,'com.wordpress.growworkinghard.riverNe3.composite.Leaf.toString()'],['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1LocalNode.html#ad146fa8579a5f8a876c4688cc5a68520',1,'com.wordpress.growworkinghard.riverNe3.composite.LocalNode.toString()'],['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Node.html#ad146fa8579a5f8a876c4688cc5a68520',1,'com.wordpress.growworkinghard.riverNe3.composite.Node.toString()']]]
-];

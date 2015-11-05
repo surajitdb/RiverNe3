@@ -1,4 +1,0 @@
-var searchData=
-[
-  ['traverser',['traverser',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1GhostNode.html#ade55ce253cc3862577d32201da1ec76f',1,'com.wordpress.growworkinghard.riverNe3.composite.GhostNode.traverser()'],['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Leaf.html#ade55ce253cc3862577d32201da1ec76f',1,'com.wordpress.growworkinghard.riverNe3.composite.Leaf.traverser()'],['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1LocalNode.html#ade55ce253cc3862577d32201da1ec76f',1,'com.wordpress.growworkinghard.riverNe3.composite.LocalNode.traverser()'],['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Node.html#ade55ce253cc3862577d32201da1ec76f',1,'com.wordpress.growworkinghard.riverNe3.composite.Node.traverser()']]]
-];

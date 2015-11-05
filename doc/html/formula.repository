@@ -1,3 +1,0 @@
-\form#0:$parentKey = key / 2$
-\form#1:$leftChildKey = key * 2$
-\form#2:$rightChildKey = leftChildKey + 1$
