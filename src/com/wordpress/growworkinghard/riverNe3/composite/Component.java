@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.geotools.graph.util.geom.Coordinate2D;
 
-import com.google.common.collect.BinaryTreeTraverser;
+import com.google.common.collect.TreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
@@ -138,10 +138,8 @@ public abstract class Component {
      *              to traverse.
      *
      * @param[in] traverser The traverser
-     * @todo Generalize the traverser in order to use this structure not only
-     *       for a binary tree
      */
-    abstract public void setTraverser(final BinaryTreeTraverser<Component> traverser);
+    abstract public void setTraverser(final TreeTraverser<Component> traverser);
 
     /**
      * @brief Compute the <strong>Preorder</strong> <code>List</code> of nodes
@@ -158,14 +156,6 @@ public abstract class Component {
      * @return The <strong>Postorder</strong> <code>List</code> of nodes
      */
     abstract public List<Component> postOrderTraversal();
-
-    /**
-     * @brief Compute the <strong>Inorder</strong> <code>List</code> of nodes in
-     *        the subtree with <tt>this</tt> as main vertex
-     *
-     * @return The <strong>Inorder</strong> <code>List</code> of nodes
-     */
-    abstract public List<Component> inOrderTraversal();
 
     /**
      * @brief Method to implement in order to check if states are null

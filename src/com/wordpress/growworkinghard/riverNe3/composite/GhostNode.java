@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.geotools.graph.util.geom.Coordinate2D;
 
-import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.TreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
@@ -68,7 +68,7 @@ public class GhostNode extends Component {
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
     @GuardedBy("this") private Coordinate2D startPoint; //!< starting point of the sub-basin
     @GuardedBy("this") private Coordinate2D endPoint; //!< ending point of the sub-basin
-    @GuardedBy("this") private BinaryTreeTraverser<Component> traverser; //!< traverser object
+    @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
     @GuardedBy("this") private final HashMap<Key, Boolean> readyForSim
         = new HashMap<Key, Boolean>(); //!< <code>HashMap</code> of flags for start sim
 
@@ -173,7 +173,7 @@ public class GhostNode extends Component {
      *
      * @see Component#setTraverser(final BinaryTreeTraverser<Component>)
      */
-    public synchronized void setTraverser(final BinaryTreeTraverser<Component> traverser) {
+    public synchronized void setTraverser(final TreeTraverser<Component> traverser) {
         this.traverser = traverser;
     }
 
@@ -194,16 +194,6 @@ public class GhostNode extends Component {
      */
     public synchronized List<Component> postOrderTraversal() {
         FluentIterable<Component> iterator = traverser.postOrderTraversal(this);
-        return iterator.toList();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Component#inOrderTraversal()
-     */
-    public synchronized List<Component> inOrderTraversal() {
-        FluentIterable<Component> iterator = traverser.inOrderTraversal(this);
         return iterator.toList();
     }
 
