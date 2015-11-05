@@ -282,9 +282,17 @@ public class LocalNode extends Component {
     protected void allocateSimulationFlags() {
         readyForSim.clear();
 
-        readyForSim.put(connKeys.getLCHILD(), false);
-        if (connKeys.getRCHILD() != null)
-            readyForSim.put(connKeys.getRCHILD(), false);
+        try {
+            if (connKeys.getNumberNonNullChildren() != 0) {
+                for (Key childKey : connKeys.getChildren())
+                    readyForSim.putIfAbsent(childKey, false);
+            } else throw new NullPointerException();
+        } catch (NullPointerException exception) {
+            String message = this.getClass().getSimpleName();
+            message += " has no children. This is not allowed,";
+            message += " only Leaf node can have no children.";
+            throw new NullPointerException(message);
+        }
 
     }
 

@@ -18,9 +18,15 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite.key;
 
+import java.util.List;
+
 public abstract class Connections {
     abstract public Key getID();
     abstract public Key getPARENT();
+
+    abstract public int getNumberNonNullChildren();
+
+    abstract public List<Key> getChildren();
 
     public Key getRCHILD() {
         throw new UnsupportedOperationException("Method not implemented.");

@@ -18,6 +18,9 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite.key;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.jcip.annotations.Immutable;
 
 @Immutable
@@ -60,6 +63,21 @@ public final class BinaryConnections extends Connections {
 
     public Key getPARENT() {
         return PARENT;
+    }
+
+    public int getNumberNonNullChildren() {
+        if (LCHILD != null && RCHILD != null) return 2;
+        else if (LCHILD == null && RCHILD == null) return 0;
+        else return 1;
+    }
+
+    public List<Key> getChildren() {
+        List<Key> tmpList = new ArrayList<Key>();
+
+        if (LCHILD != null) tmpList.add(LCHILD);
+        if (RCHILD != null) tmpList.add(RCHILD);
+
+        return tmpList;
     }
 
     @Override

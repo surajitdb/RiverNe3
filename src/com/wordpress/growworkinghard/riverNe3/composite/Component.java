@@ -173,9 +173,6 @@ public abstract class Component {
     /**
      * @brief Method to implement in order to allocate memory for the flags
      *        which identify if the simulation of a child is finished or not
-     *
-     * @todo think about an algorithm for general connection with possible
-     * multiple children
      */
     abstract protected void allocateSimulationFlags();
 
