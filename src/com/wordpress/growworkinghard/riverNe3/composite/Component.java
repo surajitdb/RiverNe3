@@ -80,8 +80,6 @@ public abstract class Component {
 
     public abstract void setNewConnections(final Connections connKeys);
 
-    public abstract void setNewBinaryConnections(final Key ID);
-
     /**
      * @brief In order to return a unique instance of invariants
      *
@@ -185,32 +183,11 @@ public abstract class Component {
     /**
      * @brief Method to implement in order to allocate memory for the flags
      *        which identify if the simulation of a child is finished or not
+     *
+     * @todo think about an algorithm for general connection with possible
+     * multiple children
      */
     abstract protected void allocateSimulationFlags();
-
-    /**
-     * @brief Method to compute the <tt>key</tt> of the parent node
-     *
-     * @param[in] key The <tt>key</tt> of the node
-     * @return The <tt>key</tt> of the parent node
-     */
-    abstract protected Key computeParentKey(final Key key);
-
-    /**
-     * @brief Validate a <tt>Key</tt> object
-     *
-     * @param[in] key The <tt>key</tt> to validate
-     * @exception NullPointerException
-     *                if the <tt>key</tt> is null
-     */
-    protected synchronized void validateKey(final Key key) {
-
-        if (key == null) {
-            String message = "Only the key of the right child can be null";
-            throw new NullPointerException(message);
-        }
-
-    }
 
     /**
      * @brief Validate the <tt>layer</tt> of the node in the tree
@@ -249,52 +226,6 @@ public abstract class Component {
             throw new IllegalArgumentException(message);
         }
 
-    }
-
-    /**
-     * @brief Validate the <strong>invariant</strong> of the node
-     *
-     * @param[in] key The <tt>key</tt> of the node
-     * @param[in] parentKey The <tt>key</tt> of the parent node
-     * @param[in] leftChildKey The <tt>key</tt> of the left child
-     * @param[in] rightChildKey The <tt>key</tt> of the right child
-     * @exception IllegalArgumentException
-     *                the exception is thrown in three cases
-     *                <ul>
-     *                <li>the parent key is not the half of the key node;</li>
-     *                <li>the left child key is not the twice of the key node;
-     *                </li>
-     *                <li>the right child key is not the left child key + 1.
-     *                </li>
-     *                </ul>
-     */
-    protected synchronized void validateInvariant(final Key key, final Key parentKey, final Key leftChildKey, final Key rightChildKey) {
-
-        if (parentKey.getDouble() != Math.floor(key.getDouble() / 2)) {
-            String message = "Parent key " + parentKey.getString();
-            message += " is not the half of the key " + key.getString();
-            throw new IllegalArgumentException(message);
-        }
-
-        if (key.getDouble() * 2 != leftChildKey.getDouble()) {
-            String message = "Left child key " + leftChildKey.getString();
-            message += " is not the twice of the key " + key.getString();
-            throw new IllegalArgumentException(message);
-        }
-
-        if (rightChildKey != null &&
-            (leftChildKey.getDouble() + 1) != rightChildKey.getDouble()) {
-            String message = "Righ child key " + rightChildKey.getString();
-            message += " is not the the left child key " + leftChildKey.getString();
-            message += " + 1";
-            throw new IllegalArgumentException(message);
-        }
-
-    }
-
-    protected void validateConnections(final Connections connKeys) {
-        if (connKeys == null)
-            throw new NullPointerException("Input Connections object cannot be null.");
     }
 
     protected void validateConnections(final Connections connKeys) {

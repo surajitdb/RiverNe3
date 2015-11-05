@@ -61,7 +61,7 @@ public class RunSimulations {
                 tmpComp = binaryTree.get(next);
                 if (tmpComp.isReadyForSimulation()) {
                     binaryTree.remove(next, tmpComp);
-                    parent = binaryTree.get(tmpComp.getParentKey());
+                    parent = binaryTree.get(tmpComp.getConnections().getPARENT());
                     break;
                 }
             }

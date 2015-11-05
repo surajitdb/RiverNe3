@@ -24,9 +24,7 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
-import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
-import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -63,7 +61,6 @@ public class Leaf extends Component {
     @GuardedBy("this") private BinaryTreeTraverser<Component> traverser; //!< traverser object
 
     public Leaf(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
-
         getInstance(connKeys, layer, startPoint, endPoint);
     }
 
@@ -82,35 +79,23 @@ public class Leaf extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        if (!parent.getKey().equals(parentKey))
+        if (!parent.getConnections().getID().equals(connKeys.getPARENT()))
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Leaf       " + key.getDouble();
-            message += " ==> " + Thread.currentThread();
+            String message = "Leaf       " + connKeys.getID().getDouble();
+            message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
-            message += parent.getKey().getDouble();
+            message += connKeys.getPARENT().getDouble();
             System.out.println(message);
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
-        parent.notify(key);
+        parent.notify(connKeys.getID());
     }
 
     public synchronized void setNewConnections(final Connections connKeys) {
-
         validateConnections(connKeys);
         this.connKeys = connKeys;
-
-    }
-
-    public synchronized void setNewBinaryConnections(final Key ID) {
-
-        validateKey(ID);
-        Key PARENT = computeParentKey(ID);
-        Key LCHILD = null;
-        Key RCHILD = null;
-
-        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
     public synchronized Connections getConnections() {

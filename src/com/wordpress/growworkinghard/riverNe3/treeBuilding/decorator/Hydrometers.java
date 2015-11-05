@@ -23,12 +23,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.geotools.graph.util.geom.Coordinate2D;
+
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.GhostNode;
 import com.wordpress.growworkinghard.riverNe3.composite.LocalNode;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
-import com.wordpress.growworkinghard.riverNe3.geometry.Point;
 import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
 
@@ -124,7 +127,7 @@ public class Hydrometers extends BinaryTreeDecorator {
             throw new NullPointerException("Root not present in list");
 
         substituteRoot(point, root, tmpTree);
-        if (point.getKey() != root.getKey()) {
+        if (point.getKey() != root.getConnections().getID()) {
             processList(list, tmpTree);
             updateTree(tmpTree);
         }
@@ -133,18 +136,22 @@ public class Hydrometers extends BinaryTreeDecorator {
 
     private void substituteRoot(final Geometry point, final Component root, HashMap<Key, Component> tmpTree) {
 
-        Key oldRootKey = root.getKey();
-        point.setKey(root.getKey());
-        point.setLayer(root.getLayer());
-        point.setParentKey(root.getParentKey());
+        final int pointLayer = root.getLayer();
+        final Coordinate2D coor = root.getEndPoint(); // startPoint and endPoint are equal in Ghost node
 
-        if (root.getClass() == GhostNode.class)
-            tree.replace(point.getKey(), new LocalNode((Point) point, root.getLeftChildKey(), root.getRightChildKey()));
-        else {
-            root.setNewKey(new Key(point.getKey().getDouble() * 2));
-            root.setLayer(point.getLayer() + 1);
+        if (root.getClass() == GhostNode.class) {
+            final Connections conn = root.getConnections();
+            tree.replace(root.getConnections().getID(), new LocalNode(conn, pointLayer, coor));
+        } else {
+            Key oldRootKey = root.getConnections().getID();
+            Key newRootKey = new Key(oldRootKey.getDouble() * 2);
 
-            tree.replace(point.getKey(), new LocalNode((Point) point, root.getKey(), null));
+            Connections pointConn = newConnection(oldRootKey, newRootKey, null);
+            tree.replace(oldRootKey, new LocalNode(pointConn, pointLayer, coor));
+
+            root.setNewConnections(newConnection(root, newRootKey));
+            root.setLayer(root.getLayer() + 1);
+
             tmpTree.put(oldRootKey, root);
         }
 
@@ -155,25 +162,41 @@ public class Hydrometers extends BinaryTreeDecorator {
         Iterator<Component> it = list.iterator();
         while(it.hasNext()) {
             Component tmp = it.next();
-            Key oldTmpKey = tmp.getKey();
-            if(!tree.remove(tmp.getKey(), tmp))
+            Key oldTmpKey = tmp.getConnections().getID();
+            if(!tree.remove(oldTmpKey, tmp))
                 throw new NullPointerException("object not deleted from the tree");
 
-            Component tmpParent = tmpTree.get(tmp.getParentKey());
+            Component tmpParent = tmpTree.get(tmp.getConnections().getPARENT());
             if (tmpParent != null) {
                 Key newKey;
 
-                if (tmp.getKey().isEven())
-                    newKey = tmpParent.getLeftChildKey();
+                if (tmp.getConnections().getID().isEven())
+                    newKey = tmpParent.getConnections().getLCHILD();
                 else
-                    newKey = tmpParent.getRightChildKey();
+                    newKey = tmpParent.getConnections().getRCHILD();
 
-                tmp.setNewKey(newKey);
+                tmp.setNewConnections(newConnection(tmp, newKey));
                 tmp.setLayer(tmp.getLayer() + 1);
                 tmpTree.put(oldTmpKey, tmp);
             }
         }
 
+    }
+
+    private Connections newConnection(final Key id, final Key lChild, final Key rChild) {
+        return new BinaryConnections(id, lChild, rChild);
+    }
+
+    private Connections newConnection(final Component node, final Key newID) {
+        Key lChild = null;
+        Key rChild = null;
+
+        if (node.getConnections().getLCHILD() != null)
+            lChild = new Key(newID.getDouble() * 2);
+        if (node.getConnections().getRCHILD() != null)
+            rChild = new Key(newID.getDouble() * 2 + 1);
+
+        return new BinaryConnections(newID, lChild, rChild);
     }
 
     private void updateTree(final HashMap<Key, Component> tmpTree) {
@@ -184,7 +207,7 @@ public class Hydrometers extends BinaryTreeDecorator {
         while(i.hasNext()) {
             next = i.next();
             Component tmp = tmpTree.get(next);
-            tree.putIfAbsent(tmp.getKey(), tmp);
+            tree.putIfAbsent(tmp.getConnections().getID(), tmp);
             // add control if put is fine
         }
 

@@ -25,7 +25,6 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
-import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
@@ -106,37 +105,24 @@ public class LocalNode extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        if (!parent.getKey().equals(parentKey))
+        if (!parent.getConnections().getID().equals(connKeys.getPARENT()))
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Local Node " + key.getDouble();
-            message += " ==> " + Thread.currentThread();
+            String message = "Local Node " + connKeys.getID().getDouble();
+            message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
-            message += parent.getKey().getDouble();
+            message += connKeys.getPARENT().getDouble();
             System.out.println(message);
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
-        parent.notify(key);
+        parent.notify(connKeys.getID());
     }
 
     public synchronized void setNewConnections(final Connections connKeys) {
-
         validateConnections(connKeys);
         this.connKeys = connKeys;
-
-    }
-
-    public synchronized void setNewBinaryConnections(final Key ID) {
-
-        validateKey(ID);
-        Key PARENT = computeParentKey(ID);
-        Key LCHILD, RCHILD;
-        LCHILD = new Key(ID.getDouble() * 2);
-        if (connKeys.getRCHILD() != null) RCHILD = new Key(ID.getDouble() * 2 + 1);
-        else RCHILD = null;
-
-        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
+        allocateSimulationFlags();
     }
 
     public synchronized Connections getConnections() {
@@ -183,7 +169,6 @@ public class LocalNode extends Component {
         return new Coordinate2D(point.x, point.y);
     }
 
-    @Override
     public synchronized Coordinate2D getPoint() {
         validateCoordinate(point);
         return new Coordinate2D(point.x, point.y);
@@ -307,10 +292,9 @@ public class LocalNode extends Component {
     protected void allocateSimulationFlags() {
         readyForSim.clear();
 
-        if (leftChildKey != null && rightChildKey != null) {
-            readyForSim.put(leftChildKey, false);
-            readyForSim.put(rightChildKey, false);
-        } else readyForSim.put(leftChildKey, false);
+        readyForSim.put(connKeys.getLCHILD(), false);
+        if (connKeys.getRCHILD() != null)
+            readyForSim.put(connKeys.getRCHILD(), false);
 
     }
 

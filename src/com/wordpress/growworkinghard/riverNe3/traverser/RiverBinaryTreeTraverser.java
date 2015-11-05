@@ -31,9 +31,7 @@ public class RiverBinaryTreeTraverser extends BinaryTreeTraverser<Component> {
     private volatile ConcurrentHashMap<Key, Component> binaryTree;
 
     public RiverBinaryTreeTraverser(final HashMap<Key, Component> binaryTree) {
-
         getInstance(binaryTree);
-
     }
 
     private void getInstance(final HashMap<Key, Component> binaryTree) {
@@ -49,7 +47,7 @@ public class RiverBinaryTreeTraverser extends BinaryTreeTraverser<Component> {
 
     @Override
     public Optional<Component> leftChild(Component root) {
-        Key index = root.getLeftChildKey();
+        Key index = root.getConnections().getLCHILD();
 
         Component node = null;
         if (index != null)
@@ -61,7 +59,7 @@ public class RiverBinaryTreeTraverser extends BinaryTreeTraverser<Component> {
 
     @Override
     public Optional<Component> rightChild(Component root) {
-        Key index = root.getRightChildKey();
+        Key index = root.getConnections().getRCHILD();
 
         Component node = null;
         if (index != null)

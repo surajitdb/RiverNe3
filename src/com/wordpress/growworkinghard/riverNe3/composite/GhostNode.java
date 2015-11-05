@@ -25,7 +25,6 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
-import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
@@ -74,9 +73,7 @@ public class GhostNode extends Component {
         = new HashMap<Key, Boolean>(); //!< <code>HashMap</code> of flags for start sim
 
     public GhostNode(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
-
         getInstance(connKeys, layer, startPoint, endPoint);
-
     }
 
     /**
@@ -107,37 +104,24 @@ public class GhostNode extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        if (!parent.getKey().equals(parentKey))
+        if (!parent.getConnections().getPARENT().equals(connKeys.getPARENT()))
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Ghost Node " + key.getDouble();
-            message += " ==> " + Thread.currentThread();
+            String message = "Ghost Node " + connKeys.getID().getDouble();
+            message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
-            message += parent.getKey().getDouble();
+            message += parent.getConnections().getPARENT().getDouble();
             System.out.println(message);
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
-        parent.notify(key);
+        parent.notify(connKeys.getID());
     }
 
     public synchronized void setNewConnections(final Connections connKeys) {
-
         validateConnections(connKeys);
         this.connKeys = connKeys;
-
-    }
-
-    public synchronized void setNewBinaryConnections(final Key ID) {
-
-        validateKey(ID);
-        Key PARENT = computeParentKey(ID);
-        Key LCHILD, RCHILD;
-        LCHILD = new Key(ID.getDouble() * 2);
-        if (connKeys.getRCHILD() != null) RCHILD = new Key(ID.getDouble() * 2 + 1);
-        else RCHILD = null;
-
-        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
+        allocateSimulationFlags();
     }
 
     public synchronized Connections getConnections() {
@@ -297,10 +281,9 @@ public class GhostNode extends Component {
     protected void allocateSimulationFlags() {
         readyForSim.clear();
 
-        if (leftChildKey != null && rightChildKey != null) {
-            readyForSim.put(leftChildKey, false);
-            readyForSim.put(rightChildKey, false);
-        } else readyForSim.put(leftChildKey, false);
+        readyForSim.put(connKeys.getLCHILD(), false);
+        if (connKeys.getRCHILD() != null)
+            readyForSim.put(connKeys.getRCHILD(), false);
 
     }
 

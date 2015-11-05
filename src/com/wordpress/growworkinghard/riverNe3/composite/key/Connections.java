@@ -19,8 +19,8 @@
 package com.wordpress.growworkinghard.riverNe3.composite.key;
 
 public abstract class Connections {
-    public abstract Key getID();
-    public abstract Key getPARENT();
+    abstract public Key getID();
+    abstract public Key getPARENT();
 
     public Key getRCHILD() {
         throw new UnsupportedOperationException("Method not implemented.");
@@ -30,6 +30,7 @@ public abstract class Connections {
         throw new UnsupportedOperationException("Method not implemented.");
     }
 
-    protected abstract void validateStates();
-    protected abstract void validateKey(final Key key);
+    abstract protected void validateStates();
+    abstract protected void validateInvariant();
+    abstract protected void validateKey(final Key key);
 }

@@ -18,13 +18,16 @@
  */
 package com.wordpress.growworkinghard.riverNe3.treeBuilding;
 
+import org.geotools.graph.util.geom.Coordinate2D;
+
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.GhostNode;
 import com.wordpress.growworkinghard.riverNe3.composite.Leaf;
 import com.wordpress.growworkinghard.riverNe3.composite.Node;
+import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
+import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
-import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 public class SimpleNodeFactory {
 
@@ -38,14 +41,20 @@ public class SimpleNodeFactory {
      */
     public Component createNewNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
 
-        if (isLeaf(leftChild, rightChild))
-            return new Leaf((Line) root);
-        else {
+        Connections conn;
+        final Key ID = root.getKey();
+        final int layer = root.getLayer();
+        final Coordinate2D startPoint = root.getStartPoint();
+        final Coordinate2D endPoint = root.getEndPoint();
 
-            Key leftChildKey = leftChild.getKey(); //!< stack confinement: this object can escape, because it's a new object
-            Key rightChildKey = rightChild.getKey(); //!< stack confinement: this object can escape, because it's a new object
-            return (isGhost(root)) ? new GhostNode((Line) root, leftChildKey, rightChildKey) :
-                                     new Node((Line) root, leftChildKey, rightChildKey);
+        if (isLeaf(leftChild, rightChild)) {
+            conn = new BinaryConnections(ID, null, null);
+            return new Leaf(conn, layer, startPoint, endPoint);
+        } else {
+
+            conn = new BinaryConnections(ID);
+            return (isGhost(root)) ? new GhostNode(conn, layer, startPoint, endPoint) :
+                                     new Node(conn, layer, startPoint, endPoint);
         }
 
     }

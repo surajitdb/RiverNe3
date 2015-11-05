@@ -25,7 +25,6 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.BinaryTreeTraverser;
 import com.google.common.collect.FluentIterable;
-import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
@@ -76,9 +75,7 @@ public class Node extends Component {
      * @param[in] rightChildKey The key of the right child
      */
     public Node(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
-
         getInstance(connKeys, layer, startPoint, endPoint);
-
     }
 
     /**
@@ -109,15 +106,16 @@ public class Node extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        if (!key.getDouble().equals(1.0) && !parent.getKey().equals(parentKey))
+        if (!connKeys.getID().getDouble().equals(1.0) &&
+            !parent.getConnections().getID().equals(connKeys.getPARENT()))
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = "Node       " + key.getDouble();
-            message += " ==> " + Thread.currentThread();
+            String message = "Node       " + connKeys.getID().getDouble();
+            message += " ==> " + Thread.currentThread().getName();
             message += " Computing..." + " PARENT = ";
-            if (!key.getDouble().equals(1.0)) {
-                message += parent.getKey().getDouble();
+            if (!connKeys.getID().getDouble().equals(1.0)) {
+                message += connKeys.getPARENT().getDouble();
                 System.out.println(message);
             } else {
                 message += "0";
@@ -126,27 +124,13 @@ public class Node extends Component {
 
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
-        if (!key.getDouble().equals(1.0)) parent.notify(key);
+        if (!connKeys.getID().getDouble().equals(1.0)) parent.notify(connKeys.getID());
     }
 
     public synchronized void setNewConnections(final Connections connKeys) {
-
         validateConnections(connKeys);
         this.connKeys = connKeys;
-
         allocateSimulationFlags();
-    }
-
-    public synchronized void setNewBinaryConnections(final Key ID) {
-
-        validateKey(ID);
-        Key PARENT = computeParentKey(ID);
-        Key LCHILD, RCHILD;
-        LCHILD = new Key(ID.getDouble() * 2);
-        if (connKeys.getRCHILD() != null) RCHILD = new Key(ID.getDouble() * 2 + 1);
-        else RCHILD = null;
-
-        connKeys = new BinaryConnections(ID, PARENT, LCHILD, RCHILD);
     }
 
     public synchronized Connections getConnections() {
@@ -320,10 +304,9 @@ public class Node extends Component {
     protected void allocateSimulationFlags() {
         readyForSim.clear();
 
-        if (leftChildKey != null && rightChildKey != null) {
-            readyForSim.put(leftChildKey, false);
-            readyForSim.put(rightChildKey, false);
-        } else readyForSim.put(leftChildKey, false);
+        readyForSim.put(connKeys.getLCHILD(), false);
+        if (connKeys.getRCHILD() != null)
+            readyForSim.put(connKeys.getRCHILD(), false);
 
     }
 
