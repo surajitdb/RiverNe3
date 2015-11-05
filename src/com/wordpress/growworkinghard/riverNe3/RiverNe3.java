@@ -33,7 +33,7 @@ import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfLinesP
 import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfPointsProcessing;
 import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
-import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.RiverBinaryTree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers;
 
@@ -41,7 +41,7 @@ public class RiverNe3 {
  
     static HashMap<Integer, Geometry> test;
     static HashMap<Integer, Geometry> points;
-    static BinaryTree tb;
+    static Tree tb;
     static HashMap<Key, Component> binaryTree;
     static RunSimulations sim;
     static List<Geometry> pointList;

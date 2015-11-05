@@ -33,16 +33,16 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.traverser.RiverBinaryTreeTraverser;
-import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 
 public class Hydrometers extends BinaryTreeDecorator {
 
     private List<Geometry> data;
     private HashMap<Key, Component> tree;
-    private BinaryTree binaryTree;
+    private Tree binaryTree;
     private Double tolerance;
 
-    public Hydrometers(final BinaryTree binaryTree, final List<Geometry> data, final double tolerance) {
+    public Hydrometers(final Tree binaryTree, final List<Geometry> data, final double tolerance) {
 
         getInstance(binaryTree, data, tolerance);
 
@@ -67,7 +67,7 @@ public class Hydrometers extends BinaryTreeDecorator {
 
     }
 
-    private void getInstance(final BinaryTree binaryTree, final List<Geometry> data, final double tolerance) {
+    private void getInstance(final Tree binaryTree, final List<Geometry> data, final double tolerance) {
 
         if (statesAreNull()) {
             synchronized(this) {

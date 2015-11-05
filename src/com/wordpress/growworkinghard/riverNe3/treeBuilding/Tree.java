@@ -64,7 +64,7 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public abstract class BinaryTree {
+public abstract class Tree {
 
     public abstract HashMap<Key, Component> computeNodes();
 

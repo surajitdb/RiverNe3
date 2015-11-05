@@ -28,7 +28,7 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
 import net.jcip.annotations.GuardedBy;
 
-public class RiverBinaryTree extends BinaryTree {
+public class RiverBinaryTree extends Tree {
 
     @GuardedBy("this") private volatile static ConcurrentHashMap<Key, Component> binaryTree;
     @GuardedBy("this") private volatile static ConcurrentHashMap<Integer, Geometry> data;

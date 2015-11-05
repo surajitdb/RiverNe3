@@ -22,9 +22,9 @@ import java.util.HashMap;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.treeBuilding.BinaryTree;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 
-public abstract class BinaryTreeDecorator extends BinaryTree {
+public abstract class BinaryTreeDecorator extends Tree {
 
     public abstract HashMap<Key, Component> computeNodes();
 
@@ -32,7 +32,7 @@ public abstract class BinaryTreeDecorator extends BinaryTree {
 
     protected abstract void validateState();
 
-    protected void validateBinaryTree(final BinaryTree binaryTree) {
+    protected void validateBinaryTree(final Tree binaryTree) {
         if (binaryTree == null)
             throw new NullPointerException("Object BinaryTree cannot be null");
     }
