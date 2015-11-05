@@ -272,12 +272,10 @@ public class GhostNode extends Component {
     protected void allocateSimulationFlags() {
         readyForSim.clear();
 
-        try {
-            if (connKeys.getNumberNonNullChildren() != 0) {
-                for (Key childKey : connKeys.getChildren())
-                    readyForSim.putIfAbsent(childKey, false);
-            } else throw new NullPointerException();
-        } catch (NullPointerException exception) {
+        if (connKeys.getNumberNonNullChildren() != 0) {
+            for (Key childKey : connKeys.getChildren())
+                readyForSim.putIfAbsent(childKey, false);
+        } else {
             String message = this.getClass().getSimpleName();
             message += " has no children. This is not allowed,";
             message += " only Leaf node can have no children.";
