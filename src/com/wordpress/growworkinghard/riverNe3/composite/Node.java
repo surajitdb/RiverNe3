@@ -218,7 +218,8 @@ public class Node extends Component {
     @Override
     public String toString() {
   
-        String tmp = "NODE       ==> ";
+        String tmp = this.getClass().getSimpleName();
+        tmp += "       ==> ";
         tmp += connKeys.toString();
         tmp += " - Layer = " + layer;
 

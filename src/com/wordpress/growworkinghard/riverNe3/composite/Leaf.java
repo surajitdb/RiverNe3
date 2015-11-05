@@ -179,7 +179,8 @@ public class Leaf extends Component {
     @Override
     public String toString() {
   
-        String tmp = "LEAF       ==> ";
+        String tmp = this.getClass().getSimpleName();
+        tmp += "       ==> ";
         tmp += connKeys.toString();
         tmp += " - Layer = " + layer;
 

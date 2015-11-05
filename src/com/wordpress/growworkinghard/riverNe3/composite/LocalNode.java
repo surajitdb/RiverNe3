@@ -211,7 +211,8 @@ public class LocalNode extends Component {
     @Override
     public String toString() {
   
-        String tmp = "LOCAL NODE ==> ";
+        String tmp = this.getClass().getSimpleName();
+        tmp += "  ==> ";
         tmp += connKeys.toString();
         tmp += " - Layer = " + layer;
 
