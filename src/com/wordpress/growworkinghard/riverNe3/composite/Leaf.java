@@ -27,6 +27,7 @@ import com.google.common.collect.TreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 
 import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * @brief class Leaf
@@ -52,14 +53,23 @@ import net.jcip.annotations.GuardedBy;
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
+@ThreadSafe
 public class Leaf extends Component {
 
-    @GuardedBy("this") private Connections connKeys;
+    @GuardedBy("this") private Connections connKeys; //!< connections of the node
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
     @GuardedBy("this") private Coordinate2D startPoint; //!< starting point of the sub-basin
     @GuardedBy("this") private Coordinate2D endPoint; //!< ending point of the sub-basin
     @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
 
+    /**
+     * @brief Constructor
+     *
+     * @param[in] connKeys The connection of the node
+     * @param[in] layer The layer of the node in the tree
+     * @param[in] startPoint The starting point of the stream in the sub-basin
+     * @param[in] endPoint The closure point of the sub-basin
+     */
     public Leaf(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
         getInstance(connKeys, layer, startPoint, endPoint);
     }
@@ -91,14 +101,25 @@ public class Leaf extends Component {
             System.out.println(message);
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
+
         parent.notify(connKeys.getID());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#setNewConnections(final Connections)
+     */
     public synchronized void setNewConnections(final Connections connKeys) {
-        validateConnections(connKeys);
+        validateConnections(connKeys); // precondition
         this.connKeys = connKeys;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#getConnections()
+     */
     public synchronized Connections getConnections() {
         return connKeys;
     }
@@ -109,7 +130,7 @@ public class Leaf extends Component {
      * @see Component#setLayer(final int)
      */
     public synchronized void setLayer(final int layer) {
-        validateLayer(layer);
+        validateLayer(layer); // precondition
         this.layer = layer;
     }
 
@@ -119,7 +140,6 @@ public class Leaf extends Component {
      * @see Component#getLayer()
      */
     public synchronized Integer getLayer() {
-        validateLayer(layer);
         return new Integer(layer);
     }
 
@@ -129,7 +149,6 @@ public class Leaf extends Component {
      * @see Component#getStartPoint()
      */
     public synchronized Coordinate2D getStartPoint() {
-        validateCoordinate(startPoint);
         return new Coordinate2D(startPoint.x, startPoint.y);
     }
 
@@ -139,7 +158,6 @@ public class Leaf extends Component {
      * @see Component#getEndPoint()
      */
     public synchronized Coordinate2D getEndPoint() {
-        validateCoordinate(endPoint);
         return new Coordinate2D(endPoint.x, endPoint.y);
     }
 
@@ -149,6 +167,7 @@ public class Leaf extends Component {
      * @see Component#setTraverser(final BinaryTreeTraverser<Component>)
      */
     public synchronized void setTraverser(final TreeTraverser<Component> traverser) {
+        if (traverser == null) throw new NullPointerException("Traverser cannot be null."); // precondition
         this.traverser = traverser;
     }
 
@@ -189,6 +208,14 @@ public class Leaf extends Component {
 
     }
 
+    /**
+     * @brief Allocation of the states of the class
+     *
+     * @param[in] connKeys The connections of the node
+     * @param[in] layer The layer of the node in the tree
+     * @param[in] startPoint The starting point of the stream in the sub-basin
+     * @param[in] endPoint The closure point of the sub-basin
+     */
     private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
         if (statesAreNull()) {
@@ -199,7 +226,7 @@ public class Leaf extends Component {
                     this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
                     this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
 
-                    validateState();
+                    validateState(); // precondition
                 }
 
             }

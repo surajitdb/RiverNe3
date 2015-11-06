@@ -258,7 +258,7 @@ public final class BinaryConnections extends Connections {
     /**
      * {@inheritDoc}
      *
-     * @see Connections#validateKey(Key)
+     * @see Connections#validateKey(final Key)
      */
     protected void validateKey(final Key key) {
         if (key == null)

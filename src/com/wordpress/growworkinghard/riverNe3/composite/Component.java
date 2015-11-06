@@ -30,10 +30,8 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @brief class Component
  *
  * @description This is the abstract class of the <strong>Composite
- *              Pattern</strong>
- *              @cite freeman2004:head,
- *               which has been used to realize the structure
- *              for the binary tree
+ *              Pattern</strong> @cite freeman2004:head, which has been used to
+ *              realize the structure for the binary tree
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
@@ -78,14 +76,21 @@ public abstract class Component {
      */
     abstract public void runSimulation(final Component parent);
 
+    /**
+     * @brief Set the connection of the node
+     *
+     * @description This method is useful when applying decorators to the tree
+     *              the connection keys of a node are recomputed because a
+     *              <tt>Local Node</tt> is localized on the net.
+     *
+     * @param[in] connKeys The new connection
+     */
     public abstract void setNewConnections(final Connections connKeys);
 
     /**
-     * @brief In order to return a unique instance of invariants
+     * @brief Returns a unique instance of the connections of the node
      *
-     * JCIP p69
-     *
-     * @return
+     * @return The connections of the node
      */
     public abstract Connections getConnections();
 
@@ -215,6 +220,13 @@ public abstract class Component {
 
     }
 
+    /**
+     * @brief Validate the <tt>connection</tt> of the node
+     *
+     * @param[in] connKeys The input connection to validate
+     * @exception NullPointerException
+     *                if the connection is null
+     */
     protected void validateConnections(final Connections connKeys) {
         if (connKeys == null)
             throw new NullPointerException("Input Connections object cannot be null.");
