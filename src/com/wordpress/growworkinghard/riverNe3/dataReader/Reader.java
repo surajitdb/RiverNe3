@@ -24,27 +24,23 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+/**
+ * @todo Replace CyclicBarrier with CompletionServices ==> JCIP p134
+ *
+ * @author
+ */
 public class Reader {
     private final ExecutorService exec;
     private final List<DataProcessing> mainList;
     private final List<Worker> workers = new ArrayList<Worker>();
     private final List<Integer> nSplit = new ArrayList<Integer>();
     private CyclicBarrier barrier;
-    private boolean executorShutdown = false;
 
     public Reader(final List<DataProcessing> list, final ExecutorService exec) {
         this.mainList = list;
         computeThreadsNumber();
         this.exec = exec;
-    }
-
-    public Reader(final List<DataProcessing> list) {
-        this.mainList = list;
-        computeThreadsNumber();
-        this.exec = Executors.newFixedThreadPool(nSplit.get(0));
-        this.executorShutdown = true;
     }
 
     public void start() {
@@ -66,8 +62,6 @@ public class Reader {
             }
             barrier.reset();
         }
-
-        if (executorShutdown) exec.shutdown();
 
     }
 
