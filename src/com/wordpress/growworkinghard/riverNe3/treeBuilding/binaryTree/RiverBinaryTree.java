@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3.treeBuilding;
+package com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 
 import net.jcip.annotations.GuardedBy;
 

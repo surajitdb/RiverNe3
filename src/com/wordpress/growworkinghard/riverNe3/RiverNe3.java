@@ -34,7 +34,7 @@ import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfPoints
 import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
-import com.wordpress.growworkinghard.riverNe3.treeBuilding.RiverBinaryTree;
+import com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree.RiverBinaryTree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers;
 
 public class RiverNe3 {
