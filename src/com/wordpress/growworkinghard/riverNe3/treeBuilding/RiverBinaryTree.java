@@ -73,10 +73,10 @@ public class RiverBinaryTree extends Tree {
      * @param[in] size
      *            The number of <tt>Geometry</tt> objects in the list
      */
-    private void getInstance(final HashMap<Integer, Geometry> inputData, final int threadsNumber) {
+    private static void getInstance(final HashMap<Integer, Geometry> inputData, final int threadsNumber) {
 
         if (binaryTree == null || data == null) {
-            synchronized (this) {
+            synchronized (RiverBinaryTree.class) {
                 if (binaryTree == null || data == null) {
                     validateInputData(inputData); //!< pre-condition
 
@@ -351,7 +351,7 @@ public class RiverBinaryTree extends Tree {
         right.setStartPoint(right.getEndPoint());
     }
 
-    private void validateInputData(final HashMap<Integer, Geometry> inputData) {
+    private static void validateInputData(final HashMap<Integer, Geometry> inputData) {
 
         if (inputData == null)
             throw new NullPointerException("The input HashMap cannot be null");

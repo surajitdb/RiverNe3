@@ -21,33 +21,47 @@ package com.wordpress.growworkinghard.riverNe3;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 public class RunSimulations {
 
-    private volatile ConcurrentHashMap<Key, Component> binaryTree;
+    private volatile static ConcurrentHashMap<Key, Component> binaryTree;
+    private volatile static ExecutorService executor;
+    private volatile static CountDownLatch latch;
+    private volatile static int count;
 
-    public RunSimulations(final HashMap<Key, Component> binaryTree) {
-        if (this.binaryTree == null)
-            synchronized(this) {
-                if (this.binaryTree == null) {
-                    this.binaryTree
-                        = new ConcurrentHashMap<Key, Component>(binaryTree.size(), 0.9f, 4);
-                    this.binaryTree.putAll(binaryTree);
+    public RunSimulations(final HashMap<Key, Component> binaryTree, final ExecutorService exec, final int count) {
+        getInstance(binaryTree, exec, count);
+    }
+
+    private static void getInstance(final HashMap<Key, Component> inputBinaryTree, final ExecutorService exec, final int counter) {
+
+        if (binaryTree == null) {
+            synchronized(RunSimulations.class) {
+                if (binaryTree == null) {
+                    count = counter;
+                    executor = exec;
+                    binaryTree
+                        = new ConcurrentHashMap<Key, Component>(inputBinaryTree.size(), 0.9f, count);
+                    latch = new CountDownLatch(count);
+                    binaryTree.putAll(inputBinaryTree);
                 }
             }
+        }
+
     }
 
     public void run() {
-        while(!binaryTree.isEmpty()) {
-            try {
-                while (!Thread.interrupted()) runSim();
-            } finally {
-                return;
-            }
-        }
+        for (int i = 0; i < count; i++)
+            executor.submit(new ParallelSimulations(latch));
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {}
     }
 
     private void runSim() {
@@ -67,6 +81,26 @@ public class RunSimulations {
             }
         }
         tmpComp.runSimulation(parent);
+    }
+
+    private class ParallelSimulations implements Runnable {
+
+        CountDownLatch latch;
+
+        ParallelSimulations(CountDownLatch latch) {
+            this.latch = latch;
+        }
+
+        public void run() {
+            while(!binaryTree.isEmpty()) {
+                try {
+                    while(!Thread.interrupted()) runSim();
+                } finally {
+                    latch.countDown();
+                }
+            }
+        }
+
     }
 
 }

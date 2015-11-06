@@ -39,8 +39,6 @@ import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers
 
 public class RiverNe3 {
  
-    static HashMap<Integer, Geometry> test;
-    static HashMap<Integer, Geometry> points;
     static Tree tb;
     static HashMap<Key, Component> binaryTree;
     static RunSimulations sim;
@@ -61,19 +59,17 @@ public class RiverNe3 {
         String[] colNamesPoints = {"X_coord", "Y_coord"};
 
         dfbp = new DbfLinesProcessing(filePath, colNames);
-
         dbfPoints = new DbfPointsProcessing(filePathPoints, colNamesPoints);
 
         list.add(dfbp);
         list.add(dbfPoints);
 
         Reader reader = new Reader(list, executor);
-        List<HashMap<Integer, Geometry>> data = reader.start();
+        reader.start();
 
-        test = data.get(0);
-        points = data.get(1);
-        pointList = new ArrayList<Geometry>(points.values());
+        pointList = new ArrayList<Geometry>(reader.start().get(1).values());
 
+        tb = new RiverBinaryTree(reader.start().get(0), count);
         CountDownLatch l = new CountDownLatch(count);
 
         for (int i = 0; i < count; i++)
@@ -88,18 +84,13 @@ public class RiverNe3 {
         tb.buildTree();
         binaryTree = tb.computeNodes();
 
-        sim = new RunSimulations(binaryTree);
-        CountDownLatch l2 = new CountDownLatch(count);
-        for (int i = 0; i < count; i++)
-            executor.submit(new MyRunnableSim(l2));
-
-        try {
-            l2.await();
-        } catch (InterruptedException e) {}
+        sim = new RunSimulations(binaryTree, executor, count);
+        sim.run();
 
         executor.shutdown();
 
         System.out.println("Exit");
+        System.exit(0);
 
     }
 
@@ -113,24 +104,7 @@ public class RiverNe3 {
 
         @Override
         public void run() {
-            tb = new RiverBinaryTree(test, count);
             tb.buildTree();
-            l.countDown();
-        }
-
-    }
-
-    public static class MyRunnableSim implements Runnable {
-
-        CountDownLatch l;
-
-        MyRunnableSim(CountDownLatch l) {
-            this.l = l;
-        }
-
-        @Override
-        public void run() {
-            sim.run();
             l.countDown();
         }
 
