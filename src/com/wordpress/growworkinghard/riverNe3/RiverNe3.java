@@ -51,7 +51,7 @@ public class RiverNe3 {
     static DbfProcessing dbfPoints;
     static CountDownLatch lRead;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         count = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(count);
@@ -68,10 +68,10 @@ public class RiverNe3 {
         list.add(dbfPoints);
 
         Reader reader = new Reader(list, executor);
-        reader.start();
+        List<HashMap<Integer, Geometry>> data = reader.start();
 
-        test = dfbp.get();
-        points = dbfPoints.get();
+        test = data.get(0);
+        points = data.get(1);
         pointList = new ArrayList<Geometry>(points.values());
 
         CountDownLatch l = new CountDownLatch(count);

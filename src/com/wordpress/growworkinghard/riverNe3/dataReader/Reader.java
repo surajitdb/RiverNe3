@@ -19,11 +19,16 @@
 package com.wordpress.growworkinghard.riverNe3.dataReader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Executor;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
 /**
  * @todo Replace CyclicBarrier with CompletionServices ==> JCIP p134
@@ -33,74 +38,47 @@ import java.util.concurrent.ExecutorService;
 public class Reader {
     private final ExecutorService exec;
     private final List<DataProcessing> mainList;
-    private final List<Worker> workers = new ArrayList<Worker>();
-    private final List<Integer> nSplit = new ArrayList<Integer>();
-    private CyclicBarrier barrier;
 
     public Reader(final List<DataProcessing> list, final ExecutorService exec) {
         this.mainList = list;
-        computeThreadsNumber();
         this.exec = exec;
     }
 
-    public void start() {
-        for (int i = 0; i < nSplit.size(); i++) {
+    public List<HashMap<Integer, Geometry>> start() throws InterruptedException {
+        List<ReaderTask> tasks = new ArrayList<ReaderTask>();
 
-            final int loop = i+1;
-            Runnable barrierAction = new Runnable() {
-                public void run() {
-                    System.out.println("BarrierAction " + loop + " executed.");
-                }
-            };
+        for (DataProcessing dataFile : mainList)
+            tasks.add(new ReaderTask(dataFile));
 
-            barrier = new CyclicBarrier(nSplit.get(i), barrierAction);
-            int endLoop = nSplit.get(i);
-            for (int j = 0; j < endLoop; j++) {
-                workers.add(new Worker(mainList.get(0)));
-                exec.execute(workers.get(j));
-                mainList.remove(0);
-            }
-            barrier.reset();
-        }
+        List<Future<HashMap<Integer, Geometry>>> futures = exec.invokeAll(tasks);
 
-    }
+        List<HashMap<Integer, Geometry>> data = new ArrayList<HashMap<Integer, Geometry>>(tasks.size());
+        Iterator<ReaderTask> taskIter = tasks.iterator();
 
-    private void computeThreadsNumber() {
-
-        int count = Runtime.getRuntime().availableProcessors();
-        int files = mainList.size();
-
-        if (files <= count) nSplit.add(files);
-        else {
-            int nLoops = files / count;
-            for (int i = 0; i < nLoops; i++) nSplit.add(count);
-            int remainder = files - count * nLoops;
-            nSplit.add(remainder);
-        }
-
-    }
-
-    private class Worker implements Runnable {
-        private final DataProcessing fileProcess;
-
-        public Worker (final DataProcessing fileProcess) {this.fileProcess = fileProcess;}
-
-        public void run() {
-            fileProcess.fileProcessing();
+        for (Future<HashMap<Integer, Geometry>> f : futures) {
+            ReaderTask task = taskIter.next();
 
             try {
-                barrier.await();
-            } catch (InterruptedException ex) {
-                return;
-            } catch (BrokenBarrierException ex) {
-                return;
+                data.add(f.get());
+            } catch (ExecutionException e) {
+            } catch (CancellationException e) {
+
             }
+        }
+
+        return data;
+
+    }
+
+    private class ReaderTask implements Callable<HashMap<Integer, Geometry>> {
+        private final DataProcessing fileProcess;
+
+        public ReaderTask (final DataProcessing fileProcess) {this.fileProcess = fileProcess;}
+
+        public HashMap<Integer, Geometry> call() throws Exception {
+            fileProcess.fileProcessing();
+            return fileProcess.get();
         }
     }
 
-    public class ThreadPerTaskExecutor implements Executor {
-        public void execute(Runnable worker) {
-            new Thread(worker).start();
-        };
-    }
 }
