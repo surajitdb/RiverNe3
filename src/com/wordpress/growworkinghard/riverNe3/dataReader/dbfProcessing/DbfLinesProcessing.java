@@ -50,11 +50,6 @@ public class DbfLinesProcessing extends DbfProcessing {
         getInstance(filePath, colNames);
     }
 
-    public synchronized HashMap<Integer, Geometry> get() {
-        validateOutputData(inputData); //!< post-conditions
-        return inputData;
-    }
-
     private synchronized void getInstance(final String filePath, final String[] colNames) {
 
         if (inputData == null) {
@@ -66,7 +61,7 @@ public class DbfLinesProcessing extends DbfProcessing {
 
     }
 
-    public synchronized void fileProcessing() {
+    public synchronized HashMap<Integer, Geometry> fileProcessing() {
 
         try {
 
@@ -81,6 +76,8 @@ public class DbfLinesProcessing extends DbfProcessing {
 
         } catch (IOException exception) { new IOException(exception); }
 
+        validateOutputData(inputData); //!< post-conditions
+        return inputData;
     }
 
     protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {

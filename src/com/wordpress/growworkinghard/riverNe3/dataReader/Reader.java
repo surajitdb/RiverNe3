@@ -76,8 +76,7 @@ public class Reader {
         public ReaderTask (final DataProcessing fileProcess) {this.fileProcess = fileProcess;}
 
         public HashMap<Integer, Geometry> call() throws Exception {
-            fileProcess.fileProcessing();
-            return fileProcess.get();
+            return fileProcess.fileProcessing();
         }
     }
 

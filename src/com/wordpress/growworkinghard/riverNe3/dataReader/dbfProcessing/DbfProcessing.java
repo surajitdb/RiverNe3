@@ -61,8 +61,8 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public abstract class DbfProcessing implements DataProcessing {
 
-    public abstract void fileProcessing();
-    public abstract HashMap<Integer, Geometry> get();
+    public abstract HashMap<Integer, Geometry> fileProcessing();
+
     /**
      * @brief The processing of the header of the <code>.dbf</code> file
      *

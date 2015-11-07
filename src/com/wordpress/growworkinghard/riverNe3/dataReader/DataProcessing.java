@@ -24,8 +24,6 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
 public interface DataProcessing {
 
-    public void fileProcessing();
-
-    public HashMap<Integer, Geometry> get();
+    public HashMap<Integer, Geometry> fileProcessing();
 
 }

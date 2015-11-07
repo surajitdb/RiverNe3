@@ -42,12 +42,7 @@ public class DbfPointsProcessing extends DbfProcessing {
         this.colNames = colNames;
     }
 
-    public HashMap<Integer, Geometry> get() {
-        validateOutputData(inputData); //!< post-conditions
-        return inputData;
-    }
-
-    public void fileProcessing() {
+    public HashMap<Integer, Geometry> fileProcessing() {
 
         try {
 
@@ -62,6 +57,8 @@ public class DbfPointsProcessing extends DbfProcessing {
 
         } catch (IOException exception) { new IOException(exception); }
 
+        validateOutputData(inputData); //!< post-conditions
+        return inputData;
     }
 
     protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
