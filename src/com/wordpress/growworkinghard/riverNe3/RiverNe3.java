@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.dataReader.DataProcessing;
+import com.wordpress.growworkinghard.riverNe3.dataReader.DataReading;
 import com.wordpress.growworkinghard.riverNe3.dataReader.Reader;
 import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfPointsProcessing;
@@ -44,7 +44,7 @@ public class RiverNe3 {
     static RunSimulations sim;
     static List<Geometry> pointList;
     static int count;
-    static List<DataProcessing> list = new ArrayList<DataProcessing>();
+    static List<DataReading> list = new ArrayList<DataReading>();
     static DbfProcessing dfbp;
     static DbfProcessing dbfPoints;
     static CountDownLatch lRead;
