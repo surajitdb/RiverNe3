@@ -61,7 +61,11 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public abstract class DbfProcessing implements DataProcessing {
 
-    public abstract HashMap<Integer, Geometry> fileProcessing();
+    abstract public HashMap<Integer, Geometry> fileProcessing();
+
+    abstract protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
+
+    abstract protected void validateInputData(final String filePath, final String[] colNames);
 
     /**
      * @brief The processing of the header of the <code>.dbf</code> file
@@ -77,7 +81,7 @@ public abstract class DbfProcessing implements DataProcessing {
      * @return A <code>Vector</code> of <code>Integer</code> with the indices of
      *         the columns from which retrieve the data
      */
-    protected Vector<Integer> headerProcessing(final DbaseFileReader dbfReader, final String[] colNames) {
+    protected synchronized Vector<Integer> headerProcessing(final DbaseFileReader dbfReader, final String[] colNames) {
 
         Vector<Integer> tmpVec = new Vector<Integer>(colNames.length);
         DbaseFileHeader dbfheader = dbfReader.getHeader();
@@ -95,15 +99,11 @@ public abstract class DbfProcessing implements DataProcessing {
 
     }
 
-    protected void validateOutputData(final HashMap<Integer, Geometry> inputData) {
+    protected synchronized void validateOutputData(final HashMap<Integer, Geometry> inputData) {
 
         if (inputData.isEmpty())
             throw new NullPointerException("The output HashMap is empty. Something was wrong during the computation");
 
     }
-
-    abstract protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> conIndices);
-
-    abstract protected void validateInputData(final String filePath, final String[] colNames);
 
 }

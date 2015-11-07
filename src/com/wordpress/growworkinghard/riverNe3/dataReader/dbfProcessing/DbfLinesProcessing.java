@@ -31,10 +31,9 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 /**
+ * @description This class can be accessed from just one thread per time
  *
  * @todo Design a better implementation of the switch-case
- *
- * @todo make this class <em>ThreadSafe</em>
  *
  * @todo add documentation
  *
@@ -47,21 +46,13 @@ public class DbfLinesProcessing extends DbfProcessing {
     private String[] colNames;
 
     public DbfLinesProcessing(final String filePath, final String[] colNames) {
-        getInstance(filePath, colNames);
+        validateInputData(filePath, colNames);
+        inputData = new HashMap<Integer, Geometry>();
+        this.filePath = filePath;
+        this.colNames = colNames;
     }
 
-    private synchronized void getInstance(final String filePath, final String[] colNames) {
-
-        if (inputData == null) {
-            validateInputData(filePath, colNames);
-            inputData = new HashMap<Integer, Geometry>();
-            this.filePath = filePath;
-            this.colNames = colNames;
-        }
-
-    }
-
-    public synchronized HashMap<Integer, Geometry> fileProcessing() {
+    public HashMap<Integer, Geometry> fileProcessing() {
 
         try {
 
@@ -148,7 +139,7 @@ public class DbfLinesProcessing extends DbfProcessing {
 
     }
 
-    protected synchronized void validateInputData(final String filePath, final String[] colNames) {
+    protected void validateInputData(final String filePath, final String[] colNames) {
 
         if (filePath == null)
             throw new NullPointerException("The file path cannot be null");

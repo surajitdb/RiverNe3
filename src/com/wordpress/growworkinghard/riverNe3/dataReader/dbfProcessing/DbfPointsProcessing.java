@@ -107,7 +107,7 @@ public class DbfPointsProcessing extends DbfProcessing {
 
     }
 
-    protected synchronized void validateInputData(final String filePath, final String[] colNames) {
+    protected void validateInputData(final String filePath, final String[] colNames) {
 
         if (filePath == null)
             throw new NullPointerException("The file path cannot be null");
