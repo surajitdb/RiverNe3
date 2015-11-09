@@ -53,6 +53,11 @@ public class Line extends Geometry {
     @GuardedBy("this") private Coordinate2D endPoint; //!< ending point of the stream in the subbasin
 
     /**
+     * @brief Default constructor
+     */
+    public Line() {}
+
+    /**
      * @brief Constructor
      *
      * @param[in] root If the element is the root of the subtree

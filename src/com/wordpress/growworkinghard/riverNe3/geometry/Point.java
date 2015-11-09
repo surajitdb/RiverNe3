@@ -52,6 +52,11 @@ public class Point extends Geometry {
     @GuardedBy("this") private Coordinate2D point; //!< coordinates of the point
 
     /**
+     * @brief Default constructor
+     */
+    public Point() {}
+
+    /**
      * @brief Constructor
      *
      * @param[in] root If the element is the root of the subtree
