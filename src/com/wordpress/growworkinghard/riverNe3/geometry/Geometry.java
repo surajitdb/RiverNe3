@@ -22,51 +22,53 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
+import net.jcip.annotations.ThreadSafe;
+
 /**
- * @brief Abstract class Geometry
+ * @brief Abstract class to apply the <strong>Strategy Pattern</strong> to
+ *        <tt>Geometry</tt> features
  *
- * @description This class collect the behaviours of different type of geometry elements. It
- * is implemented following the idea of the Strategy Pattern, then you can
- * easily add new features.
- *
- * @todo make this class <em>ThreadSafe</em>
+ * @description This class collect the behaviours of different type of geometry
+ *              elements. It is implemented following the idea of the
+ *              <strong>Strategy Pattern</strong>, in order to easily add new
+ *              features.
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
+@ThreadSafe
 public abstract class Geometry {
 
 
     /**
      * @brief Identify if the feature is root of a subtree
      *
-     * @return the boolean variable <tt>root</tt>
+     * @retval TRUE if the variable feature is <tt>root</tt>
+     * @retval FALSE otherwise
      */
     abstract public boolean isRoot();
 
     /**
-     * @brief Setter method for the variable <tt>root</tt> 
+     * @brief Setter method for the variable <tt>root</tt>
      *
-     * @param[in] root
-     *            boolean <code>true</code> if the feature is root a subtree
+     * @param[in] root <code>true</code> if the feature is root a subtree
      */
     abstract public void setRoot(final boolean root);
 
     /**
      * @brief Setter method for the variable <tt>key</tt>
      *
-     * @param[in] key
-     *            the key that is going to be used as index in the
-     *            <code>ConcurrentHashMap</code>
+     * @param[in] key the key of the node that is going to be used as index in
+     *            the <code>ConcurrentHashMap</code>
      */
     abstract public void setKey(final Key key);
 
     /**
      * @brief Getter method for the variable <tt>key</tt>
      *
-     * @return the key that is going to be used as index in the
+     * @return the key of the node that is going to be used as index in the
      *         <code>ConcurrentHashMap</code>
      */
     abstract public Key getKey();
@@ -74,8 +76,7 @@ public abstract class Geometry {
     /**
      * @brief Setter method for the variable <tt>layer</tt>
      *
-     * @param[in] layer
-     *            the layer in the tree
+     * @param[in] layer the layer in the tree
      */
     abstract public void setLayer(final int layer);
 
@@ -89,8 +90,7 @@ public abstract class Geometry {
     /**
      * @brief Setter method for the variable <tt>parentKey</tt>
      *
-     * @param[in] parentKey
-     *            the key which identify the parent node in the
+     * @param[in] parentKey the key which identify the parent node in the
      *            <code>ConcurrentHashMap</code>
      */
     abstract public void setParentKey(final Key parentKey);
@@ -103,6 +103,9 @@ public abstract class Geometry {
      */
     abstract public Key getParentKey();
 
+    /**
+     * @brief Validate the states of the <tt>Geometry</tt> object
+     */
     abstract protected void validateState();
 
     /**
@@ -112,15 +115,13 @@ public abstract class Geometry {
      *              in a point class, which will have the state variable
      *              <tt>point</tt>
      *
-     * @param[in] x
-     *            The x coordinate
-     * @param[in] y
-     *            The y coordinate
+     * @param[in] x The x coordinate
+     * @param[in] y The y coordinate
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public void setPoint(final double x, final double y) {
+    public synchronized void setPoint(final double x, final double y) {
         throw new UnsupportedOperationException();
     }
 
@@ -131,13 +132,12 @@ public abstract class Geometry {
      *              in a point class, which will have the state variable
      *              <tt>point</tt>
      *
-     * @param[in] point
-     *            The coordinate of the point
+     * @param[in] point The coordinate of the point
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public void setPoint(final Coordinate2D point) {
+    public synchronized void setPoint(final Coordinate2D point) {
         throw new UnsupportedOperationException();
     }
 
@@ -153,7 +153,7 @@ public abstract class Geometry {
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public Coordinate2D getPoint() {
+    public synchronized Coordinate2D getPoint() {
         throw new UnsupportedOperationException();
     }
 
@@ -164,15 +164,13 @@ public abstract class Geometry {
      *              in a line, spline o polyline class, which will have the
      *              state variable <tt>startPoint</tt>
      *
-     * @param[in] x
-     *            The x coordinate
-     * @param[in] y
-     *            The y coordinate
+     * @param[in] x The x coordinate
+     * @param[in] y The y coordinate
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public void setStartPoint(final double x, final double y) {
+    public synchronized void setStartPoint(final double x, final double y) {
         throw new UnsupportedOperationException();
     }
 
@@ -183,13 +181,12 @@ public abstract class Geometry {
      *              in a line, spline o polyline class, which will have the
      *              state variable <tt>startPoint</tt>
      *
-     * @param[in] startPoint
-     *            The coordinate of the starting point of the feature
+     * @param[in] startPoint The coordinate of the starting point of the feature
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public void setStartPoint(final Coordinate2D startPoint) {
+    public synchronized void setStartPoint(final Coordinate2D startPoint) {
         throw new UnsupportedOperationException();
     }
 
@@ -205,7 +202,7 @@ public abstract class Geometry {
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public Coordinate2D getStartPoint() {
+    public synchronized Coordinate2D getStartPoint() {
         throw new NullPointerException("Operation not supported");
     }
 
@@ -216,15 +213,13 @@ public abstract class Geometry {
      *              in a line, spline, o polyline class, which will have the
      *              state variable <tt>endPoint</tt>
      *
-     * @param[in] x
-     *            The x coordinate
-     * @param[in] y
-     *            The y coordinate
+     * @param[in] x The x coordinate
+     * @param[in] y The y coordinate
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public void setEndPoint(final double x, final double y) {
+    public synchronized void setEndPoint(final double x, final double y) {
         throw new UnsupportedOperationException();
     }
 
@@ -235,13 +230,12 @@ public abstract class Geometry {
      *              in a line, spline, o polyline class, which will have the
      *              state variable <tt>endPoint</tt>
      *
-     * @param[in] endPoint
-     *            The coordinate of the ending point of the feature
+     * @param[in] endPoint The coordinate of the ending point of the feature
      * @exception UnsupportedOperationException
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public void setEndPoint(final Coordinate2D endPoint) {
+    public synchronized void setEndPoint(final Coordinate2D endPoint) {
         throw new UnsupportedOperationException();
     }
 
@@ -257,29 +251,45 @@ public abstract class Geometry {
      *                This method <strong>must</strong> be implemented in the
      *                subclass
      */
-    public Coordinate2D getEndPoint() {
+    public synchronized Coordinate2D getEndPoint() {
         throw new UnsupportedOperationException();
     }
 
-    protected void validateKey(final Key key) {
-
-        if (key == null || key.getString() == null)
+    /**
+     * @brief Validation of the input key
+     *
+     * @param[in] key The input key to validate
+     * @exception NullPointerException
+     *                if the key is null
+     */
+    protected synchronized void validateKey(final Key key) {
+        if (key == null)
             throw new NullPointerException("Component keys cannot be null");
-
     }
 
-    protected void validateLayer(final Integer layer) {
-
+    /**
+     * @brief Validation of the input layer
+     *
+     * @param[in] layer The input layer to validate
+     * @exception NullPointerException
+     *                if the layer is null
+     */
+    protected synchronized void validateLayer(final Integer layer) {
         if (layer == null)
             throw new NullPointerException("Layer cannot be null");
-
+        if (layer < 0)
+            throw new IllegalArgumentException("Layer less than 0 not admitted");
     }
 
-    protected void validatePoint(final Coordinate2D point) {
-
+    /**
+     * @brief Validation of the input point
+     *
+     * @param[in] point The input point to validate
+     * @exception NullPointerException if the point is null
+     */
+    protected synchronized void validatePoint(final Coordinate2D point) {
         if (point == null)
             throw new NullPointerException("Point cannot be null");
-
     }
 
 }
