@@ -1,0 +1,5 @@
+<map id="DataReading" name="DataReading">
+<area shape="rect" id="node2" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html" title="abstract class DbfProcessing " alt="" coords="103,80,211,107"/>
+<area shape="rect" id="node3" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfLinesProcessing.html" title="Parser for .dbf files of Line type. " alt="" coords="5,155,144,181"/>
+<area shape="rect" id="node4" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfPointsProcessing.html" title="Parser for .dbf files of Point type. " alt="" coords="169,155,314,181"/>
+</map>

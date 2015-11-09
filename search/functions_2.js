@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['decimaltohex',['decimalToHex',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html#aded7e10ea18cf3f965c043249a3a1547',1,'com::wordpress::growworkinghard::riverNe3::composite::key::Key']]]
+  ['computenodes',['computeNodes',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1RiverBinaryTree.html#a573c5da1fe6067ced5f44e7a58256263',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::binaryTree::RiverBinaryTree']]],
+  ['createnewnode',['createNewNode',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1SimpleNodeFactory.html#aa13311b0b0d5319487f0c357dece1a1a',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::binaryTree::SimpleNodeFactory']]]
 ];

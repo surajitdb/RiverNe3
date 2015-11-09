@@ -1,4 +1,4 @@
 <map id="GhostNode" name="GhostNode">
 <area shape="rect" id="node2" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html" title="class Component " alt="" coords="128,5,217,32"/>
-<area shape="rect" id="node4" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Connections.html" title="Connections" alt="" coords="125,123,220,149"/>
+<area shape="rect" id="node4" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Connections.html" title="Abstract class for the connection of the nodes. " alt="" coords="125,123,220,149"/>
 </map>

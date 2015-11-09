@@ -95,16 +95,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>class <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html" title="class DbfProcessing ">DbfProcessing</a>  
+<p>abstract class <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html" title="abstract class DbfProcessing ">DbfProcessing</a>  
  <a href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for DbfProcessing:</div>
 <div class="dyncontent">
 <div class="center"><img src="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing__inherit__graph.png" border="0" usemap="#DbfProcessing_inherit__map" alt="Inheritance graph"/></div>
 <map name="DbfProcessing_inherit__map" id="DbfProcessing_inherit__map">
-<area shape="rect" id="node3" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfLinesProcessing.html" title="DbfLinesProcessing" alt="" coords="5,155,144,181"/>
-<area shape="rect" id="node4" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfPointsProcessing.html" title="DbfPointsProcessing" alt="" coords="169,155,314,181"/>
-<area shape="rect" id="node2" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1DataProcessing.html" title="DataProcessing" alt="" coords="100,5,215,32"/>
+<area shape="rect" id="node3" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfLinesProcessing.html" title="Parser for .dbf files of Line type. " alt="" coords="5,155,144,181"/>
+<area shape="rect" id="node4" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfPointsProcessing.html" title="Parser for .dbf files of Point type. " alt="" coords="169,155,314,181"/>
+<area shape="rect" id="node2" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1DataReading.html" title="Interface for data reading classes. " alt="" coords="108,5,207,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -112,46 +112,118 @@ Collaboration diagram for DbfProcessing:</div>
 <div class="dyncontent">
 <div class="center"><img src="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing__coll__graph.png" border="0" usemap="#DbfProcessing_coll__map" alt="Collaboration graph"/></div>
 <map name="DbfProcessing_coll__map" id="DbfProcessing_coll__map">
-<area shape="rect" id="node2" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1DataProcessing.html" title="DataProcessing" alt="" coords="5,5,120,32"/>
+<area shape="rect" id="node2" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1DataReading.html" title="Interface for data reading classes. " alt="" coords="10,5,109,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a61e525c23375829cce5a406a33c97ef1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a61e525c23375829cce5a406a33c97ef1"></a>
-abstract HashMap&lt; Integer, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fileProcessing</b> ()</td></tr>
+<tr class="memitem:a61e525c23375829cce5a406a33c97ef1"><td class="memItemLeft" align="right" valign="top">abstract HashMap&lt; Integer, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html#a61e525c23375829cce5a406a33c97ef1">fileProcessing</a> ()  throws IOException</td></tr>
 <tr class="separator:a61e525c23375829cce5a406a33c97ef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a92442d1e6772f89b868ca32729abafc9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a92442d1e6772f89b868ca32729abafc9"></a>
-abstract void&#160;</td><td class="memItemRight" valign="bottom"><b>bodyProcessing</b> (final DbaseFileReader dbfReader, final Vector&lt; Integer &gt; conIndices)</td></tr>
+<tr class="memitem:a92442d1e6772f89b868ca32729abafc9"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html#a92442d1e6772f89b868ca32729abafc9">bodyProcessing</a> (final DbaseFileReader dbfReader, final Vector&lt; Integer &gt; conIndices)  throws IOException</td></tr>
+<tr class="memdesc:a92442d1e6772f89b868ca32729abafc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processing of each line of the <code>.dbf</code> file.  <a href="#a92442d1e6772f89b868ca32729abafc9">More...</a><br /></td></tr>
 <tr class="separator:a92442d1e6772f89b868ca32729abafc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a697c4c3d02d10f4b5dd6d11d2fa1a89c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a697c4c3d02d10f4b5dd6d11d2fa1a89c"></a>
-abstract void&#160;</td><td class="memItemRight" valign="bottom"><b>validateInputData</b> (final String filePath, final String[] colNames)</td></tr>
-<tr class="separator:a697c4c3d02d10f4b5dd6d11d2fa1a89c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c5a790f5894d38b3fb80d63821d4952"><td class="memItemLeft" align="right" valign="top">synchronized Vector&lt; Integer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html#a8c5a790f5894d38b3fb80d63821d4952">headerProcessing</a> (final DbaseFileReader dbfReader, final String[] colNames)</td></tr>
-<tr class="memdesc:a8c5a790f5894d38b3fb80d63821d4952"><td class="mdescLeft">&#160;</td><td class="mdescRight">The processing of the header of the <code>.dbf</code> file.  <a href="#a8c5a790f5894d38b3fb80d63821d4952">More...</a><br /></td></tr>
-<tr class="separator:a8c5a790f5894d38b3fb80d63821d4952"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c6a58d3e8563a253a6989cfde0ac90f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c6a58d3e8563a253a6989cfde0ac90f"></a>
-synchronized void&#160;</td><td class="memItemRight" valign="bottom"><b>validateOutputData</b> (final HashMap&lt; Integer, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> &gt; inputData)</td></tr>
+<tr class="memitem:aa3be94ad406d49176b4e8550688b2715"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html#aa3be94ad406d49176b4e8550688b2715">validateInputData</a> (final String filePath, final String[] columnNames)</td></tr>
+<tr class="memdesc:aa3be94ad406d49176b4e8550688b2715"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validation of the input data.  <a href="#aa3be94ad406d49176b4e8550688b2715">More...</a><br /></td></tr>
+<tr class="separator:aa3be94ad406d49176b4e8550688b2715"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a681f01c9faa6553b2018c3e585f21e1f"><td class="memItemLeft" align="right" valign="top">synchronized Vector&lt; Integer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html#a681f01c9faa6553b2018c3e585f21e1f">headerProcessing</a> (final DbaseFileReader dbfReader, final String[] columnNames)</td></tr>
+<tr class="memdesc:a681f01c9faa6553b2018c3e585f21e1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The processing of the header of the <code>.dbf</code> file.  <a href="#a681f01c9faa6553b2018c3e585f21e1f">More...</a><br /></td></tr>
+<tr class="separator:a681f01c9faa6553b2018c3e585f21e1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c6a58d3e8563a253a6989cfde0ac90f"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html#a9c6a58d3e8563a253a6989cfde0ac90f">validateOutputData</a> (final HashMap&lt; Integer, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> &gt; inputData)</td></tr>
+<tr class="memdesc:a9c6a58d3e8563a253a6989cfde0ac90f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validation of the output data.  <a href="#a9c6a58d3e8563a253a6989cfde0ac90f">More...</a><br /></td></tr>
 <tr class="separator:a9c6a58d3e8563a253a6989cfde0ac90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>class <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html" title="class DbfProcessing ">DbfProcessing</a> </p>
-<p>This class parses the dbf of a shapefile and return a <code>List</code> filled with the desiderd <code>Geometry</code> objects. </p>
-<p>This class is <em>ThreadSafe</em> because it has been designed following the <b>Stack-confinement</b> principle <a class="el" href="citelist.html#CITEREF_goetz2006:java">[2]</a> </p>
-<div class="fragment"><div class="line">DbfProcessing dbfProc = <span class="keyword">new</span> DbfProcessing();</div>
-<div class="line">List&lt;Geometry&gt; test = dbfProc.get(filePath, geomType, colNames);</div>
-</div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Add <b>pre-conditions</b> and <b>post-conditions</b></dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>add documentation</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>verify if the class is still <em>ThreadSafe</em></dd></dl>
+<div class="textblock"><p>abstract class <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1dbfProcessing_1_1DbfProcessing.html" title="abstract class DbfProcessing ">DbfProcessing</a> </p>
+<p>This class is useful as interface, in order to guide the developer who wants to write a class which parses a <code>.dbf</code> file of a <code>.shp</code>. </p>
+<p>The implemented methods are synchronized because the reading of each file can be done just with one thread, but <img class="formulaInl" alt="$n-$" src="form_3.png"/>files can be read simultaneously by <img class="formulaInl" alt="$n-$" src="form_3.png"/>threads. </p>
 <dl class="section author"><dt>Author</dt><dd>Francesco Serafin, <a href="#" onclick="location.href='mai'+'lto:'+'fra'+'nc'+'esc'+'o.'+'ser'+'af'+'in.'+'3@'+'gma'+'il'+'.co'+'m'; return false;">franc<span style="display: none;">.nosp@m.</span>esco<span style="display: none;">.nosp@m.</span>.sera<span style="display: none;">.nosp@m.</span>fin.<span style="display: none;">.nosp@m.</span>3@gma<span style="display: none;">.nosp@m.</span>il.c<span style="display: none;">.nosp@m.</span>om</a> </dd></dl>
 <dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>October 13, 2015 </dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>GNU Public License v3 AboutHydrology (Riccardo Rigon) </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a8c5a790f5894d38b3fb80d63821d4952"></a>
+<a class="anchor" id="a92442d1e6772f89b868ca32729abafc9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void bodyProcessing </td>
+          <td>(</td>
+          <td class="paramtype">final DbaseFileReader&#160;</td>
+          <td class="paramname"><em>dbfReader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">final Vector&lt; Integer &gt;&#160;</td>
+          <td class="paramname"><em>conIndices</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> throws IOException</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">abstract</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Processing of each line of the <code>.dbf</code> file. </p>
+<p>In this method each line of the <code>.dbf</code> is retrieved and parsed, in order to create the appropriate <code>Geometry</code> object (<code>Point</code>, <code>Line</code> or whatever else)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dbfReader</td><td>The object containing the <code>.dbf</code> file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">columnIndices</td><td>The <code>Vector</code> of the indices of the columns to parse, in order to find the requested informations to created the appropriate <code>Geometry</code> object.  IOException If it is not possible to open the input file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a61e525c23375829cce5a406a33c97ef1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract HashMap&lt;Integer, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a>&gt; fileProcessing </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> throws IOException</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">abstract</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Processing of the input file.This is the unique class that a developer is obliged to implement in order to make his reader working with the multithreading reader<dl class="section return"><dt>Returns</dt><dd>The <code>HashMap</code> of the input data to build a tree </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">IOException</td><td>if it is not possible to open the input file</td></tr>
+  </table>
+  </dd>
+</dl>
+</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1DataReading.html#a375d06d630dab277f3d4837e8c986c46" title="Processing of the input file. ">DataReading::fileProcessing()</a> </dd></dl>
+
+<p>Implements <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1DataReading.html#a375d06d630dab277f3d4837e8c986c46">DataReading</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a681f01c9faa6553b2018c3e585f21e1f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -168,7 +240,7 @@ synchronized void&#160;</td><td class="memItemRight" valign="bottom"><b>validate
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">final String[]&#160;</td>
-          <td class="paramname"><em>colNames</em>&#160;</td>
+          <td class="paramname"><em>columnNames</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -184,15 +256,90 @@ synchronized void&#160;</td><td class="memItemRight" valign="bottom"><b>validate
 </div><div class="memdoc">
 
 <p>The processing of the header of the <code>.dbf</code> file. </p>
-<p>The processing of the header file allows to get the indices of the columns from which retrieve the data useful to create the <code>Geometry</code> <code>objects</code></p>
+<p>The processing of the header file allows to get the indices of the columns from which retrieving the data to create the <code>Geometry</code> objects</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">dbfReader</td><td>The <code>dbf</code> reader </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">colNames</td><td>The array of strings with the name of the columns to match </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">columnNames</td><td>The array of strings with the name of the columns to match </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <code>Vector</code> of <code>Integer</code> with the indices of the columns from which retrieve the data </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aa3be94ad406d49176b4e8550688b2715"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void validateInputData </td>
+          <td>(</td>
+          <td class="paramtype">final String&#160;</td>
+          <td class="paramname"><em>filePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">final String[]&#160;</td>
+          <td class="paramname"><em>columnNames</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">abstract</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Validation of the input data. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filePath</td><td>The input string of the path of the file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">columnNames</td><td>The vector of <code>String</code> with the names of the columns to parse </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a9c6a58d3e8563a253a6989cfde0ac90f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">synchronized void validateOutputData </td>
+          <td>(</td>
+          <td class="paramtype">final HashMap&lt; Integer, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> &gt;&#160;</td>
+          <td class="paramname"><em>inputData</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Validation of the output data. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputData</td><td>The data read from the <code>.dbf</code> file </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
