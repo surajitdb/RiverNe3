@@ -26,47 +26,71 @@ import com.google.common.collect.BinaryTreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
+import net.jcip.annotations.Immutable;
+
+/**
+ * @brief How retrieving right and left children from the binary tree
+ *
+ * @description This class implements how retrieving right and left children
+ *              from the <tt>HashMap</tt> containing the binary tree. The
+ *              implementation of the traverser are in the BinaryTreeTraverser
+ *              class, from the GUAVA package
+ *              <p>
+ *              This class is <em>ThreadSafe</em> because it is
+ *              <em>Immutable</em>.
+ *
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date November 08, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
+ */
+@Immutable
 public class RiverBinaryTreeTraverser extends BinaryTreeTraverser<Component> {
 
-    private volatile ConcurrentHashMap<Key, Component> binaryTree;
+    private final ConcurrentHashMap<Key, Component> binaryTree
+        = new ConcurrentHashMap<Key, Component>(); //!< copy of the binary tree
 
+    /**
+     * @brief Constructor
+     *
+     * @param[in] binaryTree The structure of the binary tree
+     */
     public RiverBinaryTreeTraverser(final HashMap<Key, Component> binaryTree) {
-        getInstance(binaryTree);
+        this.binaryTree.putAll(binaryTree);
     }
 
-    private void getInstance(final HashMap<Key, Component> binaryTree) {
-
-        if (this.binaryTree == null) {
-            synchronized(this) {
-                if (this.binaryTree == null) {
-                    this.binaryTree = new ConcurrentHashMap<Key, Component>(binaryTree);
-                }
-            }
-        }
-    }
-
+    /**
+     * @brief Compute the left child of the input root
+     *
+     * @param[in] root The root of the subtree
+     * @return The left child of the root
+     */
     @Override
-    public Optional<Component> leftChild(Component root) {
-        Key index = root.getConnections().getLCHILD();
+    public synchronized Optional<Component> leftChild(Component root) {
+        Key index = root.getConnections().getLCHILD(); // get the key
 
         Component node = null;
         if (index != null)
-            node = binaryTree.get(index);
+            node = binaryTree.get(index); // get the LCHILD
 
         return Optional.fromNullable(node);
-
     }
 
+    /**
+     * @brief Compute the right child of the input root
+     *
+     * @param[in] root The root of the subtree
+     * @return The right child of the root
+     */
     @Override
-    public Optional<Component> rightChild(Component root) {
-        Key index = root.getConnections().getRCHILD();
+    public synchronized Optional<Component> rightChild(Component root) {
+        Key index = root.getConnections().getRCHILD(); // get the key
 
         Component node = null;
         if (index != null)
-            node = binaryTree.get(index);
+            node = binaryTree.get(index); //get the RCHILD
 
         return Optional.fromNullable(node);
-
     }
 
 }
