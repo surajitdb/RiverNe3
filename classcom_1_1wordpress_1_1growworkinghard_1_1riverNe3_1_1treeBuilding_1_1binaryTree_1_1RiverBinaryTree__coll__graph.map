@@ -1,4 +1,4 @@
 <map id="RiverBinaryTree" name="RiverBinaryTree">
-<area shape="rect" id="node2" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html" title="Building the binary tree of the input river net. " alt="" coords="177,5,225,32"/>
-<area shape="rect" id="node5" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1SimpleNodeFactory.html" title="SimpleNodeFactory" alt="" coords="132,232,269,259"/>
+<area shape="rect" id="node2" href="$interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html" title="Main interface of the Decorator Pattern for the tree building. " alt="" coords="177,5,225,32"/>
+<area shape="rect" id="node5" href="$classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1SimpleNodeFactory.html" title="Simple Factory in order to instantiate the proper type of node " alt="" coords="132,232,269,259"/>
 </map>

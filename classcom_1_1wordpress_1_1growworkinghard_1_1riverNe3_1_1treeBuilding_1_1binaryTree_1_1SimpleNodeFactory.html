@@ -94,23 +94,33 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">SimpleNodeFactory Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><b>Simple Factory</b> in order to instantiate the proper type of node  
+ <a href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1SimpleNodeFactory.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa13311b0b0d5319487f0c357dece1a1a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html">Component</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1SimpleNodeFactory.html#aa13311b0b0d5319487f0c357dece1a1a">createNewNode</a> (final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> root, final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> leftChild, final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> rightChild)</td></tr>
-<tr class="memdesc:aa13311b0b0d5319487f0c357dece1a1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">class built on the Stack-confinment principle  <a href="#aa13311b0b0d5319487f0c357dece1a1a">More...</a><br /></td></tr>
+<tr class="memdesc:aa13311b0b0d5319487f0c357dece1a1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory Method.  <a href="#aa13311b0b0d5319487f0c357dece1a1a">More...</a><br /></td></tr>
 <tr class="separator:aa13311b0b0d5319487f0c357dece1a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:afd6ff67ce56ba49923a09bd6119b0755"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1SimpleNodeFactory.html#afd6ff67ce56ba49923a09bd6119b0755">isGhost</a> (final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> root)</td></tr>
-<tr class="memdesc:afd6ff67ce56ba49923a09bd6119b0755"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify if a root node is a ghost one at the same time.  <a href="#afd6ff67ce56ba49923a09bd6119b0755">More...</a><br /></td></tr>
+<tr class="memdesc:afd6ff67ce56ba49923a09bd6119b0755"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify if the root node is a ghost one.  <a href="#afd6ff67ce56ba49923a09bd6119b0755">More...</a><br /></td></tr>
 <tr class="separator:afd6ff67ce56ba49923a09bd6119b0755"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a503ffadb146c660780cdfc3e2ab73b33"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a503ffadb146c660780cdfc3e2ab73b33"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isLeaf</b> (final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> leftChild, final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> rightChild)</td></tr>
+<tr class="memitem:a503ffadb146c660780cdfc3e2ab73b33"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1SimpleNodeFactory.html#a503ffadb146c660780cdfc3e2ab73b33">isLeaf</a> (final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> leftChild, final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a> rightChild)</td></tr>
+<tr class="memdesc:a503ffadb146c660780cdfc3e2ab73b33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify if the root node is a <code>Leaf</code> node.  <a href="#a503ffadb146c660780cdfc3e2ab73b33">More...</a><br /></td></tr>
 <tr class="separator:a503ffadb146c660780cdfc3e2ab73b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><b>Simple Factory</b> in order to instantiate the proper type of node </p>
+<p>This class is <em>ThreadSafe</em> because it has been implemented following the <b>stack-confinment</b> principle</p>
+<dl class="section author"><dt>Author</dt><dd>Francesco Serafin, <a href="#" onclick="location.href='mai'+'lto:'+'fra'+'nc'+'esc'+'o.'+'ser'+'af'+'in.'+'3@'+'gma'+'il'+'.co'+'m'; return false;">franc<span style="display: none;">.nosp@m.</span>esco<span style="display: none;">.nosp@m.</span>.sera<span style="display: none;">.nosp@m.</span>fin.<span style="display: none;">.nosp@m.</span>3@gma<span style="display: none;">.nosp@m.</span>il.c<span style="display: none;">.nosp@m.</span>om</a> </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>November 08, 2015 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>GNU Public License v3 AboutHydrology (Riccardo Rigon) </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="aa13311b0b0d5319487f0c357dece1a1a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -141,16 +151,16 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isLeaf</b> (final 
       </table>
 </div><div class="memdoc">
 
-<p>class built on the Stack-confinment principle </p>
+<p>Factory Method. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">root</td><td></td></tr>
-    <tr><td class="paramname">leftChild</td><td></td></tr>
-    <tr><td class="paramname">rightChild</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">root</td><td>The root node </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">leftChild</td><td>The left child node </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">rightChild</td><td>The right child node </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The appropriate constructed node </dd></dl>
 
 </div>
 </div>
@@ -176,7 +186,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isLeaf</b> (final 
 </table>
 </div><div class="memdoc">
 
-<p>Verify if a root node is a ghost one at the same time. </p>
+<p>Verify if the root node is a ghost one. </p>
 <p>A ghost node has starting point equal to the ending point</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -184,11 +194,61 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isLeaf</b> (final 
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If the root is ghost or not </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">TRUE</td><td>The root is ghost </td></tr>
     <tr><td class="paramname">FALSE</td><td>The root is not ghost </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a503ffadb146c660780cdfc3e2ab73b33"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean isLeaf </td>
+          <td>(</td>
+          <td class="paramtype">final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a>&#160;</td>
+          <td class="paramname"><em>leftChild</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">final <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1geometry_1_1Geometry.html">Geometry</a>&#160;</td>
+          <td class="paramname"><em>rightChild</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Verify if the root node is a <code>Leaf</code> node. </p>
+<p>A <code>Leaf</code> has both the children <code>null</code></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">leftChild</td><td>The left child </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">rightChild</td><td>The right child </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">TRUE</td><td>if both the children are <code>null</code> </td></tr>
+    <tr><td class="paramname">FALSE</td><td>otherwise </td></tr>
   </table>
   </dd>
 </dl>

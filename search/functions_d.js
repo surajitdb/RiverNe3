@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['retrievepoint',['retrievePoint',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Hydrometers.html#a1df9457d3dce3794bd84aa279cc3c862',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::decorator::Hydrometers']]],
+  ['retrieverootnode',['retrieveRootNode',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Hydrometers.html#ad1a9f0921e46060478c6171612a98bd7',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::decorator::Hydrometers']]],
   ['ricomputerightchild',['ricomputeRightChild',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1RiverBinaryTree.html#ab331613d0fb429f6cab6a0b991136526',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::binaryTree::RiverBinaryTree']]],
   ['rightchild',['rightChild',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1traverser_1_1RiverBinaryTreeTraverser.html#a51cea0843fa81defd3121695902032d9',1,'com::wordpress::growworkinghard::riverNe3::traverser::RiverBinaryTreeTraverser']]],
   ['riverbinarytree',['RiverBinaryTree',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1RiverBinaryTree.html#ae73f6f9fcc78ecd8a2c8fe533aa75a7f',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::binaryTree::RiverBinaryTree']]],
