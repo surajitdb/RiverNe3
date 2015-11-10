@@ -20,54 +20,72 @@ package com.wordpress.growworkinghard.riverNe3.treeBuilding;
 
 import java.util.HashMap;
 
-import com.wordpress.growworkinghard.riverNe3.composite.*;
+import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 /**
- * @brief Building the binary tree of the input river net
+ * @brief Main interface of the <strong>Decorator Pattern</strong> for the tree
+ *        building
  *
- * @description This class parses a <code>List</code> of <tt>Geometry</tt>
- *              objects, finds the <strong>root node</strong> of a sub-tree,
- *              adds it to the <code>ConcurrentHashMap</code> structure after
- *              having computed its <em>left child</em> and <em>right child</em>
- *              . Then, the latter two become the new root nodes of a sub-tree
- *              and when a thread, which is parsing the <code>List</code>
- *              structure recognizes that, it executes the complete procedure.
+ * @description In order to apply the design principle for which <blockquote>-
+ *              Classes should be open for extension, but closed for
+ *              modification -</blockquote>, the <strong>Decorator
+ *              Pattern</strong> @cite freeman2004:head has been implemented for
+ *              solving the issue of building the tree structure.
+ *              <blockquote> <strong>The Decorator Pattern</strong> attaches
+ *              additional responsibilities to an object dynamically. Decorators
+ *              provide a flexible alternative to subclassing for extending
+ *              functionality. </blockquote> In this way, each developer can
+ *              easily implement the building of its own tree type of
+ *              <tt>Tree</tt> implementing this interface. The decorations,
+ *              always of type <tt>Tree</tt> but extending an abstract class
+ *              (e.g. BinaryTreeDecorator), are features added to the tree as
+ *              new nodes (e.g. dams, monitoring points, lakes, intakes,
+ *              outakes) or as new states for a node.
  *              <p>
- *              This algorithm is able to recognize 3 type of <tt>Component</tt>
- *              (from the <strong>Composite Pattern</strong> implemented in the
- *              <code>composite</code> package):
- *              <ul>
- *              <li><tt>Leaf</tt>: node without children;</li>
- *              <li><tt>Node</tt>: node with children;</li>
- *              <li><tt>Ghost Node</tt>: node created when a river intersection
- *              is composed by 3 or more rivers. In a <tt>binary tree</tt>
- *              structure a node cannot have three children, so that a ghost
- *              node is necessary to gather the flow of two rivers and then
- *              releases it with the flow of the remaining river into the root
- *              node of the sub-tree. At the end it does nothing special, it is
- *              just a virtual structure required to build a binary tree.</li>
- *              </ul>
- *              </p>
- *
- * @code{.java}
- * TreeBuilding treeBuilding = new TreeBuilding();
- * ConcurrentHashMap<Integer, Component> tree = treeBuilding.get(listGeometries);
- * @endcode
- *
- * @todo design a better implementation for the method <code>computeNewNode</code>
- *
- * @todo complete the documentation
+ *              The main idea is:
+ *              <ol>
+ *              <li>after having parsed the input data, build the <tt>Tree</tt>
+ *              object. This is the starting point: an <tt>HashMap</tt> with the
+ *              <tt>Tree</tt> structure.</li>
+ *              <li>then, the user can add further feauters wrapping the tree
+ *              and eventually each decorator already applied to the tree.</li>
+ *              </ol>
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
- * @date October 13, 2015
+ * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public abstract class Tree {
+public interface Tree {
 
-    public abstract HashMap<Key, Component> computeNodes();
+    /**
+     * @brief The main method for building the tree or adding decorators to an
+     *        already built structure.
+     */
+    abstract public void buildTree(); 
 
-    public abstract void buildTree();
+    /**
+     * @brief Method which returns the tree structure
+     *
+     * @description This method must be implemented both on a class which build
+     *              the tree (e.g. binaryTree.RiverBinaryTree) and on decorator
+     *              classes (e.g. decorator.Hydrometers) because it returns the
+     *              structure of the tree. It works as <strong>wrapper</strong>
+     *              once it is called from a decorator class, adding features to
+     *              a plain tree or adding more features to an already wrapped
+     *              tree, following the idea of the <strong>Decorator
+     *              Pattern</strong>.
+     *              <p>
+     *              To reduce the amount of memory allocated, this class returns
+     *              a simple <tt>HashMap</tt> and not the Concurrent version.
+     *              Based on the user necessities, she/he has to convert it in
+     *              concurrent one if it is going to use it on a multi-threading
+     *              code.
+     *              </p>
+     *
+     * @return The <tt>HashMap</tt> with the structure of the tree
+     */
+    abstract public HashMap<Key, Component> computeNodes();
 
 }

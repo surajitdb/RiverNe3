@@ -24,19 +24,51 @@ import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 
-public abstract class BinaryTreeDecorator extends Tree {
+import net.jcip.annotations.ThreadSafe;
 
+/**
+ * @brief Abstract class of the decorators of the <strong>Decorator
+ *        Pattern</strong>
+ *
+ * @description This class is <em>ThreadSafe</em> because the implemented
+ *              methods are synchronized and guarded by the intrinsic lock
+ *
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date November 08, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
+ */
+@ThreadSafe
+public abstract class BinaryTreeDecorator implements Tree {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see Tree#computeNodes()
+     */
     public abstract HashMap<Key, Component> computeNodes();
 
-    public abstract void buildTree();
-
+    /**
+     * @brief Validation of the states of a decorator
+     */
     protected abstract void validateState();
 
-    protected void validateBinaryTree(final Tree binaryTree) {
+    /**
+     * @brief Validation of the input binary tree
+     *
+     * @param[in] binaryTree The input binary tree
+     */
+    protected synchronized void validateBinaryTree(final Tree binaryTree) {
         if (binaryTree == null)
             throw new NullPointerException("Object BinaryTree cannot be null");
     }
 
+    /**
+     * @brief Return a copy of the computed tree
+     *
+     * @param[in] tree The computed tree with the new features
+     * @return The copy of the just computed tree
+     */
     protected synchronized HashMap<Key, Component> deepCopy(final HashMap<Key, Component> tree) {
 
         HashMap<Key, Component> result = new HashMap<Key, Component>();
