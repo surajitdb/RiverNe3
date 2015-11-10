@@ -29,34 +29,24 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
 public class RunSimulations {
 
-    private volatile static ConcurrentHashMap<Key, Component> binaryTree;
-    private volatile static ExecutorService executor;
-    private volatile static CountDownLatch latch;
-    private volatile static int count;
+    private volatile ConcurrentHashMap<Key, Component> binaryTree;
+    private final CountDownLatch latch;
+    private final ExecutorService executor;
+    private final int concurrencyLevel;
 
-    public RunSimulations(final HashMap<Key, Component> binaryTree, final ExecutorService exec, final int count) {
-        getInstance(binaryTree, exec, count);
-    }
-
-    private static void getInstance(final HashMap<Key, Component> inputBinaryTree, final ExecutorService exec, final int counter) {
-
-        if (binaryTree == null) {
-            synchronized(RunSimulations.class) {
-                if (binaryTree == null) {
-                    count = counter;
-                    executor = exec;
-                    binaryTree
-                        = new ConcurrentHashMap<Key, Component>(inputBinaryTree.size(), 0.9f, count);
-                    latch = new CountDownLatch(count);
-                    binaryTree.putAll(inputBinaryTree);
-                }
-            }
-        }
-
+    public RunSimulations(final HashMap<Key, Component> binaryTree, final ExecutorService executor, final int threadsNumber) {
+        this.concurrencyLevel = threadsNumber;
+        this.executor = executor;
+        this.binaryTree
+            = new ConcurrentHashMap<Key, Component>(binaryTree.size(),
+                                                    0.9f,
+                                                    this.concurrencyLevel);
+        this.latch = new CountDownLatch(threadsNumber);
+        this.binaryTree.putAll(binaryTree);
     }
 
     public void run() {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < concurrencyLevel; i++)
             executor.submit(new ParallelSimulations(latch));
 
         try {
@@ -69,9 +59,9 @@ public class RunSimulations {
         Component tmpComp = null;
         Component parent = null;
         synchronized(this) {
-            Iterator<Key> i = binaryTree.keySet().iterator();
-            while(i.hasNext()) {
-                Key next = i.next();
+            Iterator<Key> iterator = binaryTree.keySet().iterator();
+            while(iterator.hasNext()) {
+                Key next = iterator.next();
                 tmpComp = binaryTree.get(next);
                 if (tmpComp.isReadyForSimulation()) {
                     binaryTree.remove(next, tmpComp);
@@ -85,11 +75,9 @@ public class RunSimulations {
 
     private class ParallelSimulations implements Runnable {
 
-        CountDownLatch latch;
+        private final CountDownLatch latch;
 
-        ParallelSimulations(CountDownLatch latch) {
-            this.latch = latch;
-        }
+        ParallelSimulations(CountDownLatch latch) { this.latch = latch; }
 
         public void run() {
             while(!binaryTree.isEmpty()) {
