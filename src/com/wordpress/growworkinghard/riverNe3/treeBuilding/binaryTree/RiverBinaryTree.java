@@ -130,6 +130,7 @@ public class RiverBinaryTree implements Tree {
      *
      * @see Tree#computeNodes()
      */
+    @Override
     public synchronized HashMap<Key, Component> computeNodes() {
         validateOutputData(); //!< postcondition
         return deepCopy(binaryTree);
@@ -140,6 +141,7 @@ public class RiverBinaryTree implements Tree {
      *
      * @see Tree#buildTree()
      */
+    @Override
     public void buildTree() {
         while(!data.isEmpty()) findRoot(); // find each root of the sub-tree
     }
