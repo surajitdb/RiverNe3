@@ -59,7 +59,7 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class LocalNode extends Component {
 
-    @GuardedBy("this") private Connections connKeys;
+    @GuardedBy("this") private Connections connKeys; //!< connections of the node
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
     @GuardedBy("this") private Coordinate2D point; //!< coordinate of the local point
     @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
@@ -69,9 +69,9 @@ public class LocalNode extends Component {
     /**
      * @brief Constructor
      *
-     * @param[in] root The root of the sub-tree.
-     * @param[in] leftChildKey The key of the left child
-     * @param[in] rightChildKey The key of the right child
+     * @param[in] connKeys The connection of the node
+     * @param[in] layer The layer of the node in the tree
+     * @param[in] point The coordinates of the local node
      */
     public LocalNode(final Connections connKeys, final Integer layer, final Coordinate2D point) {
         getInstance(connKeys, layer, point);
@@ -117,15 +117,26 @@ public class LocalNode extends Component {
             System.out.println(message);
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
+
         parent.notify(connKeys.getID());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#setNewConnections(final Connections)
+     */
     public synchronized void setNewConnections(final Connections connKeys) {
-        validateConnections(connKeys);
+        validateConnections(connKeys); // precondition
         this.connKeys = connKeys;
-        allocateSimulationFlags();
+        allocateSimulationFlags(); // update of the flags for the simulation
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Component#getConnections()
+     */
     public synchronized Connections getConnections() {
         return connKeys;
     }
@@ -136,7 +147,7 @@ public class LocalNode extends Component {
      * @see Component#setLayer(final int)
      */
     public synchronized void setLayer(final int layer) {
-        validateLayer(layer);
+        validateLayer(layer); // precondition
         this.layer = layer;
     }
 
@@ -146,7 +157,6 @@ public class LocalNode extends Component {
      * @see Component#getLayer()
      */
     public synchronized Integer getLayer() {
-        validateLayer(layer);
         return new Integer(layer);
     }
 
@@ -156,7 +166,6 @@ public class LocalNode extends Component {
      * @see Component#getStartPoint()
      */
     public synchronized Coordinate2D getStartPoint() {
-        validateCoordinate(point);
         return new Coordinate2D(point.x, point.y);
     }
 
@@ -166,12 +175,23 @@ public class LocalNode extends Component {
      * @see Component#getEndPoint()
      */
     public synchronized Coordinate2D getEndPoint() {
-        validateCoordinate(point);
         return new Coordinate2D(point.x, point.y);
     }
 
+    /**
+     * @brief Returns the coordinates of the point
+     *
+     * @description Component#getStartPoint() and Component#getEndPoint() have
+     *              been implemented because of the necessity of a sort of
+     *              automatization in the algorithm. However they return the
+     *              same value, cause <tt>LocalNode</tt> is a class useful to
+     *              identify a single point in the net. This method would be
+     *              useless, but if you implement your own code, it may be more
+     *              clean using this.
+     *
+     * @return The coordinate of the node
+     */
     public synchronized Coordinate2D getPoint() {
-        validateCoordinate(point);
         return new Coordinate2D(point.x, point.y);
     }
 
@@ -181,6 +201,7 @@ public class LocalNode extends Component {
      * @see Component#setTraverser(final BinaryTreeTraverser<Component>)
      */
     public synchronized void setTraverser(final TreeTraverser<Component> traverser) {
+        if (traverser == null) throw new NullPointerException("Traverser cannot be null."); // precondition
         this.traverser = traverser;
     }
 
@@ -227,9 +248,9 @@ public class LocalNode extends Component {
      *
      * @description Double-checked locking
      *
-     * @param[in] root The root of the sub-tree
-     * @param[in] leftChildKey The key of the left child
-     * @param[in] rightChildKey The key of the right child
+     * @param[in] connKeys The connections of the node
+     * @param[in] layer The layer of the node in the tree
+     * @param[in] point The coordinates of the point
      */
     private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D point) {
 
@@ -240,7 +261,7 @@ public class LocalNode extends Component {
                     this.layer = new Integer(layer);
                     this.point = new Coordinate2D(point.x, point.y);
 
-                    validateState();
+                    validateState(); // precondition
                     allocateSimulationFlags();
                 }
             }

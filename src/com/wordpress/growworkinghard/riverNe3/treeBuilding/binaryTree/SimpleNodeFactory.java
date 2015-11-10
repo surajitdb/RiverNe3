@@ -29,15 +29,31 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
+import net.jcip.annotations.ThreadSafe;
+
+/**
+ * @brief <strong>Simple Factory</strong> in order to instantiate the proper
+ *        type of node
+ *
+ * @description This class is <em>ThreadSafe</em> because it has been
+ *              implemented following the <strong>stack-confinment</strong>
+ *              principle
+ *
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date November 08, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
+ */
+@ThreadSafe
 public class SimpleNodeFactory {
 
     /**
-     * @brief class built on the Stack-confinment principle
+     * @brief Factory Method
      *
-     * @param root
-     * @param leftChild
-     * @param rightChild
-     * @return
+     * @param[in] root The root node
+     * @param[in] leftChild The left child node
+     * @param[in] rightChild The right child node
+     * @return The appropriate constructed node
      */
     public Component createNewNode(final Geometry root, final Geometry leftChild, final Geometry rightChild) {
 
@@ -60,13 +76,11 @@ public class SimpleNodeFactory {
     }
 
     /**
-     * @brief Verify if a root node is a ghost one at the same time
+     * @brief Verify if the root node is a ghost one
      *
      * @description A ghost node has starting point equal to the ending point
      *
-     * @param[in] root
-     *            The root node of the sub-tree
-     * @return If the root is ghost or not
+     * @param[in] root The root node of the sub-tree
      * @retval TRUE The root is ghost
      * @retval FALSE The root is not ghost
      */
@@ -81,10 +95,18 @@ public class SimpleNodeFactory {
 
     }
 
+    /**
+     * @brief Verify if the root node is a <tt>Leaf</tt> node
+     *
+     * @description A <tt>Leaf</tt> has both the children <code>null</code>
+     *
+     * @param[in] leftChild The left child
+     * @param[in] rightChild The right child
+     * @retval TRUE if both the children are <code>null</code>
+     * @retval FALSE otherwise
+     */
     private boolean isLeaf(final Geometry leftChild, final Geometry rightChild) {
-
         return (leftChild == null && rightChild == null) ? true : false;
-
     }
 
 }

@@ -51,7 +51,7 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class Key {
 
-    private final String hexKey; //! the hexadecimal key
+    private final String hexKey; //!< the hexadecimal key
 
     /**
      * @brief Constructor from a <em>decimal</em> double value

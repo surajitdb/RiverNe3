@@ -31,97 +31,114 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.geometry.Line;
 
 /**
- * @description This class can be accessed from just one thread per time
+ * @brief Parser for <code>.dbf</code> files of <tt>Line</tt> type
  *
- * @todo Design a better implementation of the switch-case
+ * @description This class parses the <code>.dbf</code> file of a
+ *              <code>.shp</code> of type line. In this way each element of the
+ *              shapefile is converted in a <tt>Geometry</tt> object of type
+ *              <tt>Line</tt>.
+ *              <p>
+ *              This class can be accessed from just one thread per time.
+ *              Parsing a file in multithreading would required the
+ *              implementation of a cache where temporary store the complete
+ *              file and then parsing that structure with many threads.
+ *              </p>
  *
- * @todo add documentation
+ * @todo Implement a cache, in order to parse the file in multithreading
+ * @todo Verify if it is possibile to change from HashMap to List for inputData
  *
- * @author
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date October 13, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 public class DbfLinesProcessing extends DbfProcessing {
 
-    private volatile static HashMap<Integer, Geometry> inputData;
-    private String filePath;
-    private String[] colNames;
+    private final HashMap<Integer, Geometry> inputData; //!< parsed data of the <code>.dbf</code>
+    private final String filePath; //!< path of the file to parse
+    private final String[] columnNames; //!< names of the columns to parse
 
-    public DbfLinesProcessing(final String filePath, final String[] colNames) {
-        validateInputData(filePath, colNames);
-        inputData = new HashMap<Integer, Geometry>();
+    /**
+     * @brief Constructor
+     *
+     * @param[in] filePath The path of the file to parse
+     * @param[in] columnNames The names of the columns to parse, in order to
+     *            create the <tt>Line-Geometry</tt> object
+     */
+    public DbfLinesProcessing(final String filePath, final String[] columnNames) {
+        validateInputData(filePath, columnNames); // precondition
+
+        this.inputData = new HashMap<Integer, Geometry>();
         this.filePath = filePath;
-        this.colNames = colNames;
+        this.columnNames = columnNames;
     }
 
-    public HashMap<Integer, Geometry> fileProcessing() {
+    /**
+     * {@inheritDoc}
+     *
+     * @see com.wordpress.growworkinghard.riverNe3.dataReader.DataReading#fileProcessing()
+     */
+    public HashMap<Integer, Geometry> fileProcessing() throws IOException { 
 
         try {
 
             FileInputStream inputFile = new FileInputStream(filePath);
-            DbaseFileReader dbfReader = new DbaseFileReader(inputFile.getChannel(), false, Charset.defaultCharset());
+            DbaseFileReader dbfReader = new DbaseFileReader(inputFile.getChannel(), // input file
+                                                            false, // memory mapped buffer
+                                                            Charset.defaultCharset()); // charset
 
-            Vector<Integer> colIndices = headerProcessing(dbfReader, colNames);
-            bodyProcessing(dbfReader, colIndices); //!< factory method
+            Vector<Integer> columnIndices = headerProcessing(dbfReader, columnNames);
+            bodyProcessing(dbfReader, columnIndices);
 
             dbfReader.close();
             inputFile.close();
 
-        } catch (IOException exception) { new IOException(exception); }
+        } catch (IOException exception) {
+            throw new IOException(exception.getCause());
+        }
 
-        validateOutputData(inputData); //!< post-conditions
+        validateOutputData(inputData); // postcondition
         return inputData;
     }
 
-    protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> colIndices) {
+    /**
+     * {@inheritDoc}
+     *
+     * @see DbfProcessing#bodyProcessing(final DbaseFileReader,final Vector<Integer>)
+     */
+    protected void bodyProcessing(final DbaseFileReader dbfReader, final Vector<Integer> columnIndices) throws IOException {
 
         int hashMapKey = 1;
 
         while(dbfReader.hasNext()) {
 
-                        
             try {
 
-                Object[] fields;
                 Geometry tmpLine = new Line();
-
                 double x_start = 0.0, y_start = 0.0, x_end = 0.0, y_end = 0.0;
 
-                fields = dbfReader.readEntry();
+                Object[] fields = dbfReader.readEntry();
 
-                for (int i = 0; i < colIndices.size(); i++) {
+                for (int i = 0; i < columnIndices.size(); i++) {
 
-                    int index = colIndices.get(i);
-                    Double tmp;
-                    double tmpVal;
+                    int index = columnIndices.get(i);
 
                     switch (i)
                     {
-                        case 0:
-                            if ((fields[index].toString()).compareTo("1") == 0) {
-                                tmpLine.setRoot(true);
-                                tmpLine.setKey(new Key(1.0));
-                                tmpLine.setParentKey(new Key(0.0));
-                                tmpLine.setLayer(1);
-                            }
+                        case 0: // analizing of the Pfafstetter column
+                            if (isRootNode(fields[index])) setRootNode(tmpLine);
                             break;
-                        case 1:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            x_start = tmpVal;
+                        case 1: // x coordinate of the starting point
+                            x_start = parseDoubleField(fields[index]);
                             break;
-                        case 2:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            y_start = tmpVal;
+                        case 2: // y coordinate of the starting point
+                            y_start = parseDoubleField(fields[index]);
                             break;
-                        case 3:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            x_end = tmpVal;
+                        case 3: // x coordinate of the ending point
+                            x_end = parseDoubleField(fields[index]);
                             break;
-                        case 4:
-                            tmp = Double.parseDouble(fields[index].toString());
-                            tmpVal = tmp.doubleValue();
-                            y_end = tmpVal;
+                        case 4: // y coordinate of the ending point
+                            y_end = parseDoubleField(fields[index]);
                             break;
                     }
 
@@ -133,12 +150,19 @@ public class DbfLinesProcessing extends DbfProcessing {
                 inputData.put(hashMapKey, tmpLine);
                 hashMapKey++;
 
-            } catch (IOException exception) { new IOException(exception); }
+            } catch (IOException exception) {
+                throw new IOException(exception.getCause());
+            }
 
         }
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see DbfProcessing#validateInputData(String,String[])
+     */
     protected void validateInputData(final String filePath, final String[] colNames) {
 
         if (filePath == null)
@@ -147,6 +171,41 @@ public class DbfLinesProcessing extends DbfProcessing {
         if (colNames.length != 5)
             throw new IllegalArgumentException("You must provide 5 columns: Pfafstetter, X_start, Y_start, X_end, Y_end");
 
+    }
+
+    /**
+     * @brief Check if a stream is the first in Pfafstetter numbering
+     *
+     * @param[in] field The field of the row to parse
+     * @retval TRUE if the stream is the number 1
+     * @retval FALSE otherwise
+     */
+    private boolean isRootNode(final Object field) {
+        if ((field.toString()).compareTo("1") == 0) return true;
+        else return false;
+    }
+
+    /**
+     * @brief Set the stream that is the root of the tree
+     *
+     * @param[in] tmpLine The object to set as root
+     */
+    private void setRootNode(Geometry tmpLine) {
+        tmpLine.setRoot(true);
+        tmpLine.setKey(new Key(1.0));
+        tmpLine.setParentKey(new Key(0.0));
+        tmpLine.setLayer(1);
+    }
+
+    /**
+     * @brief Parsing of the field which is a double
+     *
+     * @param[in] field The field of the row to parse
+     * @return The field converted in double format
+     */
+    private double parseDoubleField(final Object field) {
+        final Double parsedDouble = Double.parseDouble(field.toString());
+        return parsedDouble.doubleValue();
     }
 
 }

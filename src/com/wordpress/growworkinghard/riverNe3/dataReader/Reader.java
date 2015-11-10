@@ -37,9 +37,9 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
  */
 public class Reader {
     private final ExecutorService exec;
-    private final List<DataProcessing> mainList;
+    private final List<DataReading> mainList;
 
-    public Reader(final List<DataProcessing> list, final ExecutorService exec) {
+    public Reader(final List<DataReading> list, final ExecutorService exec) {
         this.mainList = list;
         this.exec = exec;
     }
@@ -47,7 +47,7 @@ public class Reader {
     public List<HashMap<Integer, Geometry>> start() throws InterruptedException {
         List<ReaderTask> tasks = new ArrayList<ReaderTask>();
 
-        for (DataProcessing dataFile : mainList)
+        for (DataReading dataFile : mainList)
             tasks.add(new ReaderTask(dataFile));
 
         List<Future<HashMap<Integer, Geometry>>> futures = exec.invokeAll(tasks);
@@ -71,9 +71,9 @@ public class Reader {
     }
 
     private class ReaderTask implements Callable<HashMap<Integer, Geometry>> {
-        private final DataProcessing fileProcess;
+        private final DataReading fileProcess;
 
-        public ReaderTask (final DataProcessing fileProcess) {this.fileProcess = fileProcess;}
+        public ReaderTask (final DataReading fileProcess) {this.fileProcess = fileProcess;}
 
         public HashMap<Integer, Geometry> call() throws Exception {
             return fileProcess.fileProcessing();

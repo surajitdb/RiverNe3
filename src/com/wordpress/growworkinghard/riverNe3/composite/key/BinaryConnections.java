@@ -23,54 +23,145 @@ import java.util.List;
 
 import net.jcip.annotations.Immutable;
 
+/**
+ * @brief Connection class for <strong>Binary Tree</strong>
+ *
+ * @description This class describes the connections of each node of a
+ *              <em>Binary Tree</em>. It allows <tt>null</tt> value for both
+ *              left child and right child. For this reason, the
+ *              <code>validateState()</code> method checks only the <tt>ID</tt>
+ *              and the <tt>PARENT</tt> keys. The
+ *              <code>validateInvariant()</code> method checks the connections
+ *              thinking about the possibility that children might be null as
+ *              well.
+ *              <p>
+ *              This class is <em>ThreadSafe</em> because it is
+ *              <strong>Immutable</strong> as defined in @cite goetz2006:java
+ *              </p>
+ *
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date November 08, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
+ */
 @Immutable
 public final class BinaryConnections extends Connections {
 
-    private final Key ID;
-    private final Key PARENT;
-    private final Key LCHILD;
-    private final Key RCHILD;
+    private final Key ID; //!< the ID of the node
+    private final Key PARENT; //!< the key of the parent of the node
+    private final Key LCHILD; //!< the key of the left child of the node
+    private final Key RCHILD; //!< the key of the right child of the node
 
+    /**
+     * @brief Constructor
+     *
+     * @description Initializes a newly created <tt>BinaryConnections</tt>
+     *              object so that it represents the same connections as the
+     *              argument: in other words, the newly created binary
+     *              connections is a copy of the argument binary connections.
+     *              Unless an explicit copy of the <tt>original</tt> is needed,
+     *              use of this constructor is unnecessary since
+     *              <tt>BinaryConnections</tt> are immutable.
+     *
+     * @param[in] connection The original binary connection
+     */
     public BinaryConnections(final BinaryConnections connection) {
+
         this.ID = connection.getID();
         this.PARENT = connection.getPARENT();
         this.LCHILD = connection.getLCHILD();
         this.RCHILD = connection.getRCHILD();
-        validateStates();
-        validateInvariant();
+
+        validateStates(); // precondition
+        validateInvariant(); // invariant
+
     }
 
+    /**
+     * @brief Constructor
+     *
+     * @description Having just the <tt>ID</tt> of the node as input argument,
+     *              this constructor must be used <strong>ONLY</strong> if the
+     *              user is 100% sure that the underlying node has both the
+     *              children not null. The latter are computed in this way:
+     *              <ul>
+     *              <li>\f$LCHILD = NODE * 2\f$;</li>
+     *              <li>\f$RCHILD = LCHILD + 1\f$.</li>
+     *              </ul>
+     *              The PARENT key is computed as \f$PARENT = NODE / 2\f$. No
+     *              invariant validation is required at the end of this object
+     *              construction
+     *
+     * @param[in] ID The <tt>Key</tt> of the node
+     */
+    public BinaryConnections(final Key ID) {
+
+        validateKey(ID); // precondition
+
+        this.ID = ID;
+        this.PARENT = new Key(Math.floor(ID.getDouble() / 2));
+        this.LCHILD = new Key(ID.getDouble() * 2);
+        this.RCHILD = new Key(LCHILD.getDouble() + 1);
+
+    }
+
+    /**
+     * @brief Constructor
+     *
+     * @description This is the most complete constructor, which takes in input
+     *              ID, LCHILD and RCHILD. Only the PARENT key is computed. The
+     *              invariant is checked at the end of the construction.
+     *
+     * @param[in] ID The key of the node
+     * @param[in] LCHILD The key of the left child of the node
+     * @param[in] RCHILD The key of the right child of the node
+     */
     public BinaryConnections(final Key ID, final Key LCHILD, final Key RCHILD) {
+
         this.ID = ID;
         this.PARENT = new Key(Math.floor(ID.getDouble() / 2));
         this.LCHILD = LCHILD;
         this.RCHILD = RCHILD;
-        validateStates();
-        validateInvariant();
+
+        validateStates(); // precondition
+        validateInvariant(); // invariant
+
     }
 
-    public BinaryConnections(final Key ID) {
-        validateKey(ID);
-        this.ID = ID;
-        this.PARENT = new Key(Math.floor(ID.getDouble() / 2));
-        this.LCHILD = new Key(ID.getDouble() * 2);
-        this.RCHILD = new Key(ID.getDouble() * 2 + 1);
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see Connections#getID()
+     */
     public Key getID() {
         return ID;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Connections#getPARENT()
+     */
     public Key getPARENT() {
         return PARENT;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Connections#getNumberNonNullChildren()
+     */
     public int getNumberNonNullChildren() {
         if (LCHILD != null && RCHILD != null) return 2;
         else if (LCHILD == null && RCHILD == null) return 0;
         else return 1;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Connections#getChildren()
+     */
     public List<Key> getChildren() {
         List<Key> tmpList = new ArrayList<Key>();
 
@@ -80,16 +171,25 @@ public final class BinaryConnections extends Connections {
         return tmpList;
     }
 
+    /**
+     * @return The key of the left child of the node
+     */
     @Override
     public Key getLCHILD() {
         return LCHILD;
     }
 
+    /**
+     * @return The key of the right child of the node
+     */
     @Override
     public Key getRCHILD() {
         return RCHILD;
     }
 
+    /**
+     * @return The complete description of the object with all its states
+     */
     @Override
     public String toString() {
 
@@ -105,6 +205,11 @@ public final class BinaryConnections extends Connections {
         return print;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Connections#validateStates()
+     */
     protected void validateStates() {
         validateKey(ID);
         validateKey(PARENT);
@@ -133,14 +238,14 @@ public final class BinaryConnections extends Connections {
             throw new IllegalArgumentException(message);
         }
 
-        if (LCHILD != null &&
+        if (LCHILD != null && // validate left child only if it exists
             ID.getDouble() * 2 != LCHILD.getDouble()) {
             String message = "Left child key " + LCHILD.getString();
             message += " is not the twice of the key " + ID.getString();
             throw new IllegalArgumentException(message);
         }
 
-        if (RCHILD != null &&
+        if (RCHILD != null && // validate right child only if it exists
             (LCHILD.getDouble() + 1) != RCHILD.getDouble()) {
             String message = "Righ child key " + RCHILD.getString();
             message += " is not the the left child key " + LCHILD.getString();
@@ -150,6 +255,11 @@ public final class BinaryConnections extends Connections {
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see Connections#validateKey(final Key)
+     */
     protected void validateKey(final Key key) {
         if (key == null)
             throw new NullPointerException("Key object cannot be null, but the object can be initialized with a null value.");

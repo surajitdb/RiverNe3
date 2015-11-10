@@ -18,12 +18,31 @@
  */
 package com.wordpress.growworkinghard.riverNe3.dataReader;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 
-public interface DataProcessing {
+/**
+ * @brief Interface for data reading classes
+ *
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date November 08, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
+ */
+public interface DataReading {
 
-    public HashMap<Integer, Geometry> fileProcessing();
+    /**
+     * @brief Processing of the input file
+     *
+     * @description This is the unique class that a developer is obliged to
+     * implement in order to make his reader working with the multithreading
+     * reader 
+     *
+     * @return The <tt>HashMap</tt> of the input data to build a tree
+     * @exception IOException if it is not possible to open the input file
+     */
+    public HashMap<Integer, Geometry> fileProcessing() throws IOException;
 
 }
