@@ -90,13 +90,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
-<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
-<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">RunSimulations Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Run multithreading simulations from an executor pool.  
+ <a href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#details">More...</a></p>
 <div class="dynheader">
 Collaboration diagram for RunSimulations:</div>
 <div class="dyncontent">
@@ -110,40 +112,117 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a67b8f372b52b00f9109ac6572a53d45b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a67b8f372b52b00f9109ac6572a53d45b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>RunSimulations</b> (final HashMap&lt; <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html">Key</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html">Component</a> &gt; binaryTree, final ExecutorService exec, final int count)</td></tr>
-<tr class="separator:a67b8f372b52b00f9109ac6572a53d45b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad750929fe4b48b514669186d5779f8ce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#ad750929fe4b48b514669186d5779f8ce">RunSimulations</a> (final HashMap&lt; <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html">Key</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html">Component</a> &gt; <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#a949db7f7b5ec8a80e2fac549cb22589b">tree</a>, final ExecutorService <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#abaf5c8d1c510230c0aaf3f59ff10333f">executor</a>, final int threadsNumber)</td></tr>
+<tr class="memdesc:ad750929fe4b48b514669186d5779f8ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ad750929fe4b48b514669186d5779f8ce">More...</a><br /></td></tr>
+<tr class="separator:ad750929fe4b48b514669186d5779f8ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13a43e6d814de94978c515cb084873b1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13a43e6d814de94978c515cb084873b1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ()</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#a13a43e6d814de94978c515cb084873b1">run</a> ()</td></tr>
+<tr class="memdesc:a13a43e6d814de94978c515cb084873b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Submit tasks to the executor. <br /></td></tr>
 <tr class="separator:a13a43e6d814de94978c515cb084873b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a0706c0d13bbe7febd05f23d8b76ea6ab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0706c0d13bbe7febd05f23d8b76ea6ab"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>runSim</b> ()</td></tr>
+<tr class="memitem:a0706c0d13bbe7febd05f23d8b76ea6ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#a0706c0d13bbe7febd05f23d8b76ea6ab">runSim</a> ()</td></tr>
+<tr class="memdesc:a0706c0d13bbe7febd05f23d8b76ea6ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run simulations.  <a href="#a0706c0d13bbe7febd05f23d8b76ea6ab">More...</a><br /></td></tr>
 <tr class="separator:a0706c0d13bbe7febd05f23d8b76ea6ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
-Static Private Member Functions</h2></td></tr>
-<tr class="memitem:a7d1dc6b180424ed804caf60dd6a2f37a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7d1dc6b180424ed804caf60dd6a2f37a"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> (final HashMap&lt; <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html">Key</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html">Component</a> &gt; inputBinaryTree, final ExecutorService exec, final int counter)</td></tr>
-<tr class="separator:a7d1dc6b180424ed804caf60dd6a2f37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
-Static Private Attributes</h2></td></tr>
-<tr class="memitem:a9aa61f7f61b9b7a11f20abce9926807a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9aa61f7f61b9b7a11f20abce9926807a"></a>
-static volatile ConcurrentHashMap&lt; <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html">Key</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html">Component</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>binaryTree</b></td></tr>
-<tr class="separator:a9aa61f7f61b9b7a11f20abce9926807a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59ac05db4768b9c76b2af1edb4109ef7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a59ac05db4768b9c76b2af1edb4109ef7"></a>
-static volatile ExecutorService&#160;</td><td class="memItemRight" valign="bottom"><b>executor</b></td></tr>
-<tr class="separator:a59ac05db4768b9c76b2af1edb4109ef7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cd85896454734b1f8f791c085f4dbe7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2cd85896454734b1f8f791c085f4dbe7"></a>
-static volatile CountDownLatch&#160;</td><td class="memItemRight" valign="bottom"><b>latch</b></td></tr>
-<tr class="separator:a2cd85896454734b1f8f791c085f4dbe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2caed1cbe66b4adb794da880e147fdc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab2caed1cbe66b4adb794da880e147fdc"></a>
-static volatile int&#160;</td><td class="memItemRight" valign="bottom"><b>count</b></td></tr>
-<tr class="separator:ab2caed1cbe66b4adb794da880e147fdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a949db7f7b5ec8a80e2fac549cb22589b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a949db7f7b5ec8a80e2fac549cb22589b"></a>
+volatile ConcurrentHashMap&lt; <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html">Key</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html">Component</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#a949db7f7b5ec8a80e2fac549cb22589b">tree</a></td></tr>
+<tr class="memdesc:a949db7f7b5ec8a80e2fac549cb22589b"><td class="mdescLeft">&#160;</td><td class="mdescRight">tree structure <br /></td></tr>
+<tr class="separator:a949db7f7b5ec8a80e2fac549cb22589b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc5dd1aa164a34a06b9cb2c51a32b079"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abc5dd1aa164a34a06b9cb2c51a32b079"></a>
+final CountDownLatch&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#abc5dd1aa164a34a06b9cb2c51a32b079">latch</a></td></tr>
+<tr class="memdesc:abc5dd1aa164a34a06b9cb2c51a32b079"><td class="mdescLeft">&#160;</td><td class="mdescRight">latch to synchronize the progress of threads <br /></td></tr>
+<tr class="separator:abc5dd1aa164a34a06b9cb2c51a32b079"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaf5c8d1c510230c0aaf3f59ff10333f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abaf5c8d1c510230c0aaf3f59ff10333f"></a>
+final ExecutorService&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#abaf5c8d1c510230c0aaf3f59ff10333f">executor</a></td></tr>
+<tr class="memdesc:abaf5c8d1c510230c0aaf3f59ff10333f"><td class="mdescLeft">&#160;</td><td class="mdescRight">executor to process tasks asynchronously <br /></td></tr>
+<tr class="separator:abaf5c8d1c510230c0aaf3f59ff10333f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2505862749c51a482a52dee80e818154"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2505862749c51a482a52dee80e818154"></a>
+final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html#a2505862749c51a482a52dee80e818154">concurrencyLevel</a></td></tr>
+<tr class="memdesc:a2505862749c51a482a52dee80e818154"><td class="mdescLeft">&#160;</td><td class="mdescRight">the running threads <br /></td></tr>
+<tr class="separator:a2505862749c51a482a52dee80e818154"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Run multithreading simulations from an executor pool. </p>
+<dl class="section author"><dt>Author</dt><dd>Francesco Serafin, <a href="#" onclick="location.href='mai'+'lto:'+'fra'+'nc'+'esc'+'o.'+'ser'+'af'+'in.'+'3@'+'gma'+'il'+'.co'+'m'; return false;">franc<span style="display: none;">.nosp@m.</span>esco<span style="display: none;">.nosp@m.</span>.sera<span style="display: none;">.nosp@m.</span>fin.<span style="display: none;">.nosp@m.</span>3@gma<span style="display: none;">.nosp@m.</span>il.c<span style="display: none;">.nosp@m.</span>om</a> </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>November 08, 2015 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>GNU Public License v3 AboutHydrology (Riccardo Rigon) </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ad750929fe4b48b514669186d5779f8ce"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1RunSimulations.html">RunSimulations</a> </td>
+          <td>(</td>
+          <td class="paramtype">final HashMap&lt; <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html">Key</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html">Component</a> &gt;&#160;</td>
+          <td class="paramname"><em>tree</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">final ExecutorService&#160;</td>
+          <td class="paramname"><em>executor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">final int&#160;</td>
+          <td class="paramname"><em>threadsNumber</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor. </p>
+<p>The <code>ExecutorService</code> is passed to the constructor in order to use only one executor for all the tree process. Quoting <a class="el" href="citelist.html#CITEREF_goetz2006:java">[2]</a> </p><blockquote class="doxtable">
+<p>Reusing an existing thread instead of creating a new one amortizes thread creation and teardown costs over multiple requests. As an added bonus, since the worker thread often already exists at the time the request arrives, the latency associated with thread creation does not delay task execution, this improving responsiveness.</p>
+</blockquote>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">tree</td><td>The tree structure </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">executor</td><td>The main executor service </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">threadsNumber</td><td>The number of threads available </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a0706c0d13bbe7febd05f23d8b76ea6ab"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void runSim </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Run simulations. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/com/wordpress/growworkinghard/riverNe3/RunSimulations.java</li>
 </ul>
