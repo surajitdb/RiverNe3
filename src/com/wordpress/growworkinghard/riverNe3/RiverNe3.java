@@ -37,6 +37,24 @@ import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree.RiverBinaryTree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers;
 
+/**
+ * @mainpage
+ *
+ * @image html digitalBasin.jpg
+ *
+ * @section Introduction
+ *
+ * @section How to use it
+ *
+ * @section How to add a tree
+ *
+ * @section How to add a decorator
+ *
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date November 08, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
+ */
 public class RiverNe3 {
  
     static Tree tb;
