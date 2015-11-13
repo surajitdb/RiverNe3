@@ -40,15 +40,23 @@ import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers
 /**
  * @mainpage
  *
- * @image html digitalBasin.jpg
+ * @image html digitalBasin.jpg "The digital basin"
  *
- * @section Introduction
+ * @section Introduction Introduction to the RiverNe3 design
  *
- * @section How to use it
+ * In this section I'm going to introduce the main ideas behind the
+ * implemetation of this component. Each and every pattern implemented will be
+ * descripted.
  *
- * @section How to add a tree
+ * @section AddTree How to add a tree
  *
- * @section How to add a decorator
+ * In this section I'm going to introduce how to add a new tree at this flexible
+ * structure.
+ *
+ * @section AddDecorator How to add a decorator
+ *
+ * In this section I'm going to introduce how to add a decorator at this
+ * flexible structure, in order to enrich a plain structure
  *
  * @author Francesco Serafin, francesco.serafin.3@gmail.com
  * @version 0.1
