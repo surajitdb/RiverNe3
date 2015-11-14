@@ -27,24 +27,57 @@ import java.util.concurrent.ExecutorService;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
+import net.jcip.annotations.ThreadSafe;
+
+/**
+ * @brief Run multithreading simulations from an executor pool
+ *
+ * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @version 0.1
+ * @date November 08, 2015
+ * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
+ */
+@ThreadSafe
 public class RunSimulations {
 
-    private volatile ConcurrentHashMap<Key, Component> binaryTree;
-    private final CountDownLatch latch;
-    private final ExecutorService executor;
-    private final int concurrencyLevel;
+    private volatile ConcurrentHashMap<Key, Component> tree; //!< tree structure
+    private final CountDownLatch latch; //!< latch to synchronize the progress of threads
+    private final ExecutorService executor; //!< executor to process tasks asynchronously
+    private final int concurrencyLevel; //!< the running threads
 
-    public RunSimulations(final HashMap<Key, Component> binaryTree, final ExecutorService executor, final int threadsNumber) {
-        this.concurrencyLevel = threadsNumber;
+    /**
+     * @brief Constructor
+     *
+     * @description The <tt>ExecutorService</tt> is passed to the constructor in
+     *              order to use only one executor for all the tree process.
+     *              Quoting @cite goetz2006:java <blockquote>Reusing an existing
+     *              thread instead of creating a new one amortizes thread
+     *              creation and teardown costs over multiple requests. As an
+     *              added bonus, since the worker thread often already exists at
+     *              the time the request arrives, the latency associated with
+     *              thread creation does not delay task execution, this
+     *              improving responsiveness.</blockquote>
+     *
+     * @param[in] tree The tree structure
+     * @param[in] executor The main executor service
+     * @param[in] threadsNumber The number of threads available
+     */
+    public RunSimulations(final HashMap<Key, Component> tree, final ExecutorService executor, final int threadsNumber) {
+        this.concurrencyLevel = threadsNumber; // the running threads available
         this.executor = executor;
-        this.binaryTree
-            = new ConcurrentHashMap<Key, Component>(binaryTree.size(),
-                                                    0.9f,
+        int size = tree.size(); // the initial size
+        float loadFactor = 0.9f; // dense packaging which will optimize memory use
+        this.tree
+            = new ConcurrentHashMap<Key, Component>(size,
+                                                    loadFactor,
                                                     this.concurrencyLevel);
         this.latch = new CountDownLatch(threadsNumber);
-        this.binaryTree.putAll(binaryTree);
+        this.tree.putAll(tree);
     }
 
+    /**
+     * @brief Submit tasks to the executor
+     */
     public void run() {
         for (int i = 0; i < concurrencyLevel; i++)
             executor.submit(new ParallelSimulations(latch));
@@ -54,18 +87,23 @@ public class RunSimulations {
         } catch (InterruptedException e) {}
     }
 
+    /**
+     * @brief Run simulations
+     *
+     * @description 
+     */
     private void runSim() {
 
         Component tmpComp = null;
         Component parent = null;
         synchronized(this) {
-            Iterator<Key> iterator = binaryTree.keySet().iterator();
+            Iterator<Key> iterator = tree.keySet().iterator();
             while(iterator.hasNext()) {
                 Key next = iterator.next();
-                tmpComp = binaryTree.get(next);
+                tmpComp = tree.get(next);
                 if (tmpComp.isReadyForSimulation()) {
-                    binaryTree.remove(next, tmpComp);
-                    parent = binaryTree.get(tmpComp.getConnections().getPARENT());
+                    tree.remove(next, tmpComp);
+                    parent = tree.get(tmpComp.getConnections().getPARENT());
                     break;
                 }
             }
@@ -80,7 +118,7 @@ public class RunSimulations {
         ParallelSimulations(CountDownLatch latch) { this.latch = latch; }
 
         public void run() {
-            while(!binaryTree.isEmpty()) {
+            while(!tree.isEmpty()) {
                 try {
                     while(!Thread.interrupted()) runSim();
                 } finally {
