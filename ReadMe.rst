@@ -4,7 +4,8 @@ RiverNe3
 Description
 -----------
 
-This component (which is not part of OMS  [1] yet) is based on  [2]
+This component (which is not part of OMS (David et al. 2013) yet) is
+based on (H. Wang et al. 2011)
 
 Useful links
 ------------
@@ -14,8 +15,8 @@ On-line documentation
 
 On-line documentation available on http://sidereus3.github.io/RiverNe3/
 
-Bibliography
-------------
+References
+----------
 
 .. raw:: html
 
@@ -25,8 +26,11 @@ Bibliography
 
    <div id="ref-david2013:software">
 
-[1] O. David, J. Ascough Ii, W. Lloyd, T. Green, K. Rojas, G. Leavesley,
-and L. Ahuja, Environmental Modelling & Software **39**, 201 (2013).
+David, Olaf, JC Ascough Ii, Wes Lloyd, TR Green, KW Rojas, GH Leavesley,
+and LR Ahuja. 2013. “A Software Engineering Perspective on Environmental
+Modeling Framework Design: The Object Modeling System.” *Environmental
+Modelling & Software* 39. Elsevier: 201–13.
+http://www.sciencedirect.com/science/article/pii/S1364815212000886.
 
 .. raw:: html
 
@@ -36,8 +40,9 @@ and L. Ahuja, Environmental Modelling & Software **39**, 201 (2013).
 
    <div id="ref-wang2011:common">
 
-[2] H. Wang, X. Fu, G. Wang, T. Li, and J. Gao, Parallel Computing
-**37**, 302 (2011).
+Wang, Hao, Xudong Fu, Guangqian Wang, Tiejian Li, and Jie Gao. 2011. “A
+Common Parallel Computing Framework for Modeling Hydrological Processes
+of River Basins.” *Parallel Computing* 37 (6). Elsevier: 302–15.
 
 .. raw:: html
 
