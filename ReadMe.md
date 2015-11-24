@@ -1,13 +1,16 @@
-```html
-<h1 id="riverne3">RiverNe3</h1>
-<h2 id="description">Description</h2>
-<p>This component (which is not part of OMS yet) is based on paper <span class="citation">[1]</span></p>
-<h2 id="useful-links">Useful links</h2>
-<h3 id="on-line-documentation">On-line documentation</h3>
-<p>On-line documentation available on <a href="http://sidereus3.github.io/RiverNe3/" class="uri" title="RiverNe3 documentation">http://sidereus3.github.io/RiverNe3/</a></p>
-<div id="refs" class="references">
-<div id="ref-wang2011:common">
-<p>1 Wang H, Fu X, Wang G, Li T, Gao J. A common parallel computing framework for modeling hydrological processes of river basins. <em>Parallel Computing</em> 2011; <strong>37</strong>:302–315.</p>
-</div>
-</div>
-```
+RiverNe3
+========
+
+Description
+-----------
+
+This component (which is not part of OMS yet) is based on paper <span
+class="citation">\[1\]</span>
+
+Useful links
+------------
+
+### On-line documentation
+
+On-line documentation available on
+<http://sidereus3.github.io/RiverNe3/>
