@@ -90,6 +90,7 @@ David, Olaf, JC Ascough Ii, Wes Lloyd, TR Green, KW Rojas, GH Leavesley,
 and LR Ahuja. 2013. “A Software Engineering Perspective on Environmental
 Modeling Framework Design: The Object Modeling System.” *Environmental
 Modelling & Software* 39. Elsevier: 201–13.
+http://www.sciencedirect.com/science/article/pii/S1364815212000886.
 
 .. raw:: html
 
