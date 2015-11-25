@@ -61,8 +61,8 @@ Simple Factory - Factory Method Pattern
 *Factory Patterns* were implemented without having to specify the exact
 class of the object that will be created.
 
-Useful links
-------------
+Documentation
+-------------
 
 Developers' documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
