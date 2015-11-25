@@ -9,8 +9,11 @@ Description
 -----------
 
 This component (which is not part of OMS (David et al. 2013) yet) is an
-abstract schematization of a river network through a binary tree, in
-order to parallel process independet HURs.
+abstract schematization of a river network through a tree data
+structure, in order to parallel process independet HURs. The structure
+is flexible and extendable, so each developer can implement her/his own
+tree, with connections and decorators. At the moment, just the **binary
+tree** is implemented.
 
 Implementation
 ~~~~~~~~~~~~~~
