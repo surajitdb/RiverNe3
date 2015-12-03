@@ -182,7 +182,7 @@ import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers
  * case of binary tree).
  *
  * The trick is that the decorator object (e.g. the plain class
- * treeBuilding#decorator#Dams) <code><strong>has-a</strong></code> tree object
+ * treeBuilding#decorator#Template) <code><strong>has-a</strong></code> tree object
  * inside. In this way, during the construction of the decorator, the plain tree
  * in input is copied in the internal tree object. The decoration algorithm, in
  * this sense, works wrapping the plain tree structure. As reported in the
