@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.10"/>
-<title>RiverNe3: Main Page</title>
+<title>RiverNe3: On-line Documentation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -75,22 +75,96 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="headertitle">
-<div class="title">RiverNe3 Documentation</div>  </div>
+<div class="title">On-line Documentation </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><div class="image">
 <img src="digitalBasin.jpg" alt="digitalBasin.jpg"/>
 <div class="caption">
 The digital basin</div></div>
- <h1><a class="anchor" id="Introduction"></a>
-Introduction to the RiverNe3 design</h1>
-<p>In this section I'm going to introduce the main ideas behind the implemetation of this component. Each and every pattern implemented will be descripted.</p>
+ <h1><a class="anchor" id="Description"></a>
+Description</h1>
+<p>This component (which is not part of OMS <a class="el" href="citelist.html#CITEREF_david2013:software">[1]</a> yet) is an abstract schematization of a river network through a tree data structure, in order to parallel process independent HRUs. The structure is flexible and extendable, so each developer can implement her/his own tree, with connections and decorators. At the moment, just the <b>binary tree</b> is implemented.</p>
+<h2><a class="anchor" id="Implementation"></a>
+Implementation</h2>
+<p>The structure was thought as more flexible and extendable as possible. To reach this goal, several patterns were implemented and the framework is completely decoupled from the type of tree and connections. The three main patterns are: </p><ul>
+<li>
+Composite Pattern; </li>
+<li>
+Decorator Pattern; </li>
+<li>
+Factory Pattern. </li>
+</ul>
+<h3><a class="anchor" id="Composite"></a>
+Composite Pattern</h3>
+<p>The list of nodes of the tree is represented by a <code>ConcurrentHashMap</code> of <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html" title="Key used as ID for the nodes of the tree. ">composite::key::Key</a> and <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html" title="class Component ">composite::Component</a> to make it parsable by multi-threadings. No nested structure has been developed, because it is hard to make netsted calls work in parallel. Thus, the <b>composite pattern</b> is similar to a strategy pattern, where each type of node (the already implemented ones are <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1GhostNode.html" title="class Ghost Node ">composite::GhostNode</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Leaf.html" title="class Leaf ">composite::Leaf</a>, <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1LocalNode.html" title="class Localized Node ">composite::LocalNode</a> and <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Node.html" title="class Node ">composite::Node</a> but you can easily add a new one) extends the abstract class <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html" title="class Component ">composite::Component</a>.</p>
+<p>However, each node has its own <b>TreeTraverser</b> as in the composite pattern theory. At the moment the available traversers are: </p><ul>
+<li>
+<a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html#ab0583de32ba4d294b29f1940d01dc53d" title="Compute the Preorder List of nodes in the subtree with this as main vertex. ">composite::Component::preOrderTraversal</a>; </li>
+<li>
+<a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html#ac0d8c16d5bdb1d4e5abd5c01762ef229" title="Compute the Postorder List of nodes in the subtree with this as main vertex. ">composite::Component::postOrderTraversal</a>. </li>
+</ul>
+<p>To get the list of nodes in the desidered order you have to </p><ol>
+<li>
+initialize a new traverser (e.g. <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1traverser_1_1RiverBinaryTreeTraverser.html" title="How retrieving right and left children from the binary tree. ">traverser::RiverBinaryTreeTraverser</a>) with a tree <code>ConcurrentHashMap</code> structure; </li>
+<li>
+set the traverser on the desired <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html" title="class Component ">composite::Component</a> node with the traverser object just allocated; </li>
+<li>
+call the getter which returns an <code>immutable</code> list of <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1Component.html" title="class Component ">composite::Component</a>, i.e. the subtree in the desired order starting from the pointed node. </li>
+</ol>
+<div class="fragment"><div class="line"><span class="comment">// step 1: traverser initialization</span></div>
+<div class="line">TreeTraverser traverser = <span class="keyword">new</span> RiverBinaryTreeTraverser(tree);</div>
+<div class="line"></div>
+<div class="line"><span class="comment">// step 2: setting of the traverser in the desired node</span></div>
+<div class="line">node.setTraverser(traverser);</div>
+<div class="line"></div>
+<div class="line"><span class="comment">// step 3: subtree retrieving</span></div>
+<div class="line">List&lt;Component&gt; immutablePreOrderList = node.preOrderTraversal();</div>
+<div class="line">List&lt;Component&gt; immutablePostOrderList = node.postOrderTraversal();</div>
+</div><!-- fragment --><p>The connections between nodes is represented by the <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Connections.html" title="Abstract class for the connection of the nodes. ">composite::key::Connections</a> object which is the abstract class of a <b>strategy pattern</b> in order to allow each user to develop the type of connection required by the tree. For the <b>Binary Tree</b>, the <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1BinaryConnections.html" title="Connection class for Binary Tree ">composite::key::BinaryConnections</a> was implemented.</p>
+<p>Each node has its own <b>ID</b>, which is stored in the <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1Key.html" title="Key used as ID for the nodes of the tree. ">composite::key::Key</a> object.</p>
+<h3><a class="anchor" id="Decorator"></a>
+Decorator Pattern</h3>
+<p>The <b>decorator pattern</b> was implemented to allow each developer to write her/his own plain tree (e.g. <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1RiverBinaryTree.html" title="The building of a Binary Tree for a River Net. ">treeBuilding::binaryTree::RiverBinaryTree</a> useful to abstract a simple river network (<a class="el" href="citelist.html#CITEREF_wang2011:common">[4]</a>), implementing the interface <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html" title="Main interface of the Decorator Pattern for the tree building. ">treeBuilding::Tree</a>.</p>
+<p>Once you have your own plain tree, you can decorate it writing a <b>decorator</b> (e.g. <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Hydrometers.html" title="Add Hydrometers node to a Binary Tree structure. ">treeBuilding::decorator::Hydrometers</a>), extending the <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1BinaryTreeDecorator.html" title="Abstract class of the decorators of the Decorator Pattern ">treeBuilding::decorator::BinaryTreeDecorator</a> abstract class.</p>
+<p>To use a decorator after having built your tree data structure, you have to follow these simple steps: </p><ol>
+<li>
+allocate a new object <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html" title="Main interface of the Decorator Pattern for the tree building. ">treeBuilding::Tree</a> of the desired tree structure (e.g. treeBuilding::RiverBinaryTree) from the plain network; </li>
+<li>
+build the tree from the plain network calling the method <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html#ae93998c17e9b0b17a90fbdfa4e75cc97" title="The main method for building the tree or adding decorators to an already built structure. ">treeBuilding::Tree::buildTree()</a>; </li>
+<li>
+allocate the same object but this time of the desired decorator type (e.g. <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Hydrometers.html" title="Add Hydrometers node to a Binary Tree structure. ">treeBuilding::decorator::Hydrometers</a>), with the tree structure and the input data as minimum required by the constructor of the decorator; </li>
+<li>
+then call <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html#ae93998c17e9b0b17a90fbdfa4e75cc97" title="The main method for building the tree or adding decorators to an already built structure. ">treeBuilding::Tree::buildTree()</a> again, in order to add the decoration to the plain tree. </li>
+</ol>
+<p>Repeating the last two steps, you can add all the decorators you need. In the following example, the <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Hydrometers.html" title="Add Hydrometers node to a Binary Tree structure. ">treeBuilding::decorator::Hydrometers</a> decorator is add to a treeBuilding::RiverBinaryTree plain network.</p>
+<div class="fragment"><div class="line"><span class="comment">// step 1: plain tree allocation</span></div>
+<div class="line">Tree tb = <span class="keyword">new</span> RiverBinaryTree(netInputData, availableThreads);</div>
+<div class="line"></div>
+<div class="line"><span class="comment">// step 2: plain tree building</span></div>
+<div class="line">tb.buildTree();</div>
+<div class="line"></div>
+<div class="line"><span class="comment">// step 3: decorator allocation</span></div>
+<div class="line">tb = <span class="keyword">new</span> Hydrometers(tb, hydrometersInputData, radiusTolerance);</div>
+<div class="line"></div>
+<div class="line"><span class="comment">// step 4: adding the decoration to the plain tree</span></div>
+<div class="line">tb.buildTree();</div>
+</div><!-- fragment --><h3><a class="anchor" id="Factory"></a>
+Simple Factory - Factory Method Pattern</h3>
+<p><b>Factory patterns</b> were implemented without having to specify the exact class of the object that will be created.</p>
 <h1><a class="anchor" id="AddTree"></a>
-How to add a tree</h1>
-<p>In this section I'm going to introduce how to add a new tree at this flexible structure.</p>
+How add a tree</h1>
+<p>To add a new tree at this flexible structure, you have to <code>implement</code> the <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html" title="Main interface of the Decorator Pattern for the tree building. ">treeBuilding::Tree</a> abstract class. The most important things, where pay attention, are the only two <code>public</code> methods: </p><ul>
+<li>
+<a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html#ae93998c17e9b0b17a90fbdfa4e75cc97" title="The main method for building the tree or adding decorators to an already built structure. ">treeBuilding::Tree::buildTree()</a>, which must run the building of the tree; </li>
+<li>
+<a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html#a8a89af0b2af6831a4e0c467d9b787af3" title="Method which returns the tree structure. ">treeBuilding::Tree::computeNodes()</a>, which must return the structure of the tree. </li>
+</ul>
+<p>Implementing the previous methods as <b>strongly suggested</b> allows to implement corrently part of the decorator pattern.</p>
 <h1><a class="anchor" id="AddDecorator"></a>
-How to add a decorator</h1>
-<p>In this section I'm going to introduce how to add a decorator at this flexible structure, in order to enrich a plain structure</p>
+How add a decorator</h1>
+<p>To add a decorator at this flexible structure, in order to enrich a plain tree structure, you have to <code>implements</code> the appropriate tree decorator abstract class (e.g. <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1BinaryTreeDecorator.html" title="Abstract class of the decorators of the Decorator Pattern ">treeBuilding::decorator::BinaryTreeDecorator</a> in case of binary tree).</p>
+<p>The trick is that the decorator object (e.g. the plain class <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Dams.html">treeBuilding::decorator::Dams</a>) <code><b>has-a</b></code> tree object inside. In this way, during the construction of the decorator, the plain tree in input is copied in the internal tree object. The decoration algorithm, in this sense, works wrapping the plain tree structure. As reported in the previous section, <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html#ae93998c17e9b0b17a90fbdfa4e75cc97" title="The main method for building the tree or adding decorators to an already built structure. ">treeBuilding::Tree::buildTree()</a> is the method that run the wrapping, <a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html#a8a89af0b2af6831a4e0c467d9b787af3" title="Method which returns the tree structure. ">treeBuilding::Tree::computeNodes()</a> returns the wrapped structure.</p>
 <dl class="section author"><dt>Author</dt><dd>Francesco Serafin, <a href="#" onclick="location.href='mai'+'lto:'+'fra'+'nc'+'esc'+'o.'+'ser'+'af'+'in.'+'3@'+'gma'+'il'+'.co'+'m'; return false;">franc<span style="display: none;">.nosp@m.</span>esco<span style="display: none;">.nosp@m.</span>.sera<span style="display: none;">.nosp@m.</span>fin.<span style="display: none;">.nosp@m.</span>3@gma<span style="display: none;">.nosp@m.</span>il.c<span style="display: none;">.nosp@m.</span>om</a> </dd></dl>
 <dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>November 08, 2015 </dd></dl>

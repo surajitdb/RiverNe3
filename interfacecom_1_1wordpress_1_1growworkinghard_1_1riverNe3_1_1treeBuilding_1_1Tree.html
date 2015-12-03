@@ -123,7 +123,7 @@ abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <p>In order to apply the design principle for which </p><blockquote class="doxtable">
 <p>- Classes should be open for extension, but closed for modification -</p>
 </blockquote>
-<p>, the <b>Decorator Pattern</b> <a class="el" href="citelist.html#CITEREF_freeman2004:head">[1]</a> has been implemented for solving the issue of building the tree structure. </p><blockquote class="doxtable">
+<p>, the <b>Decorator Pattern</b> <a class="el" href="citelist.html#CITEREF_freeman2004:head">[2]</a> has been implemented for solving the issue of building the tree structure. </p><blockquote class="doxtable">
 <p><b>The Decorator Pattern</b> attaches additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality. </p>
 </blockquote>
 <p>In this way, each developer can easily implement the building of its own tree type of <code><a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html" title="Main interface of the Decorator Pattern for the tree building. ">Tree</a></code> implementing this interface. The decorations, always of type <code><a class="el" href="interfacecom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1Tree.html" title="Main interface of the Decorator Pattern for the tree building. ">Tree</a></code> but extending an abstract class (e.g. BinaryTreeDecorator), are features added to the tree as new nodes (e.g. dams, monitoring points, lakes, intakes, outakes) or as new states for a node. </p>

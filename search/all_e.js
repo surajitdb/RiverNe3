@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['riverne3',['RiverNe3',['../md_localReadMe.html',1,'']]],
   ['rchild',['RCHILD',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1composite_1_1key_1_1BinaryConnections.html#a394773ee36e5b980ddc36b314c2563fc',1,'com::wordpress::growworkinghard::riverNe3::composite::key::BinaryConnections']]],
   ['reader',['Reader',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1Reader.html',1,'com::wordpress::growworkinghard::riverNe3::dataReader']]],
   ['readertask',['ReaderTask',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1dataReader_1_1Reader_1_1ReaderTask.html',1,'com::wordpress::growworkinghard::riverNe3::dataReader::Reader']]],

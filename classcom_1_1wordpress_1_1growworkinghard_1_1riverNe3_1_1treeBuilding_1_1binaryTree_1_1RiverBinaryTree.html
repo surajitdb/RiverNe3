@@ -188,7 +188,7 @@ static <a class="el" href="classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_
 <p>It is based on the idea that each node of the tree is the root of a sub-tree. At the first loop, only the main root of the tree (the stream with number 1 in the PfafStetter numbering) has the boolean flag <code>root</code> set to <code>true</code>. Parsing the <code>data</code> structure, the first thread that find that node analizes and adds it on <code>binaryTree</code>. During the computation, the children of the root become the roots of them sub-tree and will have now the boolean flag <code>root</code> set to <code>true</code>. Parsing the <code>data</code> structure, the first threads that find the new roots (this time the new roots are 2, so two threads can work at the same time) analize them and make their children the new roots of them sub-tree (this time the new roots will be 4, so then four threads can work at the same time). The process ends when the <code>data</code> structure is empty. </p>
 <p>This class is <em>ThreadSafe</em> because: </p><ol>
 <li>
-the data structures <code>binaryTree</code> and <code>data</code>, which are concurrently accessed, are implemented as <code>ConcurrentHashMap</code>. Citing <a class="el" href="citelist.html#CITEREF_goetz2006:java">[2]</a> <blockquote class="doxtable">
+the data structures <code>binaryTree</code> and <code>data</code>, which are concurrently accessed, are implemented as <code>ConcurrentHashMap</code>. Citing <a class="el" href="citelist.html#CITEREF_goetz2006:java">[3]</a> <blockquote class="doxtable">
 <p><code>ConcurrentHashMap</code> is a hash-based <code>Map</code> like <code>HashMap</code>, but it uses an entirely different locking strategy that offers a better concurrency and scalability. [...] it uses a finer-grained locking mechanism called <em>lock striping</em> to allow a greater degree of shared access. Arbitrarily many reading threads can access the map concurrently, readers can access the map concurrently with writers, and a limited number of writers can modify the map concurrently.</p>
 </blockquote>
 </li>
@@ -197,7 +197,7 @@ in order to make each and every change immediately available to the working thre
 <li>
 <code>volatile</code> fields and operations on them are not reordered with other memory operations by the compilar and runtime; </li>
 <li>
-<code>volatile</code> variables are not cached in registers or in caches where they are hidden from other processors, so a read of a volatile variable always returns the most recent write by any thread <a class="el" href="citelist.html#CITEREF_goetz2006:java">[2]</a>; </li>
+<code>volatile</code> variables are not cached in registers or in caches where they are hidden from other processors, so a read of a volatile variable always returns the most recent write by any thread <a class="el" href="citelist.html#CITEREF_goetz2006:java">[3]</a>; </li>
 </ul>
 </li>
 <li>
