@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['template',['Template',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Template.html',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::decorator']]],
+  ['template',['Template',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Template.html#af06da094f22d93d0d339cd31b4f531ea',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::decorator::Template']]],
   ['tmpchildconnectedtoroot',['tmpChildConnectedToRoot',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1binaryTree_1_1RiverBinaryTree.html#ac12c6c345355e1423b028ca8891e5b75',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::binaryTree::RiverBinaryTree']]],
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
   ['tolerance',['tolerance',['../classcom_1_1wordpress_1_1growworkinghard_1_1riverNe3_1_1treeBuilding_1_1decorator_1_1Hydrometers.html#ab2507a6b23639322877bbffcadae6a78',1,'com::wordpress::growworkinghard::riverNe3::treeBuilding::decorator::Hydrometers']]],
