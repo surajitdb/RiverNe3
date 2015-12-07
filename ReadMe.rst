@@ -70,7 +70,8 @@ Documentation
 Developers' documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On-line documentation available on http://sidereus3.github.io/RiverNe3/
+On-line documentation available on
+http://geoframecomponents.github.io/RiverNe3/
 
 Linkers' documentation
 ~~~~~~~~~~~~~~~~~~~~~~
