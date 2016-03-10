@@ -34,7 +34,7 @@ import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
  * algorithm you are designing to add features to the input tree from the
  * Template#buildTree() method.
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

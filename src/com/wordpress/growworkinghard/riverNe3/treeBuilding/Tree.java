@@ -52,7 +52,7 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  *              and eventually each decorator already applied to the tree.</li>
  *              </ol>
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

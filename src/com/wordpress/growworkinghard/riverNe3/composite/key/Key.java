@@ -43,7 +43,7 @@ import net.jcip.annotations.Immutable;
  *              <A HREF="http://commons.apache.org/proper/commons-lang/download_lang.cgi">Apache Commons Lang</A>
  *              </p>
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

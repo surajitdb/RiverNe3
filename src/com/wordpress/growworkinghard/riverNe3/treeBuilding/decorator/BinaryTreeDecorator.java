@@ -33,7 +33,7 @@ import net.jcip.annotations.ThreadSafe;
  * @description This class is <em>ThreadSafe</em> because the implemented
  *              methods are synchronized and guarded by the intrinsic lock
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

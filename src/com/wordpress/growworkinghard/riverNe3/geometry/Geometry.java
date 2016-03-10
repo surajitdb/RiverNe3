@@ -33,7 +33,7 @@ import net.jcip.annotations.ThreadSafe;
  *              <strong>Strategy Pattern</strong>, in order to easily add new
  *              features.
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

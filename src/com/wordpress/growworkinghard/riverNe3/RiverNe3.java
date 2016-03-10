@@ -189,7 +189,7 @@ import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers
  * previous section, treeBuilding#Tree#buildTree() is the method that run the
  * wrapping, treeBuilding#Tree#computeNodes() returns the wrapped structure.
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
@@ -210,8 +210,8 @@ public class RiverNe3 {
 
         count = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(count);
-        String filePath = "/home/francesco/vcs/git/personal/riverNe3/data/net.dbf";
-        String filePathPoints = "/home/francesco/vcs/git/personal/riverNe3/data/mon_point.dbf";
+        String filePath = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/net.dbf";
+        String filePathPoints = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/mon_point.dbf";
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
         String[] colNamesPoints = {"X_coord", "Y_coord"};
 

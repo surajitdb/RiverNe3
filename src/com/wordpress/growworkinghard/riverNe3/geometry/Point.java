@@ -37,7 +37,7 @@ import net.jcip.annotations.ThreadSafe;
  *              lock.
  *              </p>
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

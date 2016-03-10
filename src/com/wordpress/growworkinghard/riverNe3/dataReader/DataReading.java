@@ -26,7 +26,7 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 /**
  * @brief Interface for data reading classes
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

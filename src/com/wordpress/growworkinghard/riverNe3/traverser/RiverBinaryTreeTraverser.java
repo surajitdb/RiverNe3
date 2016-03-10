@@ -39,7 +39,7 @@ import net.jcip.annotations.Immutable;
  *              This class is <em>ThreadSafe</em> because it is
  *              <em>Immutable</em>.
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

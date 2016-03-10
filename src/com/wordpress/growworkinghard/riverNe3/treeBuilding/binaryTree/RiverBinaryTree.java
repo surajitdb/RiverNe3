@@ -96,7 +96,7 @@ import net.jcip.annotations.ThreadSafe;
  *              </ol>
  *              </p>
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

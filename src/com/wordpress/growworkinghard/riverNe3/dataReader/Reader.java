@@ -73,7 +73,7 @@ public class Reader {
     private class ReaderTask implements Callable<HashMap<Integer, Geometry>> {
         private final DataReading fileProcess;
 
-        public ReaderTask (final DataReading fileProcess) {this.fileProcess = fileProcess;}
+        public ReaderTask (final DataReading fileProcess) { this.fileProcess = fileProcess; }
 
         public HashMap<Integer, Geometry> call() throws Exception {
             return fileProcess.fileProcessing();

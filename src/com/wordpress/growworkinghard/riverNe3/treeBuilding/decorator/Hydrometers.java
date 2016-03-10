@@ -51,7 +51,7 @@ import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
  * @todo Think about an algorithm that allows to apply decorator in
  *       multithreading
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

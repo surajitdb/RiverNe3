@@ -39,7 +39,7 @@ import net.jcip.annotations.ThreadSafe;
  *              implemented following the <strong>stack-confinment</strong>
  *              principle
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)

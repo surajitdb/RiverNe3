@@ -46,7 +46,7 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Point;
  * @todo Implement a cache, in order to parse the file in multithreading
  * @todo Verify if it is possibile to change from HashMap to List for inputData
  *
- * @author Francesco Serafin, francesco.serafin.3@gmail.com
+ * @author sidereus, francesco.serafin.3@gmail.com
  * @version 0.1
  * @date October 13, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
