@@ -25,6 +25,7 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.TreeTraverser;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
@@ -61,7 +62,7 @@ public class LocalNode extends Component {
 
     @GuardedBy("this") private Connections connKeys; //!< connections of the node
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
-    @GuardedBy("this") private Coordinate2D point; //!< coordinate of the local point
+    @GuardedBy("this") private Entity entity; //!<
     @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
     @GuardedBy("this") private final HashMap<Key, Boolean> readyForSim
         = new HashMap<Key, Boolean>(); //!< <code>HashMap</code> of flags for start sim
@@ -73,8 +74,8 @@ public class LocalNode extends Component {
      * @param[in] layer The layer of the node in the tree
      * @param[in] point The coordinates of the local node
      */
-    public LocalNode(final Connections connKeys, final Integer layer, final Coordinate2D point) {
-        getInstance(connKeys, layer, point);
+    public LocalNode(final Connections connKeys, final Integer layer, final Entity entity) {
+        getInstance(connKeys, layer, entity);
     }
 
     /**
@@ -166,7 +167,7 @@ public class LocalNode extends Component {
      * @see Component#getStartPoint()
      */
     public synchronized Coordinate2D getStartPoint() {
-        return new Coordinate2D(point.x, point.y);
+        return getPoint();
     }
 
     /**
@@ -175,7 +176,7 @@ public class LocalNode extends Component {
      * @see Component#getEndPoint()
      */
     public synchronized Coordinate2D getEndPoint() {
-        return new Coordinate2D(point.x, point.y);
+        return getPoint();
     }
 
     /**
@@ -192,7 +193,7 @@ public class LocalNode extends Component {
      * @return The coordinate of the node
      */
     public synchronized Coordinate2D getPoint() {
-        return new Coordinate2D(point.x, point.y);
+        return entity.getPoint();
     }
 
     /**
@@ -252,14 +253,14 @@ public class LocalNode extends Component {
      * @param[in] layer The layer of the node in the tree
      * @param[in] point The coordinates of the point
      */
-    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D point) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Entity entity) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
                     this.connKeys = connKeys;
                     this.layer = new Integer(layer);
-                    this.point = new Coordinate2D(point.x, point.y);
+                    this.entity = entity;
 
                     validateState(); // precondition
                     allocateSimulationFlags();
@@ -278,7 +279,7 @@ public class LocalNode extends Component {
 
         if (this.connKeys == null &&
             this.layer == null &&
-            this.point == null) return true;
+            this.entity == null) return true;
 
         return false;
 
@@ -293,7 +294,6 @@ public class LocalNode extends Component {
 
         validateConnections(connKeys);
         validateLayer(layer);
-        validateCoordinate(point);
 
     }
 

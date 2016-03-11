@@ -25,6 +25,7 @@ import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.TreeTraverser;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 
@@ -61,8 +62,7 @@ public class Node extends Component {
 
     @GuardedBy("this") private Connections connKeys; //!< connections of the node
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
-    @GuardedBy("this") private Coordinate2D startPoint; //!< starting point of the sub-basin
-    @GuardedBy("this") private Coordinate2D endPoint; //!< ending point of the sub-basin
+    @GuardedBy("this") private Entity entity; //!<
     @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
     @GuardedBy("this") private final HashMap<Key, Boolean> readyForSim
         = new HashMap<Key, Boolean>(); //!< <code>HashMap</code> of flags for start sim
@@ -75,8 +75,8 @@ public class Node extends Component {
      * @param[in] startPoint The starting point of the stream
      * @param[in] endPoint The closure point of the sub-basin
      */
-    public Node(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
-        getInstance(connKeys, layer, startPoint, endPoint);
+    public Node(final Connections connKeys, final Integer layer, final Entity entity) {
+        getInstance(connKeys, layer, entity);
     }
 
     /**
@@ -175,7 +175,7 @@ public class Node extends Component {
      * @see Component#getStartPoint()
      */
     public synchronized Coordinate2D getStartPoint() {
-        return new Coordinate2D(startPoint.x, startPoint.y);
+        return entity.getStartPoint();
     }
 
     /**
@@ -184,7 +184,7 @@ public class Node extends Component {
      * @see Component#getEndPoint()
      */
     public synchronized Coordinate2D getEndPoint() {
-        return new Coordinate2D(endPoint.x, endPoint.y);
+        return entity.getEndPoint();
     }
 
     /**
@@ -245,15 +245,14 @@ public class Node extends Component {
      * @param[in] startPoint The starting point of the stream in the sub-basin
      * @param[in] endPoint The closure point of the sub-basin
      */
-    private void getInstance(final Connections connKeys, final Integer layer, final Coordinate2D startPoint, final Coordinate2D endPoint) {
+    private void getInstance(final Connections connKeys, final Integer layer, final Entity entity) {
 
         if (statesAreNull()) {
             synchronized(this) {
                 if (statesAreNull()) {
                     this.connKeys = connKeys;
                     this.layer = new Integer(layer);
-                    this.startPoint = new Coordinate2D(startPoint.x, startPoint.y);
-                    this.endPoint = new Coordinate2D(endPoint.x, endPoint.y);
+                    this.entity = entity;
 
                     validateState(); // precondition
                     allocateSimulationFlags();
@@ -272,8 +271,7 @@ public class Node extends Component {
 
         if (this.connKeys == null &&
             this.layer == null &&
-            this.startPoint == null &&
-            this.endPoint == null) return true;
+            this.entity == null) return true;
 
         return false;
 
@@ -288,8 +286,6 @@ public class Node extends Component {
 
         validateConnections(connKeys);
         validateLayer(layer);
-        validateCoordinate(startPoint);
-        validateCoordinate(endPoint);
 
     }
 

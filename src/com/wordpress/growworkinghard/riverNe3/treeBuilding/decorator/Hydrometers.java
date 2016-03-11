@@ -28,6 +28,7 @@ import org.geotools.graph.util.geom.Coordinate2D;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.GhostNode;
 import com.wordpress.growworkinghard.riverNe3.composite.LocalNode;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.Hydrometer;
 import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
@@ -176,7 +177,7 @@ public class Hydrometers extends BinaryTreeDecorator {
      * @param[in] point The processed hydrometer
      * @param[in] root The root node of the sub-tree
      */
-    private void updateBinaryTree(final Geometry hydrometer, final Component root) {
+    private void updateBinaryTree(final Geometry hydrometerGeometry, final Component root) {
         HashMap<Key, Component> tmpTree = new HashMap<Key, Component>(); // temporary structure
 
         root.setTraverser(new RiverBinaryTreeTraverser(tree));
@@ -188,8 +189,8 @@ public class Hydrometers extends BinaryTreeDecorator {
         if (!mutableList.remove(root))
             throw new NullPointerException("Root not present in list");
 
-        substituteRoot(hydrometer, root, tmpTree);
-        if (hydrometer.getKey() != root.getConnections().getID()) { // when root is not a ghost node
+        substituteRoot(root, tmpTree);
+        if (hydrometerGeometry.getKey() != root.getConnections().getID()) { // when root is not a ghost node
             nodeConnectionRenumbering(mutableList, tmpTree);
             updateTree(tmpTree);
         }
@@ -222,24 +223,24 @@ public class Hydrometers extends BinaryTreeDecorator {
      *              </ul>
      *              </ul>
      *
-     * @param[in] hydrometer The processed hydrometer
      * @param[in] root The root node
      * @param[out] tmpTree The temporary structure
      */
-    private void substituteRoot(final Geometry hydrometer, final Component root, HashMap<Key, Component> tmpTree) {
+    private void substituteRoot(final Component root, HashMap<Key, Component> tmpTree) {
 
         final int hydrometerLayer = root.getLayer();
         final Coordinate2D coor = root.getEndPoint(); // startPoint and endPoint are equal in Ghost node
+        final Hydrometer hydrometer = new Hydrometer(coor);
 
         if (root.getClass() == GhostNode.class) { // CASE 1: root is ghost node
             final Connections conn = root.getConnections();
-            tree.replace(root.getConnections().getID(), new LocalNode(conn, hydrometerLayer, coor));
+            tree.replace(root.getConnections().getID(), new LocalNode(conn, hydrometerLayer, hydrometer));
         } else { // CASE 2: otherwise
             Key oldRootKey = root.getConnections().getID();
             Key newRootKey = new Key(oldRootKey.getDouble() * 2);
 
             Connections hydrometerConnections = newConnection(oldRootKey, newRootKey, null);
-            tree.replace(oldRootKey, new LocalNode(hydrometerConnections, hydrometerLayer, coor));
+            tree.replace(oldRootKey, new LocalNode(hydrometerConnections, hydrometerLayer, hydrometer));
 
             root.setNewConnections(newConnection(root, newRootKey));
             root.setLayer(root.getLayer() + 1);

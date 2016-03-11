@@ -24,6 +24,10 @@ import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.GhostNode;
 import com.wordpress.growworkinghard.riverNe3.composite.Leaf;
 import com.wordpress.growworkinghard.riverNe3.composite.Node;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.Basin;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.GhostBasin;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.River;
 import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
@@ -65,12 +69,12 @@ public class SimpleNodeFactory {
 
         if (isLeaf(leftChild, rightChild)) {
             conn = new BinaryConnections(ID, null, null);
-            return new Leaf(conn, layer, startPoint, endPoint);
+            return new Leaf(conn, layer, newBasin(startPoint, endPoint));
         } else {
 
             conn = new BinaryConnections(ID);
-            return (isGhost(root)) ? new GhostNode(conn, layer, startPoint, endPoint) :
-                                     new Node(conn, layer, startPoint, endPoint);
+            return (isGhost(root)) ? new GhostNode(conn, layer, newGhostBasin(startPoint, endPoint)) :
+                                     new Node(conn, layer, newBasin(startPoint, endPoint));
         }
 
     }
@@ -107,6 +111,24 @@ public class SimpleNodeFactory {
      */
     private boolean isLeaf(final Geometry leftChild, final Geometry rightChild) {
         return (leftChild == null && rightChild == null) ? true : false;
+    }
+
+    /**
+     * @todo Adding area to basin object
+     *
+     * @param startPoint
+     * @param endPoint
+     * @return
+     */
+    private Entity newBasin(final Coordinate2D startPoint, final Coordinate2D endPoint) {
+
+        River river = new River(startPoint, endPoint);
+        return new Basin(river, null);
+
+    }
+
+    private Entity newGhostBasin(final Coordinate2D startPoint, final Coordinate2D endPoint) {
+        return new GhostBasin(startPoint, endPoint);
     }
 
 }
