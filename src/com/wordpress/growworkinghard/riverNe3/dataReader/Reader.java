@@ -39,9 +39,15 @@ public class Reader {
     private final ExecutorService exec;
     private final List<DataReading> mainList;
 
-    public Reader(final List<DataReading> list, final ExecutorService exec) {
-        this.mainList = list;
+    public Reader(final ExecutorService exec, final DataReading... dataReaders) {
         this.exec = exec;
+        this.mainList = new ArrayList<DataReading>(dataReaders.length);
+        assemblyDataReadingList(dataReaders);
+    }
+
+    private void assemblyDataReadingList(final DataReading[] dataReaders) {
+        for (DataReading item : dataReaders)
+            mainList.add(item);
     }
 
     public List<HashMap<Integer, Geometry>> start() throws InterruptedException {
@@ -71,13 +77,17 @@ public class Reader {
     }
 
     private class ReaderTask implements Callable<HashMap<Integer, Geometry>> {
+
         private final DataReading fileProcess;
 
-        public ReaderTask (final DataReading fileProcess) { this.fileProcess = fileProcess; }
+        public ReaderTask(final DataReading fileProcess) {
+            this.fileProcess = fileProcess;
+        }
 
         public HashMap<Integer, Geometry> call() throws Exception {
             return fileProcess.fileProcessing();
         }
+
     }
 
 }

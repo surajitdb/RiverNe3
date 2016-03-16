@@ -31,7 +31,6 @@ import com.wordpress.growworkinghard.riverNe3.dataReader.DataReading;
 import com.wordpress.growworkinghard.riverNe3.dataReader.Reader;
 import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfLinesProcessing;
 import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfPointsProcessing;
-import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfProcessing;
 import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree.RiverBinaryTree;
@@ -202,31 +201,37 @@ public class RiverNe3 {
     static List<Geometry> pointList;
     static int count;
     static List<DataReading> list = new ArrayList<DataReading>();
-    static DbfProcessing dfbp;
-    static DbfProcessing dbfPoints;
     static CountDownLatch lRead;
+    static ExecutorService executor;
 
-    public static void main(String[] args) throws InterruptedException {
+    private void readInputData() throws InterruptedException {
 
-        count = Runtime.getRuntime().availableProcessors();
-        ExecutorService executor = Executors.newFixedThreadPool(count);
         String filePath = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/net.dbf";
         String filePathPoints = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/mon_point.dbf";
         String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
         String[] colNamesPoints = {"X_coord", "Y_coord"};
 
-        dfbp = new DbfLinesProcessing(filePath, colNames);
-        dbfPoints = new DbfPointsProcessing(filePathPoints, colNamesPoints);
+        DataReading dfbp = new DbfLinesProcessing(filePath, colNames);
+        DataReading dbfPoints = new DbfPointsProcessing(filePathPoints, colNamesPoints);
 
-        list.add(dfbp);
-        list.add(dbfPoints);
-
-        Reader reader = new Reader(list, executor);
+        Reader reader = new Reader(executor, dfbp, dbfPoints);
         reader.start();
 
         pointList = new ArrayList<Geometry>(reader.start().get(1).values());
 
         tb = new RiverBinaryTree(reader.start().get(0), count);
+
+	}
+
+    public static void main(String[] args) throws InterruptedException {
+
+        RiverNe3 test = new RiverNe3();
+
+        count = Runtime.getRuntime().availableProcessors();
+        executor = Executors.newFixedThreadPool(count);
+
+        test.readInputData();
+
         CountDownLatch l = new CountDownLatch(count);
 
         for (int i = 0; i < count; i++)
