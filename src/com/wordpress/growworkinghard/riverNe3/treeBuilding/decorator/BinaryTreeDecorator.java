@@ -50,14 +50,6 @@ public abstract class BinaryTreeDecorator implements Tree {
     abstract public HashMap<Key, Component> computeNodes();
 
     /**
-     * {@inheritDoc}
-     *
-     * @see Tree#buildTree()
-     */
-    @Override
-    abstract public void buildTree();
-
-    /**
      * @brief Validation of the states of a decorator
      */
     abstract protected void validateState();

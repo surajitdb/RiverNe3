@@ -21,6 +21,8 @@ package com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
@@ -107,6 +109,8 @@ public class RiverBinaryTree implements Tree {
     @GuardedBy("this") private volatile static ConcurrentHashMap<Key, Component> binaryTree; //!< structure of the binary tree
     @GuardedBy("this") private volatile static ConcurrentHashMap<Integer, Geometry> data; //!< input data
     @GuardedBy("this") private static SimpleNodeFactory factory = new SimpleNodeFactory(); //!< simple factory in order to instantiate the proper type of node for each <tt>Geometry</tt> data
+    @GuardedBy("this") private ExecutorService executor;
+    @GuardedBy("this") private int threadsNumber;
 
     /**
      * @brief Constructor
@@ -121,7 +125,9 @@ public class RiverBinaryTree implements Tree {
      * @param[in] threadsNumber The number of threads that will possibly work
      *            concurrently on the same <tt>ConcurrentHashMap</tt>
      */
-    public RiverBinaryTree(final HashMap<Integer, Geometry> inputData, final int threadsNumber) {
+    public RiverBinaryTree(final HashMap<Integer, Geometry> inputData, final int threadsNumber, final ExecutorService executor) {
+        this.executor = executor;
+        this.threadsNumber = threadsNumber;
         getInstance(inputData, threadsNumber);
     }
 
@@ -131,19 +137,45 @@ public class RiverBinaryTree implements Tree {
      * @see Tree#computeNodes()
      */
     @Override
-    public synchronized HashMap<Key, Component> computeNodes() {
+    public HashMap<Key, Component> computeNodes() {
+        runComputationalThreads();
         validateOutputData(); //!< postcondition
         return deepCopy(binaryTree);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Tree#buildTree()
-     */
-    @Override
-    public void buildTree() {
-        while(!data.isEmpty()) findRoot(); // find each root of the sub-tree
+    private void runComputationalThreads() {
+
+        CountDownLatch l = new CountDownLatch(threadsNumber);
+
+        for (int i = 0; i < threadsNumber; i++)
+            executor.submit(new MyRunnable(l));
+
+        try {
+            l.await();
+        } catch (InterruptedException e) {}
+
+    }
+
+    private class MyRunnable implements Runnable {
+
+        CountDownLatch l;
+
+        MyRunnable(CountDownLatch l) {
+            this.l = l;
+        }
+
+        @Override
+        public void run() {
+            buildTree();
+            l.countDown();
+        }
+
+    }
+
+    private void buildTree() {
+        while(!data.isEmpty()) {
+            findRoot();
+        }
     }
 
     /**

@@ -60,12 +60,6 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 public interface Tree {
 
     /**
-     * @brief The main method for building the tree or adding decorators to an
-     *        already built structure.
-     */
-    abstract public void buildTree(); 
-
-    /**
      * @brief Method which returns the tree structure
      *
      * @description This method must be implemented both on a class which build

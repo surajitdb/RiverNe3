@@ -25,6 +25,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.dataReader.DataReading;
@@ -219,11 +222,12 @@ public class RiverNe3 {
 
         pointList = new ArrayList<Geometry>(reader.start().get(1).values());
 
-        tb = new RiverBinaryTree(reader.start().get(0), count);
+        tb = new RiverBinaryTree(reader.start().get(0), count, executor);
 
 	}
 
-    public static void main(String[] args) throws InterruptedException {
+    @Test
+    public void TestRun() throws InterruptedException {
 
         RiverNe3 test = new RiverNe3();
 
@@ -232,18 +236,7 @@ public class RiverNe3 {
 
         test.readInputData();
 
-        CountDownLatch l = new CountDownLatch(count);
-
-        for (int i = 0; i < count; i++)
-            executor.submit(new MyRunnable(l));
-
-        try {
-            l.await();
-        } catch (InterruptedException e) {}
-
-
         tb = new Hydrometers(tb, pointList, 500.0);
-        tb.buildTree();
         binaryTree = tb.computeNodes();
 
         sim = new RunSimulations(binaryTree, executor, count);
@@ -251,25 +244,7 @@ public class RiverNe3 {
 
         executor.shutdown();
 
-        System.out.println("Exit");
-        System.exit(0);
-
-    }
-
-    public static class MyRunnable implements Runnable {
-
-        CountDownLatch l;
-
-        MyRunnable(CountDownLatch l) {
-            this.l = l;
-        }
-
-        @Override
-        public void run() {
-            tb.buildTree();
-            l.countDown();
-        }
-
+        assertEquals(0,0);
     }
 
 }

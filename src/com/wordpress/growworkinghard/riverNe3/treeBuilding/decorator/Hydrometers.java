@@ -79,16 +79,16 @@ public class Hydrometers extends BinaryTreeDecorator {
         this.tolerance = tolerance;
 
         validateState(); // precondition
-
-        tree.putAll(binaryTree.computeNodes()); // wrapper
     }
 
     /**
      * {@inheritDoc}
      *
-     * @see Tree#buildTree()
+     * @see Tree#computeNodes()
      */
-    public synchronized void buildTree() {
+    public synchronized HashMap<Key, Component> computeNodes() {
+
+        tree.putAll(binaryTree.computeNodes()); // wrapper
 
         Geometry point = null;
         Component root = null;
@@ -99,14 +99,6 @@ public class Hydrometers extends BinaryTreeDecorator {
             if (root != null) updateBinaryTree(point, root);
         }
 
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see Tree#computeNodes()
-     */
-    public synchronized HashMap<Key, Component> computeNodes() {
         return deepCopy(tree);
     }
 
