@@ -21,7 +21,6 @@ package com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
@@ -104,7 +103,7 @@ import net.jcip.annotations.ThreadSafe;
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 @ThreadSafe
-public class RiverBinaryTree implements Tree {
+public class RiverBinaryTree extends Tree {
 
     @GuardedBy("this") private volatile static ConcurrentHashMap<Key, Component> binaryTree; //!< structure of the binary tree
     @GuardedBy("this") private volatile static ConcurrentHashMap<Integer, Geometry> data; //!< input data
@@ -138,41 +137,12 @@ public class RiverBinaryTree implements Tree {
      */
     @Override
     public HashMap<Key, Component> computeNodes() {
-        runComputationalThreads();
+        parallelBuildTree(executor, threadsNumber);
         validateOutputData(); //!< postcondition
         return deepCopy(binaryTree);
     }
 
-    private void runComputationalThreads() {
-
-        CountDownLatch l = new CountDownLatch(threadsNumber);
-
-        for (int i = 0; i < threadsNumber; i++)
-            executor.submit(new MyRunnable(l));
-
-        try {
-            l.await();
-        } catch (InterruptedException e) {}
-
-    }
-
-    private class MyRunnable implements Runnable {
-
-        CountDownLatch l;
-
-        MyRunnable(CountDownLatch l) {
-            this.l = l;
-        }
-
-        @Override
-        public void run() {
-            buildTree();
-            l.countDown();
-        }
-
-    }
-
-    private void buildTree() {
+    protected void buildTree() {
         while(!data.isEmpty()) {
             findRoot();
         }

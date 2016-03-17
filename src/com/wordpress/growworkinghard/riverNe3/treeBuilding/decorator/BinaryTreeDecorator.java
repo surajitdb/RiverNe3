@@ -39,7 +39,7 @@ import net.jcip.annotations.ThreadSafe;
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 @ThreadSafe
-public abstract class BinaryTreeDecorator implements Tree {
+public abstract class BinaryTreeDecorator extends Tree {
 
     /**
      * {@inheritDoc}
@@ -49,6 +49,8 @@ public abstract class BinaryTreeDecorator implements Tree {
     @Override
     abstract public HashMap<Key, Component> computeNodes();
 
+    @Override
+    abstract protected void buildTree();
     /**
      * @brief Validation of the states of a decorator
      */

@@ -19,6 +19,8 @@
 package com.wordpress.growworkinghard.riverNe3.treeBuilding;
 
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
@@ -57,7 +59,7 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  * @date November 08, 2015
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
-public interface Tree {
+public abstract class Tree {
 
     /**
      * @brief Method which returns the tree structure
@@ -81,5 +83,36 @@ public interface Tree {
      * @return The <tt>HashMap</tt> with the structure of the tree
      */
     abstract public HashMap<Key, Component> computeNodes();
+
+    abstract protected void buildTree();
+
+    protected void parallelBuildTree(final ExecutorService executor, final int threadsNumber) {
+
+        CountDownLatch l = new CountDownLatch(threadsNumber);
+
+        for (int i = 0; i < threadsNumber; i++)
+            executor.submit(new MyRunnable(l));
+
+        try {
+            l.await();
+        } catch (InterruptedException e) {}
+
+    }
+
+    protected class MyRunnable implements Runnable {
+
+        CountDownLatch l;
+
+        MyRunnable(CountDownLatch l) {
+            this.l = l;
+        }
+
+        @Override
+        public void run() {
+            buildTree();
+            l.countDown();
+        }
+
+    }
 
 }

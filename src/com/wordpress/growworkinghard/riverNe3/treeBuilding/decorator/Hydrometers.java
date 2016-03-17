@@ -89,6 +89,11 @@ public class Hydrometers extends BinaryTreeDecorator {
     public synchronized HashMap<Key, Component> computeNodes() {
 
         tree.putAll(binaryTree.computeNodes()); // wrapper
+        buildTree();
+        return deepCopy(tree);
+    }
+
+    protected void buildTree() {
 
         Geometry point = null;
         Component root = null;
@@ -99,7 +104,6 @@ public class Hydrometers extends BinaryTreeDecorator {
             if (root != null) updateBinaryTree(point, root);
         }
 
-        return deepCopy(tree);
     }
 
     /**
