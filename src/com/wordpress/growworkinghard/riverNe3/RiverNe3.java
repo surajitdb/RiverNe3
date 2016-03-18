@@ -207,7 +207,8 @@ public class RiverNe3 {
     static CountDownLatch lRead;
     static ExecutorService executor;
 
-    private void readInputData() throws InterruptedException {
+    @Test
+    public void readInputData() throws InterruptedException {
 
         String filePath = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/net.dbf";
         String filePathPoints = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/mon_point.dbf";
@@ -218,11 +219,10 @@ public class RiverNe3 {
         DataReading dbfPoints = new DbfPointsProcessing(filePathPoints, colNamesPoints);
 
         Reader reader = new Reader(executor, dfbp, dbfPoints);
-        reader.start();
 
-        pointList = new ArrayList<Geometry>(reader.start().get(1).values());
+        pointList = new ArrayList<Geometry>(reader.getReadData(1).values());
 
-        tb = new RiverBinaryTree(reader.start().get(0), count, executor);
+        tb = new RiverBinaryTree(reader.getReadData(0), count, executor);
 
 	}
 

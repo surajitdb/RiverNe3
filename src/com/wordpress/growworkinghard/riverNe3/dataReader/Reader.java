@@ -20,7 +20,6 @@ package com.wordpress.growworkinghard.riverNe3.dataReader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -38,11 +37,14 @@ import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 public class Reader {
     private final ExecutorService exec;
     private final List<DataReading> mainList;
+    private final List<HashMap<Integer, Geometry>> data;
 
-    public Reader(final ExecutorService exec, final DataReading... dataReaders) {
+    public Reader(final ExecutorService exec, final DataReading... dataReaders) throws InterruptedException {
         this.exec = exec;
         this.mainList = new ArrayList<DataReading>(dataReaders.length);
+        this.data = new ArrayList<HashMap<Integer, Geometry>>(dataReaders.length);
         assemblyDataReadingList(dataReaders);
+        startReadingData();
     }
 
     private void assemblyDataReadingList(final DataReading[] dataReaders) {
@@ -50,7 +52,7 @@ public class Reader {
             mainList.add(item);
     }
 
-    public List<HashMap<Integer, Geometry>> start() throws InterruptedException {
+    private void startReadingData() throws InterruptedException {
         List<ReaderTask> tasks = new ArrayList<ReaderTask>();
 
         for (DataReading dataFile : mainList)
@@ -58,11 +60,7 @@ public class Reader {
 
         List<Future<HashMap<Integer, Geometry>>> futures = exec.invokeAll(tasks);
 
-        List<HashMap<Integer, Geometry>> data = new ArrayList<HashMap<Integer, Geometry>>(tasks.size());
-        Iterator<ReaderTask> taskIter = tasks.iterator();
-
         for (Future<HashMap<Integer, Geometry>> f : futures) {
-            ReaderTask task = taskIter.next();
 
             try {
                 data.add(f.get());
@@ -71,8 +69,6 @@ public class Reader {
 
             }
         }
-
-        return data;
 
     }
 
@@ -88,6 +84,10 @@ public class Reader {
             return fileProcess.fileProcessing();
         }
 
+    }
+
+    public HashMap<Integer, Geometry> getReadData(final int fileIndex) {
+        return data.get(fileIndex);
     }
 
 }
