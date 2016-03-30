@@ -19,6 +19,7 @@
 package com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,13 +73,17 @@ public class Hydrometers extends BinaryTreeDecorator {
      * @param[in] tolerance The tolerance in searching the node on which apply
      *            the hydrometer
      */
-    public Hydrometers(final Tree binaryTree, final List<Geometry> data, final double tolerance) {
+    public Hydrometers(final Tree binaryTree, final Collection<Geometry> data, final double tolerance) {
         this.data = new ArrayList<Geometry>(data);
         this.tree = new HashMap<Key, Component>();
         this.binaryTree = binaryTree;
         this.tolerance = tolerance;
 
         validateState(); // precondition
+    }
+
+    public Hydrometers(final Tree binaryTree, final HashMap<Integer, Geometry> data, final double tolerance) {
+        this(binaryTree, data.values(), tolerance);
     }
 
     /**
