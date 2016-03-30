@@ -50,7 +50,7 @@ public class TestReader {
     public TestReader() {}
 
     @Test
-    public void readInputData() throws InterruptedException {
+    public void testReadInputData() throws InterruptedException {
 
         String treeDataPath = getDataPath("net.dbf");
         String hydrometersDataPath = getDataPath("mon_point.dbf");
