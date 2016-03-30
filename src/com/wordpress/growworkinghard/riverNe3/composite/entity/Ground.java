@@ -18,73 +18,49 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite.entity;
 
-import java.util.HashMap;
-
 import org.geotools.graph.util.geom.Coordinate2D;
 
 import net.jcip.annotations.Immutable;
 
 @Immutable
-public class Basin extends Entity {
+public class Ground extends Entity {
 
-    final private Ground ground;
-    final private Meteo meteo;
-    final private Double area;
-    final private double a = 752.3543670;
-    final private double b = 1.75744;
+    final private River river;
+    final private double poreVolumeInRootZone;
+    final private double waterStorageMaxValue;
+    final private double Re = 0.2;
 
-    public Basin (final Ground ground, final Meteo meteo, final Double area) {
-
-        this.ground = ground;
-        this.meteo = meteo;
-        this.area = area;
-
-    }
-
-    public Double getBasinArea() {
-        return area;
-    }
-
-    public HashMap<Integer, double[]> getPrecipitation() {
-        return meteo.getPrecipitation();
-    }
-
-    public HashMap<Integer, double[]> getEvapotranspiration() {
-        return meteo.getEvapotranspiration();
+    public Ground(final River river, final double poreVolumeInRootZone, final double waterStorageMaxValue) {
+        this.river = river;
+        this.poreVolumeInRootZone = poreVolumeInRootZone;
+        this.waterStorageMaxValue = waterStorageMaxValue;
     }
 
     public double getPoreVolumeInRootZone() {
-        return ground.getPoreVolumeInRootZone();
+        return poreVolumeInRootZone;
     }
 
     public double getWaterStorageMaxValue() {
-        return ground.getWaterStorageMaxValue();
+        return waterStorageMaxValue;
     }
 
     public double getRe() {
-        return ground.getRe();
+        return Re;
     }
 
     @Override
     public Coordinate2D getStartPoint() {
-        return ground.getStartPoint();
+        return river.getStartPoint();
     }
 
     @Override
     public Coordinate2D getEndPoint() {
-        return ground.getEndPoint();
+        return river.getEndPoint();
     }
 
     @Override
     public Coordinate2D getPoint() {
-
-        // implement the computing of the centroid
         return super.getPoint();
-
-    }
-
-    public double getParameter(final String inputParameter) {
-        return (inputParameter.compareTo("a") == 0) ? a : b;
     }
 
 }

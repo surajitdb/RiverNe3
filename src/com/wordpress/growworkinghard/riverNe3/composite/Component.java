@@ -40,6 +40,10 @@ import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
  */
 public abstract class Component {
 
+    protected final String dischargeModelName = "NonLinearReservoir";
+    protected final String evapotranspirationModelName = "AET";
+    protected final String odeSolverModelName = "dp853";
+
     /**
      * @brief <tt>notify</tt> method from <strong>Observer Pattern</strong>
      * @cite freeman2004:head

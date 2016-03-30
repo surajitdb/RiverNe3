@@ -18,6 +18,8 @@
  */
 package com.wordpress.growworkinghard.riverNe3.tree.building.binaryTree;
 
+import java.util.HashMap;
+
 import org.geotools.graph.util.geom.Coordinate2D;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
@@ -27,6 +29,8 @@ import com.wordpress.growworkinghard.riverNe3.composite.Node;
 import com.wordpress.growworkinghard.riverNe3.composite.entity.Basin;
 import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
 import com.wordpress.growworkinghard.riverNe3.composite.entity.GhostBasin;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.Ground;
+import com.wordpress.growworkinghard.riverNe3.composite.entity.Meteo;
 import com.wordpress.growworkinghard.riverNe3.composite.entity.River;
 import com.wordpress.growworkinghard.riverNe3.composite.key.BinaryConnections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
@@ -123,7 +127,22 @@ public class SimpleNodeFactory {
     private Entity newBasin(final Coordinate2D startPoint, final Coordinate2D endPoint) {
 
         River river = new River(startPoint, endPoint);
-        return new Basin(river, null);
+        Ground ground = new Ground(river, 1, 0.006);
+        HashMap<Integer, double[]> precipitation = new HashMap<Integer, double[]>();
+        HashMap<Integer, double[]> evapotranspiration = new HashMap<Integer, double[]>();
+        Integer station1 = 1;
+        double[] station1prec = {10, 11};
+        double[] station1evap = {0.03, 0.05};
+        Integer station2 = 2;
+        double[] station2prec = {15, 12};
+        double[] station2evap = {0.02, 0.01};
+        precipitation.put(station1, station1prec);
+        precipitation.put(station2, station2prec);
+        evapotranspiration.put(station1, station1evap);
+        evapotranspiration.put(station2, station2evap);
+        Meteo meteo = new Meteo(precipitation, evapotranspiration);
+
+        return new Basin(ground, meteo, 50.0);
 
     }
 
