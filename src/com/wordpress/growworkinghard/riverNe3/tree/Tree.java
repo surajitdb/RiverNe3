@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3.treeBuilding;
+package com.wordpress.growworkinghard.riverNe3.tree;
 
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;

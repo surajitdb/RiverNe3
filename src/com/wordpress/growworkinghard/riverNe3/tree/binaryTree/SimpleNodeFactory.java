@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree;
+package com.wordpress.growworkinghard.riverNe3.tree.binaryTree;
 
 import org.geotools.graph.util.geom.Coordinate2D;
 
