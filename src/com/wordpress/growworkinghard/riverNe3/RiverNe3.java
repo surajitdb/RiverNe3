@@ -18,10 +18,7 @@
  */
 package com.wordpress.growworkinghard.riverNe3;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,11 +27,6 @@ import static org.junit.Assert.assertEquals;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.dataReader.DataReading;
-import com.wordpress.growworkinghard.riverNe3.dataReader.Reader;
-import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfLinesProcessing;
-import com.wordpress.growworkinghard.riverNe3.dataReader.dbfProcessing.DbfPointsProcessing;
-import com.wordpress.growworkinghard.riverNe3.geometry.Geometry;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.Tree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.binaryTree.RiverBinaryTree;
 import com.wordpress.growworkinghard.riverNe3.treeBuilding.decorator.Hydrometers;
@@ -200,46 +192,31 @@ public class RiverNe3 {
  
     static Tree tb;
     static HashMap<Key, Component> binaryTree;
-    static RunSimulations sim;
-    static List<Geometry> pointList;
-    static int count;
-    static List<DataReading> list = new ArrayList<DataReading>();
-    static CountDownLatch lRead;
-    static ExecutorService executor;
 
-    @Test
-    public void readInputData() throws InterruptedException {
+    private void readInputData(final int availableProcessors, final ExecutorService executor)
+        throws InterruptedException
+    {
 
-        String filePath = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/net.dbf";
-        String filePathPoints = "/home/francesco/vcs/git/geoframecomponents/riverNe3/data/mon_point.dbf";
-        String[] colNames = {"pfaf", "X_start", "Y_start", "X_end", "Y_end"};
-        String[] colNamesPoints = {"X_coord", "Y_coord"};
+        TestReader reader = new TestReader();
 
-        DataReading dfbp = new DbfLinesProcessing(filePath, colNames);
-        DataReading dbfPoints = new DbfPointsProcessing(filePathPoints, colNamesPoints);
+        reader.testReadInputData();
 
-        Reader reader = new Reader(executor, dfbp, dbfPoints);
+        tb = new RiverBinaryTree(reader.getReadData(0), availableProcessors, executor);
+        tb = new Hydrometers(tb, reader.getReadData(1), 500.0);
 
-        pointList = new ArrayList<Geometry>(reader.getReadData(1).values());
-
-        tb = new RiverBinaryTree(reader.getReadData(0), count, executor);
-
-	}
+    }
 
     @Test
     public void TestRun() throws InterruptedException {
 
-        RiverNe3 test = new RiverNe3();
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(availableProcessors);
 
-        count = Runtime.getRuntime().availableProcessors();
-        executor = Executors.newFixedThreadPool(count);
+        readInputData(availableProcessors, executor);
 
-        test.readInputData();
-
-        tb = new Hydrometers(tb, pointList, 500.0);
         binaryTree = tb.computeNodes();
 
-        sim = new RunSimulations(binaryTree, executor, count);
+        RunSimulations sim = new RunSimulations(binaryTree, executor, availableProcessors);
         sim.run();
 
         executor.shutdown();
