@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3.tree.decorator;
+package com.wordpress.growworkinghard.riverNe3.tree.building.decorator;
 
 import java.util.HashMap;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.tree.Tree;
+import com.wordpress.growworkinghard.riverNe3.tree.building.Tree;
 
 import net.jcip.annotations.ThreadSafe;
 

@@ -27,9 +27,9 @@ import static org.junit.Assert.assertEquals;
 
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
-import com.wordpress.growworkinghard.riverNe3.tree.Tree;
-import com.wordpress.growworkinghard.riverNe3.tree.binaryTree.RiverBinaryTree;
-import com.wordpress.growworkinghard.riverNe3.tree.decorator.Hydrometers;
+import com.wordpress.growworkinghard.riverNe3.tree.building.Tree;
+import com.wordpress.growworkinghard.riverNe3.tree.building.binaryTree.RiverBinaryTree;
+import com.wordpress.growworkinghard.riverNe3.tree.building.decorator.Hydrometers;
 
 /**
  * @mainpage On-line Documentation
