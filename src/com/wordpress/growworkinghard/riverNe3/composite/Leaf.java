@@ -26,6 +26,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.TreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
+import com.wordpress.growworkinghard.riverNe3.simulations.Results;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
@@ -61,6 +62,7 @@ public class Leaf extends Component {
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
     @GuardedBy("this") private Entity entity; //!<
     @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
+    private Results results = new Results();
 
     /**
      * @brief Constructor
@@ -102,7 +104,7 @@ public class Leaf extends Component {
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
 
-        parent.notify(connKeys.getID());
+        parent.notify(connKeys.getID(), results);
     }
 
     /**

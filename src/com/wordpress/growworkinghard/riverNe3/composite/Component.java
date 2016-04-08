@@ -25,6 +25,7 @@ import org.geotools.graph.util.geom.Coordinate2D;
 import com.google.common.collect.TreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+import com.wordpress.growworkinghard.riverNe3.simulations.Results;
 
 /**
  * @brief class Component
@@ -53,7 +54,7 @@ public abstract class Component {
      *
      * @param[in] child The key of the child whose computation is finished
      */
-    public void notify(final Key child) {
+    public void notify(final Key child, final Results result) {
         throw new UnsupportedOperationException("Method not implemented for class LEAF");
     }
 

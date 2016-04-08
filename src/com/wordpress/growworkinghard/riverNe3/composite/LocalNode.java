@@ -28,6 +28,7 @@ import com.google.common.collect.TreeTraverser;
 import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
+import com.wordpress.growworkinghard.riverNe3.simulations.Results;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
@@ -66,6 +67,9 @@ public class LocalNode extends Component {
     @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
     @GuardedBy("this") private final HashMap<Key, Boolean> readyForSim
         = new HashMap<Key, Boolean>(); //!< <code>HashMap</code> of flags for start sim
+    private final HashMap<Key, Results> childrenResults
+        = new HashMap<Key, Results>();
+    private Results results = new Results();
 
     /**
      * @brief Constructor
@@ -87,8 +91,9 @@ public class LocalNode extends Component {
      * @param[in] child The key of the child whose computation is finished
      */
     @Override
-    public synchronized void notify(final Key child) {
+    public synchronized void notify(final Key child, final Results results) {
         readyForSim.replace(child, true);
+        childrenResults.put(child, results);
     }
 
     /**
@@ -119,7 +124,7 @@ public class LocalNode extends Component {
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
 
-        parent.notify(connKeys.getID());
+        parent.notify(connKeys.getID(), results);
     }
 
     /**
