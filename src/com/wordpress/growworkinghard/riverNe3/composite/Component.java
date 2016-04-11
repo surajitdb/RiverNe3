@@ -186,6 +186,20 @@ public abstract class Component {
      */
     abstract protected void allocateSimulationFlags();
 
+    protected synchronized void simulationMessage(final String className, final Double nodeID, final String threadName, final Double parentID) {
+
+        String message = className;
+        message += "   " + nodeID;
+        message += " ==> " + threadName;
+        message += " Computing..." + " PARENT = ";
+
+        if (!nodeID.equals(1.0)) message += parentID;
+        else message += "0";
+
+        System.out.println(message);
+
+    }
+
     /**
      * @brief Validate the <tt>layer</tt> of the node in the tree
      *

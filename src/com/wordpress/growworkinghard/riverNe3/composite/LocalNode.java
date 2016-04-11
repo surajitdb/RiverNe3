@@ -115,16 +115,21 @@ public class LocalNode extends Component {
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
-            String message = this.getClass().getSimpleName();
-            message += "  " + connKeys.getID().getDouble();
-            message += " ==> " + Thread.currentThread().getName();
-            message += " Computing..." + " PARENT = ";
-            message += connKeys.getPARENT().getDouble();
-            System.out.println(message);
+            printMessage();
             Thread.sleep(5000); // lock is hold
         } catch (InterruptedException e) {}
 
         parent.notify(connKeys.getID(), results);
+    }
+
+    private void printMessage() {
+        String className = this.getClass().getSimpleName();
+        Double nodeID = connKeys.getID().getDouble();
+        String threadName = Thread.currentThread().getName();
+        Double parentID = connKeys.getPARENT().getDouble();
+
+        super.simulationMessage(className, nodeID, threadName, parentID);
+
     }
 
     /**
