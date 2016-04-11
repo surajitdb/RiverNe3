@@ -117,7 +117,7 @@ public class GhostNode extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        if (!parent.getConnections().getPARENT().equals(connKeys.getPARENT()))
+        if (!parent.getConnections().getID().equals(connKeys.getPARENT()))
             throw new IllegalArgumentException("Node not connected with parent");
 
         try {
