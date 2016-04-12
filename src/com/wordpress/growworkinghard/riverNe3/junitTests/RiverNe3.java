@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wordpress.growworkinghard.riverNe3;
+package com.wordpress.growworkinghard.riverNe3.junitTests;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+import com.wordpress.growworkinghard.riverNe3.RunSimulations;
 import com.wordpress.growworkinghard.riverNe3.composite.Component;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.tree.building.Tree;
