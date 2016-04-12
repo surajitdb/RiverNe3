@@ -112,10 +112,6 @@ public class Node extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        if (!connKeys.getID().getDouble().equals(1.0) &&
-            !parent.getConnections().getID().equals(connKeys.getPARENT()))
-            throw new IllegalArgumentException("Node not connected with parent");
-
         try {
             printMessage();
             Thread.sleep(5000); // lock is hold

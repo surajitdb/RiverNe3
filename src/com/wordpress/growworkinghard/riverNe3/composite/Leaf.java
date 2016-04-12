@@ -91,9 +91,6 @@ public class Leaf extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        if (!parent.getConnections().getID().equals(connKeys.getPARENT()))
-            throw new IllegalArgumentException("Node not connected with parent");
-
         try {
             printMessage();
             Thread.sleep(5000); // lock is hold
