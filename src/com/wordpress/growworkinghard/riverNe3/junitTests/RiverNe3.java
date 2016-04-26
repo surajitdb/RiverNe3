@@ -225,4 +225,21 @@ public class RiverNe3 {
         assertEquals(0,0);
     }
 
+    public static void main(String[] args) throws InterruptedException {
+
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(availableProcessors);
+
+        RiverNe3 test = new RiverNe3();
+        test.readInputData(availableProcessors, executor);
+
+        binaryTree = tb.computeNodes();
+
+        RunSimulations sim = new RunSimulations(binaryTree, executor, availableProcessors);
+        sim.run();
+
+        executor.shutdown();
+        System.exit(0);
+    }
+
 }
