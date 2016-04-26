@@ -18,6 +18,7 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.geotools.graph.util.geom.Coordinate2D;
@@ -30,6 +31,8 @@ import com.wordpress.growworkinghard.riverNe3.simulations.Results;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
+
+import waterBudget.WaterBudget;
 
 /**
  * @brief class Leaf
@@ -62,6 +65,7 @@ public class Leaf extends Component {
     @GuardedBy("this") private Integer layer; //!< layer in the tree in which this node is located
     @GuardedBy("this") private Entity entity; //!<
     @GuardedBy("this") private TreeTraverser<Component> traverser; //!< traverser object
+    private WaterBudget waterBudget;
     private Results results = new Results();
 
     /**
@@ -91,21 +95,42 @@ public class Leaf extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
+
         try {
+            waterBudget = new WaterBudget(entity);
+            waterBudget.process();
+            retrieveResults();
             printMessage();
-            Thread.sleep(5000); // lock is hold
-        } catch (InterruptedException e) {}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+        //  Thread.sleep(5000); // lock is hold
+        //} catch (InterruptedException e) {}
 
         parent.notify(connKeys.getID(), results);
+
     }
 
     private void printMessage() {
+
         String className = this.getClass().getSimpleName();
         Double nodeID = connKeys.getID().getDouble();
         String threadName = Thread.currentThread().getName();
         Double parentID = connKeys.getPARENT().getDouble();
+        HashMap<Integer, double[]> discharge = results.getResult(3); // quick
 
-        super.simulationMessage(className, nodeID, threadName, parentID);
+        super.simulationMessage(className, nodeID, threadName, parentID, discharge, null, null);
+
+    }
+
+    private void retrieveResults() {
+
+        results.add(waterBudget.getStorage());
+        results.add(waterBudget.getDischarge());
+        results.add(waterBudget.getEvapotranspiration());
+        results.add(waterBudget.getQuick());
+        results.add(waterBudget.getR());
 
     }
 

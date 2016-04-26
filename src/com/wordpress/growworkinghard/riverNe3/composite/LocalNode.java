@@ -20,6 +20,7 @@ package com.wordpress.growworkinghard.riverNe3.composite;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.geotools.graph.util.geom.Coordinate2D;
 
@@ -29,6 +30,7 @@ import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.simulations.Results;
+import com.wordpress.growworkinghard.riverNe3.utils.Utils;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
@@ -111,12 +113,42 @@ public class LocalNode extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
-        try {
-            printMessage();
-            Thread.sleep(5000); // lock is hold
-        } catch (InterruptedException e) {}
+
+        HashMap<Integer, double[]> computedInDischarge = new HashMap<Integer, double[]>();
+        computedInDischarge = computeInputDischarge(computedInDischarge);
+
+        retrieveResults(computedInDischarge);
+        printMessage();
+        //    Thread.sleep(5000); // lock is hold
+        //} catch (InterruptedException e) {}
 
         parent.notify(connKeys.getID(), results);
+    }
+
+    private HashMap<Integer, double[]> computeInputDischarge(HashMap<Integer, double[]> computedInDischarge) {
+
+        for (Key child : childrenResults.keySet()) {
+            Results tmpResult = childrenResults.get(child);
+            HashMap<Integer, double[]> tmpDischarge = tmpResult.getResult(1); // discharge is the second in the list
+            computedInDischarge = sum(tmpDischarge, computedInDischarge);
+        }
+        return computedInDischarge;
+    }
+
+    private HashMap<Integer, double[]> sum(final HashMap<Integer, double[]> tmpDischarge, final HashMap<Integer, double[]> computedInDischarge) {
+        if (computedInDischarge.isEmpty())
+            return tmpDischarge;
+        else {
+            HashMap<Integer, double[]> tmpResult = new HashMap<Integer, double[]>();
+            for (Integer index : computedInDischarge.keySet()) {
+                double[] valuesTmpDischarge = tmpDischarge.get(index);
+                double[] valuesComputedInDischarge = computedInDischarge.get(index);
+                double[] newvalues = Utils.sumDoubleArrays(valuesTmpDischarge, valuesComputedInDischarge);
+                tmpResult.put(index, newvalues);
+            }
+            return tmpResult;
+        }
+
     }
 
     private void printMessage() {
@@ -124,8 +156,22 @@ public class LocalNode extends Component {
         Double nodeID = connKeys.getID().getDouble();
         String threadName = Thread.currentThread().getName();
         Double parentID = connKeys.getPARENT().getDouble();
+        HashMap<Integer, double[]> discharge = results.getResult(3); // quick
 
-        super.simulationMessage(className, nodeID, threadName, parentID);
+        super.simulationMessage(className, nodeID, threadName, parentID, discharge, readyForSim.get(connKeys.getLCHILD()), readyForSim.get(connKeys.getRCHILD()));
+
+    }
+
+    private void retrieveResults(final HashMap<Integer, double[]> computedInDischarge) {
+
+        Set<Key> children = childrenResults.keySet();
+        Results tmpResult = childrenResults.get(children.toArray()[0]);
+
+        results.add(tmpResult.getResult(0));
+        results.add(computedInDischarge);
+        results.add(tmpResult.getResult(2));
+        results.add(tmpResult.getResult(3));
+        results.add(tmpResult.getResult(4));
 
     }
 

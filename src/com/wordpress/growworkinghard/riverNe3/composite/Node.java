@@ -29,9 +29,12 @@ import com.wordpress.growworkinghard.riverNe3.composite.entity.Entity;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Connections;
 import com.wordpress.growworkinghard.riverNe3.composite.key.Key;
 import com.wordpress.growworkinghard.riverNe3.simulations.Results;
+import com.wordpress.growworkinghard.riverNe3.utils.Utils;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
+
+import waterBudget.WaterBudget;
 
 /**
  * @brief class Node
@@ -70,6 +73,7 @@ public class Node extends Component {
     private final HashMap<Key, Results> childrenResults
         = new HashMap<Key, Results>();
     private Results results = new Results();
+    private WaterBudget waterBudget = new WaterBudget();
 
     /**
      * @brief Constructor
@@ -103,7 +107,7 @@ public class Node extends Component {
      * @see Component#isReadyForSimulation()
      */
     public synchronized boolean isReadyForSimulation() {
-        return (!readyForSim.values().contains(false)) ? true : false;
+        return (readyForSim.values().contains(false)) ? false : true;
     }
 
     /**
@@ -112,12 +116,49 @@ public class Node extends Component {
      * @see Component#runSimulation(final Component)
      */
     public synchronized void runSimulation(final Component parent) {
+
+        HashMap<Integer, double[]> computedInDischarge = new HashMap<Integer, double[]>();
+        computedInDischarge = computeInputDischarge(computedInDischarge);
+
         try {
+            waterBudget = new WaterBudget(entity);
+            waterBudget.process();
+            retrieveResults();
             printMessage();
-            Thread.sleep(5000); // lock is hold
-        } catch (InterruptedException e) {}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+        //    Thread.sleep(5000); // lock is hold
+        //} catch (InterruptedException e) {}
 
         if (!connKeys.getID().getDouble().equals(1.0)) parent.notify(connKeys.getID(), results);
+    }
+
+    private HashMap<Integer, double[]> computeInputDischarge(HashMap<Integer, double[]> computedInDischarge) {
+
+        for (Key child : childrenResults.keySet()) {
+            Results tmpResult = childrenResults.get(child);
+            HashMap<Integer, double[]> tmpDischarge = tmpResult.getResult(1); // discharge is the second in the list
+            computedInDischarge = sum(tmpDischarge, computedInDischarge);
+        }
+        return computedInDischarge;
+    }
+
+    private HashMap<Integer, double[]> sum(final HashMap<Integer, double[]> tmpDischarge, final HashMap<Integer, double[]> computedInDischarge) {
+        if (computedInDischarge.isEmpty())
+            return tmpDischarge;
+        else {
+            HashMap<Integer, double[]> tmpResult = new HashMap<Integer, double[]>();
+            for (Integer index : computedInDischarge.keySet()) {
+                double[] valuesTmpDischarge = tmpDischarge.get(index);
+                double[] valuesComputedInDischarge = computedInDischarge.get(index);
+                double[] newvalues = Utils.sumDoubleArrays(valuesTmpDischarge, valuesComputedInDischarge);
+                tmpResult.put(index, newvalues);
+            }
+            return tmpResult;
+        }
+
     }
 
     private void printMessage() {
@@ -125,8 +166,19 @@ public class Node extends Component {
         Double nodeID = connKeys.getID().getDouble();
         String threadName = Thread.currentThread().getName();
         Double parentID = connKeys.getPARENT().getDouble();
+        HashMap<Integer, double[]> discharge = results.getResult(3); // quick
 
-        super.simulationMessage(className, nodeID, threadName, parentID);
+        super.simulationMessage(className, nodeID, threadName, parentID, discharge, readyForSim.get(connKeys.getLCHILD()), readyForSim.get(connKeys.getRCHILD()));
+
+    }
+
+    private void retrieveResults() {
+
+        results.add(waterBudget.getStorage());
+        results.add(waterBudget.getDischarge());
+        results.add(waterBudget.getEvapotranspiration());
+        results.add(waterBudget.getQuick());
+        results.add(waterBudget.getR());
 
     }
 
@@ -223,12 +275,14 @@ public class Node extends Component {
      * @return The state variables of the object
      */
     @Override
-    public String toString() {
+    public synchronized String toString() {
   
         String tmp = this.getClass().getSimpleName();
         tmp += "       ==> ";
         tmp += connKeys.toString();
         tmp += " - Layer = " + layer;
+        tmp += "  " + readyForSim.get(connKeys.getLCHILD());
+        tmp += "  " + readyForSim.get(connKeys.getRCHILD());
 
         return tmp;
 

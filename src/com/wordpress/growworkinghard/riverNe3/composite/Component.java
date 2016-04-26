@@ -18,7 +18,9 @@
  */
 package com.wordpress.growworkinghard.riverNe3.composite;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.geotools.graph.util.geom.Coordinate2D;
 
@@ -40,10 +42,6 @@ import com.wordpress.growworkinghard.riverNe3.simulations.Results;
  * @copyright GNU Public License v3 AboutHydrology (Riccardo Rigon)
  */
 public abstract class Component {
-
-    protected final String dischargeModelName = "NonLinearReservoir";
-    protected final String evapotranspirationModelName = "AET";
-    protected final String odeSolverModelName = "dp853";
 
     /**
      * @brief <tt>notify</tt> method from <strong>Observer Pattern</strong>
@@ -186,18 +184,42 @@ public abstract class Component {
      */
     abstract protected void allocateSimulationFlags();
 
-    protected synchronized void simulationMessage(final String className, final Double nodeID, final String threadName, final Double parentID) {
+    protected synchronized void simulationMessage(final String className, final Double nodeID, final String threadName, final Double parentID, final HashMap<Integer, double[]> result, final Boolean left, final Boolean right) {
 
         String message = className;
         message += "   " + nodeID;
+        message += "   " + left + " - " + right;
         message += " ==> " + threadName;
         message += " Computing..." + " PARENT = ";
 
         if (!nodeID.equals(1.0)) message += parentID;
         else message += "0";
 
+        message += "\n";
+
+        message += printResults(result);
+
         System.out.println(message);
 
+    }
+
+    private String printResults(final HashMap<Integer, double[]> result) {
+
+        String message = new String();
+
+        for (Map.Entry<Integer, double[]> entry : result.entrySet()) {
+            Integer stationID = entry.getKey();
+            double[] data = entry.getValue();
+
+            message += stationID + "   ";
+            for (int i = 0; i < data.length; i++) {
+                message += data[i] + "\t";
+            }
+
+            message += "\n";
+
+        }
+        return message;
     }
 
     /**
