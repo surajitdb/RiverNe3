@@ -32,12 +32,20 @@ public class Basin extends Entity {
     final private Double area;
     final private double a = 752.3543670;
     final private double b = 1.75744;
+    final private String dischargeModelName;
+    final private String evapotranspirationModelName;
+    final private String odeSolverModelName;
+
 
     public Basin (final Ground ground, final Meteo meteo, final Double area) {
 
         this.ground = ground;
         this.meteo = meteo;
         this.area = area;
+
+        this.dischargeModelName = "NonLinearReservoir";
+        this.evapotranspirationModelName = "AET";
+        this.odeSolverModelName = "dp853";
 
     }
 
