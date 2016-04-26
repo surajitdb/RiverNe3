@@ -90,23 +90,26 @@ public class RunSimulations {
      *
      * @description 
      */
-    private void runSim() {
+    private Component runSim() {
 
         Component tmpComp = null;
-        Component parent = null;
         synchronized(this) {
             Iterator<Key> iterator = tree.keySet().iterator();
             while(iterator.hasNext()) {
                 Key next = iterator.next();
                 tmpComp = tree.get(next);
                 if (tmpComp.isReadyForSimulation()) {
-                    tree.remove(next, tmpComp);
-                    parent = tree.get(tmpComp.getConnections().getPARENT());
-                    break;
+                    boolean test = tree.remove(next, tmpComp);
+                    if (test) {
+                        return tmpComp;
+                    } else {
+                        System.out.println("ERROR!!! Running deleted component!");
+                        System.exit(1);
+                    }
                 }
             }
         }
-        tmpComp.runSimulation(parent);
+        return null;
     }
 
     private class ParallelSimulations implements Runnable {
@@ -117,12 +120,13 @@ public class RunSimulations {
 
         public void run() {
             while(!tree.isEmpty()) {
-                try {
-                    while(!Thread.interrupted()) runSim();
-                } finally {
-                    latch.countDown();
-                }
+                    Component comp = runSim();
+                    if (comp != null) {
+                        Component parent = tree.get(comp.getConnections().getPARENT());
+                        comp.runSimulation(parent);
+                    }
             }
+            latch.countDown();
         }
 
     }
