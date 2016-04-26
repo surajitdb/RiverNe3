@@ -117,6 +117,11 @@ public class Node extends Component {
      */
     public synchronized void runSimulation(final Component parent) {
 
+        if (!isReadyForSimulation()) {
+            System.out.println("ERROR, NOT READY FOR SIM" + connKeys.getID().getDouble());
+            System.exit(1);
+        }
+
         HashMap<Integer, double[]> computedInDischarge = new HashMap<Integer, double[]>();
         computedInDischarge = computeInputDischarge(computedInDischarge);
 
