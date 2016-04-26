@@ -118,8 +118,6 @@ public class SimpleNodeFactory {
     }
 
     /**
-     * @todo Adding area to basin object
-     *
      * @param startPoint
      * @param endPoint
      * @return
