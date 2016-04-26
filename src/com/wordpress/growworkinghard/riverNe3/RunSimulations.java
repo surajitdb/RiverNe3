@@ -78,13 +78,11 @@ public class RunSimulations {
     /**
      * @brief Submit tasks to the executor
      */
-    public void run() {
+    public void run() throws InterruptedException {
         for (int i = 0; i < concurrencyLevel; i++)
             executor.submit(new ParallelSimulations(latch));
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {}
+        latch.await();
     }
 
     /**
