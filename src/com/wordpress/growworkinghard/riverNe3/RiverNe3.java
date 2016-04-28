@@ -209,7 +209,9 @@ public class RiverNe3 {
     @Test
     public void TestRun() throws InterruptedException {
 
-        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        // the available processors have been incremented in order to find
+        // errors in the multi-threading running
+        int availableProcessors = Runtime.getRuntime().availableProcessors() + 10;
         ExecutorService executor = Executors.newFixedThreadPool(availableProcessors);
 
         readInputData(availableProcessors, executor);
