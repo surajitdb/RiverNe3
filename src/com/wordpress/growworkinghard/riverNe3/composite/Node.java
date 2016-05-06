@@ -117,10 +117,7 @@ public class Node extends Component {
      */
     public synchronized void runSimulation(final Component parent) {
 
-        if (!isReadyForSimulation()) {
-            System.out.println("ERROR, NOT READY FOR SIM" + connKeys.getID().getDouble());
-            System.exit(1);
-        }
+        checkIfReadyForSimulation();
 
         HashMap<Integer, double[]> computedInDischarge = new HashMap<Integer, double[]>();
         computedInDischarge = computeInputDischarge(computedInDischarge);
@@ -137,7 +134,25 @@ public class Node extends Component {
         //    Thread.sleep(5000); // lock is hold
         //} catch (InterruptedException e) {}
 
-        if (!connKeys.getID().getDouble().equals(1.0)) parent.notify(connKeys.getID(), results);
+        sendNotificationOfFinishingProcess(parent);
+    }
+
+    private void checkIfReadyForSimulation() {
+
+        if (!isReadyForSimulation()) {
+            System.out.println("ERROR, NOT READY FOR SIM" + connKeys.getID().getDouble());
+            System.exit(1);
+        }
+
+    }
+
+    private void sendNotificationOfFinishingProcess(final Component parent) {
+        if (!isLastNode())
+            parent.notify(connKeys.getID(), results);
+    }
+
+    private boolean isLastNode() {
+        return (connKeys.getID().getDouble().equals(1.0)) ? true : false;
     }
 
     private HashMap<Integer, double[]> computeInputDischarge(HashMap<Integer, double[]> computedInDischarge) {
