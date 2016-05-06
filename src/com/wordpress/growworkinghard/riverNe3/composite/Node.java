@@ -134,7 +134,7 @@ public class Node extends Component {
         //    Thread.sleep(5000); // lock is hold
         //} catch (InterruptedException e) {}
 
-        sendNotificationOfFinishingProcess(parent);
+        sendNotificationEndSimulation(parent);
     }
 
     private void checkIfReadyForSimulation() {
@@ -146,7 +146,7 @@ public class Node extends Component {
 
     }
 
-    private void sendNotificationOfFinishingProcess(final Component parent) {
+    private void sendNotificationEndSimulation(final Component parent) {
         if (!isLastNode())
             parent.notify(connKeys.getID(), results);
     }
